@@ -137,6 +137,28 @@ class ItemController{
 
 		return $rs ;
 	}
+	
+	/**
+	* Modification d'un item d'une liste
+	*/
+	public function formModifyItem($rq, $rs, $args){
+		$item=Item::where('id','=',$args['id'])->first();
+		$v = new VueParticipant($item) ;
+		$rs->getBody()->write($v->render(12)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Modification d'un item
+	*/
+	public function modifyItem($rq, $rs, $args){
+		$item=Item::where('id','=',$args['id'])->first();
+		$v = new VueParticipant($item) ;
+		$rs->getBody()->write($v->render(13)) ;
+
+		return $rs ;
+	}
 }
 
 

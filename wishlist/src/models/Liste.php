@@ -52,15 +52,12 @@ class Liste extends Model{
 	* Permet de creer une liste et l'ajoute a la base
 	*/
 	public function createList($des,$exp,$titre){
-		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
-		$title=filter_var($titre,FILTER_SANITIZE_SPECIAL_CHARS);
+		$title=filter_var(filter_var(filter_var($titre,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS); 
 		$test=Liste::where('titre','=',$title)->first();
 		
 		if($test==null){
-			$this->description=filter_var($des,FILTER_SANITIZE_STRING);
-			$this->description=filter_var($des,FILTER_SANITIZE_SPECIAL_CHARS);
-			$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING); 
-			$this->expiration=filter_var($exp,FILTER_SANITIZE_SPECIAL_CHARS);
+			$this->description=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+			$this->expiration=filter_var(filter_var($exp,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 			$this->titre=$title;
 			$this->token=random_int(1,10000);
 			
@@ -77,14 +74,9 @@ class Liste extends Model{
 	* Permet de modifier une liste
 	*/
 	public function modifyList($des,$exp,$titre){
-		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
-		$title=filter_var($titre,FILTER_SANITIZE_SPECIAL_CHARS);
-
-		$this->description=filter_var($des,FILTER_SANITIZE_STRING);
-		$this->description=filter_var($des,FILTER_SANITIZE_SPECIAL_CHARS);
-		$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING); 
-		$this->expiration=filter_var($exp,FILTER_SANITIZE_SPECIAL_CHARS);
-		$this->titre=$title;
+		$this->description=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->expiration=filter_var(filter_var($exp,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS); 
+		$this->titre=filter_var(filter_var($titre,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 			
 		$this->save();
 			

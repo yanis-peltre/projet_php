@@ -15,7 +15,7 @@ class Item extends Model{
 	}
 
     public function liste() {
-		$ob=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();;
+		$ob=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();
 		return $ob->id . ' appartient à la liste '.$ob->liste_id.'<br>';
     }
 	
@@ -39,6 +39,12 @@ class Item extends Model{
 		return $res;
 	}
 	
+	public function getToken(){
+		$liste=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();
+		
+		return $liste->token;
+	}
+	
 	public function createItem($nom,$id_liste,$prix){
 		$this->nom=$nom;
 		$this->liste_id=$id_liste;
@@ -50,18 +56,30 @@ class Item extends Model{
 	/**
 	* Permet de creer une item dans une liste
 	*/
-	public function addItem($des,$prix,$nom){
-		$nom=filter_var($nom,FILTER_SANITIZE_STRING); 
-		$nom=filter_var($nom,FILTER_SANITIZE_SPECIAL_CHARS);
-		
-		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
-		$this->descr=filter_var($des,FILTER_SANITIZE_SPECIAL_CHARS);
-		$this->tarif=filter_var($prix,FILTER_SANITIZE_NUMBER_FLOAT); 
-		$this->nom=$nom;
+	public function addItem($des,$tarif,$nom){
+		$this->descr=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
+		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 			
 		$this->save();
 			
 		return "Objet ".$nom. " ajouté à la liste ".$this->liste_id.".";
+	}
+	
+	/**
+	* Permet de modifier un item
+	*/
+	public function modifyItem($des,$tarif,$nom){
+		$this->descr=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
+		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+			
+		$this->save();
+			
+		return "Item ".$this->id. " de la liste ".$this->liste_id." modifié.<br>
+			<p><label>Nom : ".$this->nom."</label></p>
+			<p><label>Description : ".$this->descr."</label></p>
+			<p><label>Tarif : ".$this->tarif."</label></p>";
 	}
 }
 

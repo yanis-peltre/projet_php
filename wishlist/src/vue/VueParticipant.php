@@ -64,7 +64,7 @@ class VueParticipant{
 				<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Ajouter l'item\">
-			</form>";/*5704*/
+			</form>";/*3026*/
 		}
 		
 		return $res;
@@ -91,6 +91,21 @@ class VueParticipant{
 			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>";
+			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
+			if($liste_ob!=null){
+				$res=$res."<div><ul>Les items de la liste : ";
+			}
+			foreach($liste_ob as $ob){
+				$res=$res."
+				<li>
+					<a href=\"formulaire_modification_item/".$ob->id."\"> 
+						<img src=\"./../../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
+					</a>
+				</li>";
+			}
+			if($liste_ob!=null){
+				$res=$res."</ul></div>";
+			}
 		}
 		
 		return $res;
@@ -121,6 +136,32 @@ class VueParticipant{
 	
 	private function render_deleteList() {
 		$res=$this->objet->deleteList();
+		
+		return $res;
+	}
+	
+	private function render_formModifyItem() {
+		if($this->objet==null){
+			$res="Pas d'item correspondant";		
+		}
+		else{
+			$res="
+			<form action=\"modifier_item/".$this->objet->id."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
+				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
+				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
+				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
+				<input type=\"submit\" value=\"Modifier l'item\">
+			</form>
+			<form action=\"../".$this->objet->getToken()."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+				<input type=\"submit\" value=\"Retour à la liste\">
+			</form>";
+		}
+		
+		return $res;
+	}
+	
+	private function render_modifyItem() {
+		$res=$this->objet->modifyItem($_POST['des'],$_POST['tarif'],$_POST['nom']);
 		
 		return $res;
 	}
@@ -169,6 +210,14 @@ class VueParticipant{
 			}
 			case 11 : {
 				$content = $this->render_deleteList();
+				break;
+			}
+			case 12 : {
+				$content = $this->render_formModifyItem();
+				break;
+			}
+			case 13 : {
+				$content = $this->render_modifyItem();
 				break;
 			}
 			default : {
