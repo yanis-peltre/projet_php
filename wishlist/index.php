@@ -121,6 +121,22 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{
 	return $c->modifyItem( $rq, $rs, $args );
 })->setName('modifier_item');
 
+/**
+* Formulaire de suppression d'un item
+*/
+$app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->formDeleteItem( $rq, $rs, $args );
+})->setName('formulaire_suppression_item');
+
+/**
+* Suppression d'un item
+*/
+$app->post('/formulaire_modif_liste/formulaire_suppression_item/supprimer_item/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->deleteItem( $rq, $rs, $args );
+})->setName('supprimer_item');
+
 $app->run();
 
 

@@ -93,18 +93,24 @@ class VueParticipant{
 			</form>";
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
-				$res=$res."<div><ul>Les items de la liste : ";
+				$res=$res.
+				"<form action=\"formulaire_suppression_item/".$this->objet->token."\" name=\"formitems\" id=\"formitems\"> 
+					<ol>Les items de la liste :";
 			}
 			foreach($liste_ob as $ob){
 				$res=$res."
 				<li>
+					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
 					<a href=\"formulaire_modification_item/".$ob->id."\"> 
 						<img src=\"./../../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
 			}
 			if($liste_ob!=null){
-				$res=$res."</ul></div>";
+				$res=$res.
+				"	</ol>
+					<input type=\"submit\" value=\"Supprimer les items sélectionnés\" id=\"envoi\">
+				</form>";
 			}
 		}
 		
@@ -166,6 +172,41 @@ class VueParticipant{
 		return $res;
 	}
 	
+	private function render_formDeleteItem() {
+		if($this->objet==null){
+			$res="Pas d'item correspondant";		
+		}
+		else{
+			$res="<ul>Vous êtes sur le point de supprimer les items suivant(s) :";
+			foreach($this->ob as $ob){
+				$res=$res."
+				<li>
+					<p> ".$ob->nom." de la liste ".$ob->liste_id."</p>
+				</li>";
+			}
+			$res=$res."</ul>";
+				
+			$res=$res."
+			<form action=\"supprimer_item\" method=\"POST\" name=\"supitem\" id=\"supitem\">
+				<input type=\"submit\" value=\"Confirmer la suppression\">
+			</form>
+			<form action=\"../".$this->objet[1]->getToken()."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+				<input type=\"submit\" value=\"Annuler et revenir à la liste\">
+			</form>";
+		}
+		
+		return $res;
+	}
+	
+	private function render_deleteItem() {
+		$res="";
+		foreach($this->ob as $ob){
+			$res=$ob->deleteItem();
+		}
+		
+		return $res;
+	}
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -220,6 +261,14 @@ class VueParticipant{
 				$content = $this->render_modifyItem();
 				break;
 			}
+			case 14 : {
+				$content = $this->render_formDeleteItem();
+				break;
+			}
+			case 15 : {
+				$content = $this->render_deleteItem();
+				break;
+			}
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
@@ -228,6 +277,11 @@ class VueParticipant{
 		$html = "
 		<!DOCTYPE html>
 		<html>
+			<head>
+				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
+				<title>sometext</title>
+				<meta charset=\"utf-8\"/>
+			</head>
 			<body>
 				<div class=\"content\">
 					$content

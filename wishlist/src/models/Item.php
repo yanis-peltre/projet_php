@@ -81,6 +81,18 @@ class Item extends Model{
 			<p><label>Description : ".$this->descr."</label></p>
 			<p><label>Tarif : ".$this->tarif."</label></p>";
 	}
+	
+	/**
+	* Permet de supprimer des items
+	*/
+	public function deleteItem(){
+		$res="";
+		
+		$res=$res."<p>Item ".$this->id. " de la liste ".$this->liste_id." supprimé.</p>";
+		$this->delete();
+			
+		return res;
+	}
 }
 
 

@@ -159,6 +159,38 @@ class ItemController{
 
 		return $rs ;
 	}
+	
+	/**
+	* Modification d'un item d'une liste
+	*/
+	public function formDeleteItem($rq, $rs, $args){
+		$item;
+		
+		foreach($args as $ob){
+			$item[]=$ob;
+		}
+		
+		$v = new VueParticipant($item) ;
+		$rs->getBody()->write($v->render(14)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Suppression d'items
+	*/
+	public function deleteItem($rq, $rs, $args){
+		$item;
+		
+		foreach($args as $ob){
+			$item[]=$ob;
+		}
+		
+		$v = new VueParticipant($item) ;
+		$rs->getBody()->write($v->render(15)) ;
+
+		return $rs ;
+	}
 }
 
 

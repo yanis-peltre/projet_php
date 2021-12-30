@@ -52,7 +52,7 @@ class Liste extends Model{
 	* Permet de creer une liste et l'ajoute a la base
 	*/
 	public function createList($des,$exp,$titre){
-		$title=filter_var(filter_var(filter_var($titre,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS); 
+		$title=filter_var(filter_var($titre,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS); 
 		$test=Liste::where('titre','=',$title)->first();
 		
 		if($test==null){
