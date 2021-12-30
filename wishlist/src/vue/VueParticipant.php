@@ -76,6 +76,55 @@ class VueParticipant{
 		return $res;
 	}
 	
+	private function render_formModifyList() {
+		if($this->objet==null){
+			$res="Pas de liste correspondante";		
+		}
+		else{
+			$res="
+			<form action=\"modifier_liste/".$this->objet->token."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
+				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
+				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
+				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
+				<input type=\"submit\" value=\"Modifier la liste\">
+			</form>
+			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+				<input type=\"submit\" value=\"Supprimer la liste\">
+			</form>";
+		}
+		
+		return $res;
+	}
+	
+	private function render_modifyList() {
+		$res=$this->objet->modifyList($_POST['des'],$_POST['exp'],$_POST['titre']);
+		
+		return $res;
+	}
+	
+	private function render_formDeleteList() {
+		if($this->objet==null){
+			$res="Pas de liste correspondante";		
+		}
+		else{
+			$res="
+			<form action=\"supprimer_liste/".$this->objet->token."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
+				<input type=\"submit\" value=\"Oui\">
+			</form>
+			<form action=\"../".$this->objet->token."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
+				<input type=\"submit\" value=\"Non\">
+			</form>";
+		}
+		
+		return $res;
+	}
+	
+	private function render_deleteList() {
+		$res=$this->objet->deleteList();
+		
+		return $res;
+	}
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -104,6 +153,22 @@ class VueParticipant{
 			}
 			case 7 : {
 				$content = $this->render_addItem();
+				break;
+			}
+			case 8 : {
+				$content = $this->render_formModifyList();
+				break;
+			}
+			case 9 : {
+				$content = $this->render_modifyList();
+				break;
+			}
+			case 10 : {
+				$content = $this->render_formDeleteList();
+				break;
+			}
+			case 11 : {
+				$content = $this->render_deleteList();
 				break;
 			}
 			default : {

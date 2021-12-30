@@ -66,11 +66,42 @@ class Liste extends Model{
 			
 			$this->save();
 			
-			return "Liste ".$title. " ajoutée. Votre token est ".$this->token.".<br>";
+			return "Liste ".$this->no. " ajoutée. Votre token est ".$this->token.".<br>";
 		}
 		else{
 			return "Impossible d'ajouter la liste";
 		}
+	}
+	
+	/**
+	* Permet de modifier une liste
+	*/
+	public function modifyList($des,$exp,$titre){
+		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
+		$title=filter_var($titre,FILTER_SANITIZE_SPECIAL_CHARS);
+
+		$this->description=filter_var($des,FILTER_SANITIZE_STRING);
+		$this->description=filter_var($des,FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING); 
+		$this->expiration=filter_var($exp,FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->titre=$title;
+			
+		$this->save();
+			
+		return "Liste ".$this->no. " modifiée.<br>
+			<p><label>Titre : ".$this->titre."</label></p>
+			<p><label>Description : ".$this->description."</label></p>
+			<p><label>Expiration : ".$this->expiration."</label></p>";
+	}
+	
+	/**
+	* Permet de supprimer une liste
+	*/
+	public function deleteList(){
+		$num=$this->no;
+		$this->delete();
+		
+		return "Liste ".$num." supprimée.<br>";
 	}
 }
 

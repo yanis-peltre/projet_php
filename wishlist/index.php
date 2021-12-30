@@ -73,6 +73,38 @@ $app->post('/formulaire_item/ajouter_item/{token}[/]',function($rq,$rs,$args){
 	return $c->addItem( $rq, $rs, $args );
 })->setName('ajouter_item');
 
+/**
+* Formulaire modification d'une liste
+*/
+$app->get('/formulaire_modif_liste/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->formModifyList( $rq, $rs, $args );
+})->setName('formulaire_modif_liste');
+
+/**
+* Modification d'une liste
+*/
+$app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->modifyList( $rq, $rs, $args );
+})->setName('formulaire_modif_liste');
+
+/**
+* Formulaire suppression d'une liste
+*/
+$app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->formDeleteList( $rq, $rs, $args );
+})->setName('formulaire_supprimer_liste');
+
+/**
+* Suppression d'une liste
+*/
+$app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',function($rq,$rs,$args){
+	$c=new ItemController();
+	return $c->deleteList( $rq, $rs, $args );
+})->setName('supprimer_liste');
+
 $app->run();
 
 

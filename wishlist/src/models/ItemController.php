@@ -93,6 +93,50 @@ class ItemController{
 
 		return $rs ;
 	}
+	
+	/**
+	* Formulaire modification d'une liste
+	*/
+	public function formModifyList($rq, $rs, $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(8)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Modification d'une liste
+	*/
+	public function modifyList($rq, $rs, $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(9)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Formulaire suppression d'une liste
+	*/
+	public function formDeleteList($rq, $rs, $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(10)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Formulaire suppression d'une liste
+	*/
+	public function deleteList($rq, $rs, $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(11)) ;
+
+		return $rs ;
+	}
 }
 
 
