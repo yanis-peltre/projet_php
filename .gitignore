@@ -54,4 +54,4 @@ local.properties
 out
 
 .wishlist/vendor/
-.wishlist/src/conf
+.wishlist/src/conf/
