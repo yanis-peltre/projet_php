@@ -8,6 +8,7 @@ Maxence : Fonctionnalités :
 11, 12, 13
 
 Paul : Fonctionnalités : 
+17, 18, 19, 25, 26, 27, 28
 
 
 Yanis : Fonctionnalités :
