@@ -17,6 +17,14 @@ class ItemController{
 	public function __construct(){
 
 	}
+
+    /**
+     * Test accueil a delete
+     */
+    public function accueil($rq, $rs, $args ){
+        $rs->getBody()->write("Accueil test");
+        return $rs;
+    }
 	
 	/**
 	* Permet de lister les listes
