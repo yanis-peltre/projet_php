@@ -1,16 +1,13 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-/*require_once __DIR__ . '/src/conf/Database.php';
-require_once __DIR__ . '/src/models/Item.php';
-require_once __DIR__ . '/src/models/Liste.php';*/
-require_once __DIR__ . '/src/models/ItemController.php';
+require_once __DIR__ . '/src/controller/ItemController.php';
 
 use mywishlist\models\Item;
 use mywishlist\models\Liste;
-use mywishlist\models\ItemController;
-use \Psr\Http\Message\src\ResponseInterface as Response;
-use \Psr\Http\Message\src\RequestInterface as Request;
+use mywishlist\controller\ItemController;
+use \Psr\Http\Message\ResponseInterface as Response;
+use \Psr\Http\Message\ServerRequestInterface as Request;
 
 $config = ['settings' => ['displayErrorDetails' => true]];
 $app=new \Slim\App($config);
@@ -18,7 +15,7 @@ $app=new \Slim\App($config);
 /**
 * Liste des listes
 */
-$app->get('/liste[/]',function($rq,$rs,$args){
+$app->get('/liste[/]',function(Request $rq, Response $rs, array $args){
 	$url=$this['router']->pathFor('liste');
 	
 	$c=new ItemController();
@@ -28,7 +25,7 @@ $app->get('/liste[/]',function($rq,$rs,$args){
 /**
 * Liste des items d'une liste
 */
-$app->get('/cadeaux/{id}[/]',function($rq,$rs,$args){
+$app->get('/cadeaux/{id}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->listItem( $rq, $rs, $args );
 })->setName('cadeaux');
@@ -36,7 +33,7 @@ $app->get('/cadeaux/{id}[/]',function($rq,$rs,$args){
 /**
 * Un item en particulier
 */
-$app->get('/item/{id}[/]',function($rq,$rs,$args){
+$app->get('/item/{id}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->getItem( $rq, $rs, $args );
 })->setName('item');
@@ -44,7 +41,7 @@ $app->get('/item/{id}[/]',function($rq,$rs,$args){
 /**
 * Formulaire d'ajout de liste
 */
-$app->get('/formulaire_liste[/]',function($rq,$rs,$args){
+$app->get('/formulaire_liste[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formAddList( $rq, $rs, $args );
 })->setName('formulaire_liste');
@@ -52,7 +49,7 @@ $app->get('/formulaire_liste[/]',function($rq,$rs,$args){
 /**
 * Ajout de liste
 */
-$app->post('/ajouter_liste[/]',function($rq,$rs,$args){
+$app->post('/ajouter_liste[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->addList( $rq, $rs, $args );
 })->setName('ajouter_liste');
@@ -60,7 +57,7 @@ $app->post('/ajouter_liste[/]',function($rq,$rs,$args){
 /**
 * Formulaire ajout d'un item a une liste
 */
-$app->get('/formulaire_item/{token}[/]',function($rq,$rs,$args){
+$app->get('/formulaire_item/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formAddItem( $rq, $rs, $args );
 })->setName('formulaire_item');
@@ -68,7 +65,7 @@ $app->get('/formulaire_item/{token}[/]',function($rq,$rs,$args){
 /**
 * Ajout d'item a une liste
 */
-$app->post('/formulaire_item/ajouter_item/{token}[/]',function($rq,$rs,$args){
+$app->post('/formulaire_item/ajouter_item/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->addItem( $rq, $rs, $args );
 })->setName('ajouter_item');
@@ -76,7 +73,7 @@ $app->post('/formulaire_item/ajouter_item/{token}[/]',function($rq,$rs,$args){
 /**
 * Formulaire modification d'une liste
 */
-$app->get('/formulaire_modif_liste/{token}[/]',function($rq,$rs,$args){
+$app->get('/formulaire_modif_liste/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formModifyList( $rq, $rs, $args );
 })->setName('formulaire_modif_liste');
@@ -84,7 +81,7 @@ $app->get('/formulaire_modif_liste/{token}[/]',function($rq,$rs,$args){
 /**
 * Modification d'une liste
 */
-$app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',function($rq,$rs,$args){
+$app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->modifyList( $rq, $rs, $args );
 })->setName('formulaire_modif_liste');
@@ -92,7 +89,7 @@ $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',function($rq,$rs,
 /**
 * Formulaire suppression d'une liste
 */
-$app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',function($rq,$rs,$args){
+$app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formDeleteList( $rq, $rs, $args );
 })->setName('formulaire_supprimer_liste');
@@ -100,7 +97,7 @@ $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',functi
 /**
 * Suppression d'une liste
 */
-$app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',function($rq,$rs,$args){
+$app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->deleteList( $rq, $rs, $args );
 })->setName('supprimer_liste');
@@ -108,7 +105,7 @@ $app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{
 /**
 * Formulaire de modification d'un item
 */
-$app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',function($rq,$rs,$args){
+$app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formModifyItem( $rq, $rs, $args );
 })->setName('formulaire_modification_item');
@@ -116,7 +113,7 @@ $app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',functio
 /**
 * Modification d'un item
 */
-$app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',function($rq,$rs,$args){
+$app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->modifyItem( $rq, $rs, $args );
 })->setName('modifier_item');
@@ -124,7 +121,7 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{
 /**
 * Formulaire de suppression d'un item
 */
-$app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',function($rq,$rs,$args){
+$app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->formDeleteItem( $rq, $rs, $args );
 })->setName('formulaire_suppression_item');
@@ -132,7 +129,7 @@ $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',funct
 /**
 * Suppression d'un item
 */
-$app->post('/formulaire_modif_liste/formulaire_suppression_item/supprimer_item/{token}[/]',function($rq,$rs,$args){
+$app->post('/formulaire_modif_liste/formulaire_suppression_item/supprimer_item/{token}[/]',function(Request $rq, Response $rs, array $args){
 	$c=new ItemController();
 	return $c->deleteItem( $rq, $rs, $args );
 })->setName('supprimer_item');
