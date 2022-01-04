@@ -53,5 +53,4 @@ local.properties
 .idea
 out
 
-.wishlist/vendor/
-.wishlist/src/conf/
+/wishlist/vendor/
