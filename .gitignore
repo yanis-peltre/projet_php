@@ -52,8 +52,6 @@ local.properties
 
 .idea
 out
-<<<<<<< HEAD
+
 .wishlist/vendor
-=======
-wishlist/vendor/*
->>>>>>> e797920d3a7eb4376b96c5f6e577834cc047cd78
+.wishlist/src/conf
