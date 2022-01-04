@@ -52,4 +52,4 @@ local.properties
 
 .idea
 out
-.wishlist/vendor/*
+.wishlist/vendor
