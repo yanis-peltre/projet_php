@@ -23,8 +23,7 @@ class ControleurItem extends Controller
 	* Permet de lister les items d'une liste
 	*/
 	public function listItem(Request $rq, Response $rs, array $args) {
-		$param=$rq->getParsedBody();
-		$liste = Liste::where('no','=',$param['id'])->first() ;
+		$liste = Liste::where('no','=',$_GET['id'])->first() ;
 		$v = new VueParticipant($liste->items()) ;
 		$rs->getBody()->write($v->render(2)) ;
 
