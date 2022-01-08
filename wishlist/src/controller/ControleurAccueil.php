@@ -1,27 +1,41 @@
 <?php
 
-namespace mywishlist\controleurs;
+namespace mywishlist\controller;
+
+require_once __DIR__ . '/Controller.php';
 
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use mywishlist\controller\Controller;
+use mywishlist\vue\VueParticipant;/*3236*/
+use mywishlist\models\Item;
+use mywishlist\models\Liste;
 
-class ControleurAccueil
+class ControleurAccueil extends Controller
 {
-
-    private $container; //conteneur de dépendances.
-
     public function __construct(Container $c)
     {
-        $this->container = $c;
+        parent::__construct($c);
     }
 
     function displayAccueil(Request $rq, Response $rs, array $args){
-        $urlListe = $this->container->router->pathFor('displayAllLists');
-        $html = "<h1>Accueil</h1></br>";
-        $html .= "<a href=\"$urlListe\">Voir toutes les listes</a>";
-
-        $rs->getBody()->write($html);
+        $v = new VueParticipant(null) ;
+		$rs->getBody()->write($v->render(16)) ;
+		
+		return $rs ;
     }
 
+	function displayItemListe(Request $rq, Response $rs, array $args){
+		$param=$rq->getParsedBody();
+        $v = new VueParticipant(null) ;
+		$rs->getBody()->write($v->render(17)) ;
+		
+		return $rs ;
+    }
 }
+
+
+
+
+

@@ -1,46 +1,101 @@
 <?php
 
-namespace mywishlist\controleurs;
+namespace mywishlist\controller;
 
+require_once __DIR__ . '/Controller.php';
+
+use mywishlist\vue\VueParticipant;
 use mywishlist\models\Liste;
+use mywishlist\controller\Controller;
+use mywishlist\models\Item;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class ControleurListe
+class ControleurListe extends Controller
 {
-
-    private $container; //conteneur de dépendances.
-
     public function __construct(Container $c)
     {
-        $this->container = $c;
+        parent::__construct($c);
     }
+	
+	/**
+	* Permet de lister les listes
+	*/
+	public function listListe(Request $rq, Response $rs, array $args) {
+		$v = new VueParticipant(Liste::allListe());
+		$rs->getBody()->write($v->render(1)) ;
+		
+		return $rs ;
+	}
+	
+	/**
+	* Affiche un formulaire pour ajouter une liste
+	*/
+	public function formAddList(Request $rq, Response $rs, array $args){
+		$v = new VueParticipant(null) ;
+		$rs->getBody()->write($v->render(4)) ;
 
-    function displayAllLists(Request $rq, Response $rs, array $args){
-        $rs->getBody()->write("Liste des listes : </br></br>");
-        $listes = Liste::all();
-        foreach ($listes as $liste){
-            $rs->getBody()->write("number : ".$liste['no']."</br>".
-                "user_id : ".$liste['user_id']."</br>".
-                "titre :".$liste['titre']."</br>".
-                "description : ".$liste['description']."</br>".
-                "expiration : ".$liste['expiration']."</br>".
-                "token : ".$liste['token']."</br></br>");
-        }
-        $rs->getBody()->write('------------------------------------------</br>');
-        return $rs;
-    }
+		return $rs ;
+	}
+	
+	/**
+	* Ajoute une liste
+	*/
+	public function addList(Request $rq, Response $rs, array $args){
+		$liste=new Liste();
+		$param=$rq->getParsedBody();
+		$liste->createList($param['des'],$param['exp'],$param['titre']);
+		$v = new VueParticipant($liste);
+		$rs->getBody()->write($v->render(5)) ;
 
-    function displayList(Request $rq, Response $rs, array $args){
-        $num = $args['idListe'];
-        $rs->getBody()->write("Liste numero $num : </br></br>");
-        $liste = Liste::where('no','=',$num)->get()->first();
-        $rs->getBody()->write("user_id :".$liste['user_id']."</br>".
-                                "titre : ".$liste['titre']."</br>".
-                                "description : ".$liste['description']."</br>".
-                                "expiration : ".$liste['expiration']."</br>".
-                                "token : ".$liste['token']."</br></br>");
-        return $rs;
-    }
+		return $rs ;
+	}
+	
+	/**
+	* Formulaire modification d'une liste
+	*/
+	public function formModifyList(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(8)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Modification d'une liste
+	*/
+	public function modifyList(Request $rq, Response $rs, array $args){
+		$param=$rq->getParsedBody();
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste->modifyList($param['des'],$param['exp'],$param['titre']);
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(9)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Formulaire suppression d'une liste
+	*/
+	public function formDeleteList(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(10)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Formulaire suppression d'une liste
+	*/
+	public function deleteList(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token','=',$args['token'])->first();
+		$v = new VueParticipant($liste) ;
+		$liste->deleteList();
+		$rs->getBody()->write($v->render(11)) ;
+
+		return $rs ;
+	}
 }

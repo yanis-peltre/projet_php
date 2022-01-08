@@ -16,27 +16,10 @@ class Item extends Model{
 
     public function liste() {
 		$ob=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();
-		return $ob->id . ' appartient à la liste '.$ob->liste_id.'<br>';
     }
 	
-	public static function listItem(){
-		$res="";
-		
-		$objets=Item::select('id','liste_id','nom')->get();
-		foreach($objets as $ob){
-			$res=$res.$ob->id . ' de la liste '.$ob->liste_id. ' : '.$ob->nom.'<br>';
-		}
-		
-		return $res;
-	}
-	
 	public function getItem(){
-		$res="";
-		
-		$objetid=Item::where('id','=',$this->id)->first();
-		$res=$objetid->id." : ".$objetid->nom.'<br>';
-		
-		return $res;
+		return Item::where('id','=',$this->id)->first();
 	}
 	
 	public function getToken(){
@@ -45,25 +28,27 @@ class Item extends Model{
 		return $liste->token;
 	}
 	
-	public function createItem($nom,$id_liste,$prix){
-		$this->nom=$nom;
-		$this->liste_id=$id_liste;
-		$this->tarif=$prix;
+	public static function createItem($nom,$id_liste,$prix){
+		$item=new Item();
 		
-		$this->save();
+		$item->nom=$nom;
+		$item->liste_id=$id_liste;
+		$item->tarif=$prix;
+		
+		$item->save();
 	}
 	
 	/**
-	* Permet de creer une item dans une liste
+	* Permet d'ajouter un item dans une liste
 	*/
-	public function addItem($des,$tarif,$nom){
+	public function addItem($des,$tarif,$nom,$token){
+		$l=Liste::where('token','=',filter_var($token,FILTER_SANITIZE_NUMBER_INT))->first();
 		$this->descr=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
 		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->liste_id=$l->no;
 			
 		$this->save();
-			
-		return "Objet ".$nom. " ajouté à la liste ".$this->liste_id.".";
 	}
 	
 	/**
@@ -75,23 +60,13 @@ class Item extends Model{
 		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 			
 		$this->save();
-			
-		return "Item ".$this->id. " de la liste ".$this->liste_id." modifié.<br>
-			<p><label>Nom : ".$this->nom."</label></p>
-			<p><label>Description : ".$this->descr."</label></p>
-			<p><label>Tarif : ".$this->tarif."</label></p>";
 	}
 	
 	/**
 	* Permet de supprimer des items
 	*/
 	public function deleteItem(){
-		$res="";
-		
-		$res=$res."<p>Item ".$this->id. " de la liste ".$this->liste_id." supprimé.</p>";
 		$this->delete();
-			
-		return res;
 	}
 }
 

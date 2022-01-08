@@ -1,11 +1,15 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/controller/ItemController.php';
+require_once __DIR__ . '/src/controller/ControleurAccueil.php';
+require_once __DIR__ . '/src/controller/ControleurItem.php';
+require_once __DIR__ . '/src/controller/ControleurListe.php';
 
 use mywishlist\models\Item;
 use mywishlist\models\Liste;
-use mywishlist\controller\ItemController;
+use mywishlist\controller\ControleurAccueil;
+use mywishlist\controller\ControleurItem;
+use mywishlist\controller\ControleurListe;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -17,22 +21,28 @@ $app=new \Slim\App($config);
  * Page d'accueil
  */
 $app->get('/',
-    ItemController::class.":accueil")->setName("accueil")->setName("accueil");
+    ControleurAccueil::class.":displayAccueil")->setName("accueil");
 
 /**
 * Liste des listes
 */
 
 $app->get('/liste[/]',
-    ItemController::class.":listListe")->setName("liste");
+    ControleurListe::class.":listListe")->setName("liste");
 
+/**
+* Formulaire des items d'une liste
+*/
+
+$app->get('/cadeaux[/]',
+    ControleurAccueil::class.":displayItemListe")->setName("cadeaux");
 
 /**
 * Liste des items d'une liste
 */
 
-$app->get('/cadeaux/{id}[/]',
-    ItemController::class.":listItem")->setName("cadeaux");
+$app->get('/cadeaux/afficheCadeaux[/]',
+    ControleurItem::class.":listItem")->setName("cadeaux");
 
 
 /**
@@ -40,7 +50,7 @@ $app->get('/cadeaux/{id}[/]',
 */
 
 $app->get('/item/{id}[/]',
-    ItemController::class.':getItem');
+    ControleurItem::class.':getItem');
 
 
 /**
@@ -48,7 +58,7 @@ $app->get('/item/{id}[/]',
 */
 
 $app->get('/formulaire_liste[/]',
-    ItemController::class.':formAddList');
+    ControleurListe::class.':formAddList');
 
 
 /**
@@ -56,7 +66,7 @@ $app->get('/formulaire_liste[/]',
 */
 
 $app->post('/ajouter_liste[/]',
-    ItemController::class.':addList');
+    ControleurListe::class.':addList');
 
 
 /**
@@ -64,7 +74,7 @@ $app->post('/ajouter_liste[/]',
 */
 
 $app->get('/formulaire_item/{token}[/]',
-    ItemController::class.':formAddItem');
+    ControleurItem::class.':formAddItem');
 
 
 /**
@@ -72,7 +82,7 @@ $app->get('/formulaire_item/{token}[/]',
 */
 
 $app->post('/formulaire_item/ajouter_item/{token}[/]',
-    ItemController::class.':addItem');
+    ControleurItem::class.':addItem');
 
 
 /**
@@ -80,7 +90,7 @@ $app->post('/formulaire_item/ajouter_item/{token}[/]',
 */
 
 $app->get('/formulaire_modif_liste/{token}[/]',
-    ItemController::class.':formModifyList');
+    ControleurListe::class.':formModifyList');
 
 
 /**
@@ -88,7 +98,7 @@ $app->get('/formulaire_modif_liste/{token}[/]',
 */
 
 $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
-    ItemController::class.':modifyList');
+    ControleurListe::class.':modifyList');
 
 
 /**
@@ -96,7 +106,7 @@ $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
 */
 
 $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
-    ItemController::class.':formDeleteList');
+    ControleurListe::class.':formDeleteList');
 
 
 /**
@@ -104,15 +114,15 @@ $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
 */
 
 $app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',
-    ItemController::class.':deleteList')->setName("supprimer_liste");
+    ControleurListe::class.':deleteList')->setName("supprimer_liste");
 
 
 /**
 * Formulaire de modification d'un item
 */
 
-$app->post('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
-    ItemController::class.':addList')->setName('formulaire_modification_item');
+$app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
+    ControleurItem::class.':formModifyItem')->setName('formulaire_modification_item');
 
 
 /**
@@ -120,7 +130,7 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
 */
 
 $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
-    ItemController::class.':modifyItem')->setName('modifier_item');
+    ControleurItem::class.':modifyItem')->setName('modifier_item');
 
 
 /**
@@ -134,8 +144,8 @@ $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
 /**
 * Suppression d'un item
 */
-$app->post('/formulaire_modif_liste/formulaire_suppression_item/supprimer_item/{token}[/]',
-    ItemController::class.':deleteItem')->setName('supprimer_item');
+$app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
+    ControleurItem::class.':deleteItem')->setName('supprimer_item');
 
 $app->run();
 

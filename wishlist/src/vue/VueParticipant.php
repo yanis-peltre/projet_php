@@ -13,24 +13,47 @@ use mywishlist\models\Liste;
 class VueParticipant{
 	protected $objet;
 	
-	public function __construct($ob){
+	public function __construct($ob=null){
 		$this->objet=$ob;
 	}
 
 	private function render_listList() {
-		$res=Liste::listListe($this->objet);
+		if($this->objet!==null){
+			$res="<ul>Toutes les listes :";
+			foreach($this->objet as $l){
+				$res=$res."<li>".$l->no . ' : '.$l->titre.'</li>';
+			}
+			$res=$res."</ul>";
+		}
+		else{
+			$res="<p>Il n'y a actuellement aucune liste.</p>";
+		}
 		
 		return $res;
 	}
 	
 	private function render_listItem() {
-		$res=$this->objet->items();
+		if($this->objet!==null){
+			$res="<ul>Les item de la liste :";
+			foreach($this->objet as $i){
+				$res=$res."<li>".$i->id . ' : '.$i->nom.'</li>';
+			}
+			$res=$res."</ul>";
+		}
+		else{
+			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
+		}
 		
 		return $res;
 	}
 	
 	private function render_getItem() {
-		$res=$this->objet->getItem();
+		if($this->objet!==null){
+			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
+		}
+		else{
+			$res="<p>Cet objet n'existe pas.</p>";
+		}
 		
 		return $res;
 	}
@@ -48,7 +71,12 @@ class VueParticipant{
 	}
 	
 	private function render_addList() {
-		$res=$this->objet->createList($_POST['des'],$_POST['exp'],$_POST['titre']);
+		if($this->objet!==null){
+			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."</p>";
+		}
+		else{
+			$res="<p>Cette liste n'existe pas.</p>";
+		}
 		
 		return $res;
 	}
@@ -71,7 +99,12 @@ class VueParticipant{
 	}
 	
 	private function render_addItem() {
-		$res=$this->objet->addItem($_POST['des'],$_POST['prix'],$_POST['nom']);
+		if($this->objet!==null){
+			$res="<p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."</p>";
+		}
+		else{
+			$res="<p>Impossible d'ajouter cet item.</p>";
+		}
 		
 		return $res;
 	}
@@ -94,7 +127,7 @@ class VueParticipant{
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"formulaire_suppression_item/".$this->objet->token."\" name=\"formitems\" id=\"formitems\"> 
+				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\"> 
 					<ol>Les items de la liste :";
 			}
 			foreach($liste_ob as $ob){
@@ -118,7 +151,12 @@ class VueParticipant{
 	}
 	
 	private function render_modifyList() {
-		$res=$this->objet->modifyList($_POST['des'],$_POST['exp'],$_POST['titre']);
+		if($this->objet!==null){
+			$res="<p>Liste modifiée en ".$this->objet->titre." .</p>";
+		}
+		else{
+			$res="<p>Pas de liste correspondante.</p>";
+		}
 		
 		return $res;
 	}
@@ -141,7 +179,12 @@ class VueParticipant{
 	}
 	
 	private function render_deleteList() {
-		$res=$this->objet->deleteList();
+		if($this->objet!==null){
+			$res="<p>Liste ".$this->objet->titre." supprimée.</p>";
+		}
+		else{
+			$res="<p>Pas de liste correspondante.</p>";
+		}
 		
 		return $res;
 	}
@@ -167,18 +210,28 @@ class VueParticipant{
 	}
 	
 	private function render_modifyItem() {
-		$res=$this->objet->modifyItem($_POST['des'],$_POST['tarif'],$_POST['nom']);
+		if($this->objet!==null){
+			$res="<p>Item ".$this->objet->nom." modifiée.</p>";
+		}
+		else{
+			$res="<p>Pas d'item correspondant.</p>";
+		}
 		
 		return $res;
 	}
 	
 	private function render_formDeleteItem() {
-		if($this->objet==null){
-			$res="Pas d'item correspondant";		
+		if(count($_GET)==0){
+			$res="Aucun item sélectionné.";		
 		}
 		else{
 			$res="<ul>Vous êtes sur le point de supprimer les items suivant(s) :";
-			foreach($this->ob as $ob){
+			$token=0;
+			foreach($_GET as $cle=>$val){
+				$ob=Item::where('id','=',$cle)->first();
+				if($token==0){
+					$token=$ob->getToken();
+				}
 				$res=$res."
 				<li>
 					<p> ".$ob->nom." de la liste ".$ob->liste_id."</p>
@@ -187,10 +240,10 @@ class VueParticipant{
 			$res=$res."</ul>";
 				
 			$res=$res."
-			<form action=\"supprimer_item\" method=\"POST\" name=\"supitem\" id=\"supitem\">
+			<form action=\"supprimer_item/".$token."\" method=\"POST\" name=\"supitem\" id=\"supitem\">
 				<input type=\"submit\" value=\"Confirmer la suppression\">
 			</form>
-			<form action=\"../".$this->objet[1]->getToken()."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"../".$token."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Annuler et revenir à la liste\">
 			</form>";
 		}
@@ -199,12 +252,28 @@ class VueParticipant{
 	}
 	
 	private function render_deleteItem() {
-		$res="";
-		foreach($this->ob as $ob){
-			$res=$ob->deleteItem();
-		}
-		
-		return $res;
+		return "<p>Les items ont été supprimés.</p>";
+	}
+	
+	private function render_displayAccueil() {
+		return 
+		"<h2>Que voulez-vous faire ?</h2>
+			<form action=\"liste\" method=\"GET\">
+				<input type=\"submit\" value=\"Consulter les listes\">
+			</form>
+			<form action=\"cadeaux\" method=\"GET\">
+				<input type=\"submit\" value=\"Consulter les items d'une liste\">
+			</form>
+		";
+	}
+	
+	private function render_displayCadeaux() {
+		return "
+			<form action=\"cadeaux/afficheCadeaux/\" method=\"GET\">
+				<p><label>Consulter les items d'une liste</label><input type=\"text\" name=\"id\" size=3 required=\"true\"></p>
+				<input type=\"submit\" value=\"Valider\">
+			</form>
+		";
 	}
 	
 	public function render($selecteur) {
@@ -269,20 +338,31 @@ class VueParticipant{
 				$content = $this->render_deleteItem();
 				break;
 			}
+			case 16 : {
+				$content = $this->render_displayAccueil();
+				break;
+			}
+			case 17 : {
+				$content = $this->render_displayCadeaux();
+				break;
+			}
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
 			}
 		}
+		
 		$html = "
 		<!DOCTYPE html>
 		<html>
 			<head>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"projet_php/wishlist/web/css/style.css\"/>
 				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
 				<title>sometext</title>
 				<meta charset=\"utf-8\"/>
 			</head>
 			<body>
+				<h1>Site de fou furieux</h1>
 				<div class=\"content\">
 					$content
 				</div>
