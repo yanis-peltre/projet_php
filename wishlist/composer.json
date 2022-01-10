@@ -1,13 +1,17 @@
 {
-	"require":{
-		"slim/slim": "3.*",
-		"illuminate/database": "^8.74.0",
-		"php": ">=8.0"
-	},
+  "require":{
+    "illuminate/database": "^8.73.0",
+    "slim/slim": "3.*",
+    "php": ">=8.0",
+    "ext-pdo": "*"
+  },
 
-	"autoload":{
-		"psr-4": {
-			"wishlist\\" : "./"
-		}
-	}
+  "autoload":{
+    "psr-4": {
+      "mywishlist\\" : "./",
+      "mywishlist\\vue\\" : "./src/vue",
+      "mywishlist\\models\\" : "./src/models",
+      "mywishlist\\controleurs\\" : "./src/controleurs"
+    }
+  }
 }
