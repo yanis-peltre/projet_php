@@ -2,12 +2,6 @@
 
 namespace mywishlist\models;
 
-//require_once __DIR__. "/../../vendor/autoload.php";
-/*require_once 'src/conf/Database.php';
-require_once 'src/models/Item.php';
-require_once 'src/models/Liste.php';*/
-require_once 'src/vue/VueParticipant.php';
-
 use mywishlist\models\Item;
 use mywishlist\models\Liste;
 use mywishlist\vue\VueParticipant;

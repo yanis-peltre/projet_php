@@ -2,7 +2,6 @@
 
 namespace mywishlist\models;
 
-use mywishlist\models\Liste;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model{
@@ -91,7 +90,7 @@ class Item extends Model{
 		$res=$res."<p>Item ".$this->id. " de la liste ".$this->liste_id." supprimé.</p>";
 		$this->delete();
 			
-		return res;
+		return $res;
 	}
 }
 

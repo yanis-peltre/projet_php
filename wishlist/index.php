@@ -1,26 +1,29 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-/*require_once __DIR__ . '/src/conf/Database.php';
-require_once __DIR__ . '/src/models/Item.php';
-require_once __DIR__ . '/src/models/Liste.php';*/
-require_once __DIR__ . '/src/models/ItemController.php';
+require_once __DIR__.'./vendor/autoload.php';
+$config = require_once __DIR__ . "/src/conf/settings.php";
 
-use mywishlist\models\Item;
-use mywishlist\models\Liste;
+
 use mywishlist\models\ItemController;
-use \Psr\Http\Message\src\ResponseInterface as Response;
-use \Psr\Http\Message\src\RequestInterface as Request;
+use mywishlist\models\UserController;
+use Illuminate\Database\Capsule\Manager as DB;
 
-$config = ['settings' => ['displayErrorDetails' => true]];
-$app=new \Slim\App($config);
+
+$container = new Slim\Container($config);
+$app =new \Slim\App($config);
+
+$db=new DB();
+$config=parse_ini_file('./src/conf/conf.ini');
+if($config) $db->addConnection($config);
+$db->setAsGlobal();
+$db->bootEloquent();
 
 
 /**
  * Page d'accueil
  */
 $app->get('/',
-    ItemController::class.":accueil")->setName("accueil")->setName("accueil");
+    ItemController::class.":accueil")->setName("accueil");
 
 /**
 * Liste des listes
@@ -122,6 +125,17 @@ $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
 $app->post('/formulaire_modif_liste/formulaire_suppression_item/supprimer_item/{token}[/]',
     ItemController::class.':deleteItem')->setName('supprimer_item');
 
+/**
+ * Liste tous les users A SUPPRIMER
+ */
+$app->get('/users[/]',
+    UserController::class.':listerUsers')->setName('listUsers');
+
+/**
+ * Liste tous les roles A SUPPRIMER
+ */
+$app->get('/roles[/]',
+    UserController::class.':listerRoles')->setName('listRole');
 
 $app->run();
 
