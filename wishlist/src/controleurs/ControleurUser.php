@@ -3,6 +3,7 @@
 namespace mywishlist\controleurs;
 
 
+use mywishlist\models\User;
 use Slim\Container;
 
 class ControleurUser
@@ -47,7 +48,8 @@ class ControleurUser
         $user = new User();
         $username = $rq->getParsedBody()['username'];
         $password = password_hash($rq->getParsedBody()['password'], PASSWORD_DEFAULT);
-        $user->inscription($username, $password);
+        $user->inscrireUser($username, $password);
+        $rs->write("Utilisateur ". $username." inscrit");
     }
 
 }

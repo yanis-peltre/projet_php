@@ -142,7 +142,7 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{
 */
 
 $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
-    ItemController::class.':formDeleteItem')->setName('formulaire_suppression_item');
+    ControleurItem::class.':formDeleteItem')->setName('formulaire_suppression_item');
 
 
 /**
@@ -153,30 +153,30 @@ $app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
 
 
 $app->post('/formulaire_modif_liste/commentaire/{token}[/]',
-    ItemController::class.':ajouterMessage')->setName('ajouter_message');
+    ControleurItem::class.':ajouterMessage')->setName('ajouter_message');
 
 /**
  * Liste tous les users A SUPPRIMER
  */
 $app->get('/users[/]',
-    UserController::class.':listerUsers')->setName('listUsers');
+    ControleurUser::class.':listerUsers')->setName('listUsers');
 
 /**
  * Liste tous les roles A SUPPRIMER
  */
 $app->get('/roles[/]',
-    UserController::class.':listerRoles')->setName('listRole');
+    ControleurUser::class.':listerRoles')->setName('listRole');
 
 /**
  * Formulaire inscription
  */
 $app->get('/formulaireInscription[/]',
-    UserController::class.':formulaireInscription')->setName('formInscription');
+    ControleurUser::class.':formulaireInscription')->setName('formInscription');
 
 /**
  * Inscription
  */
 $app->post('/inscription[/]',
-    UserController::class.':inscription')->setName('inscription');
+    ControleurUser::class.':inscription')->setName('inscription');
 
 $app->run();
