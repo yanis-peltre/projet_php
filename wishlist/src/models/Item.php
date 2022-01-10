@@ -66,6 +66,5 @@ class Item extends Model{
 	*/
 	public function deleteItem(){
 		$this->delete();
-
 	}
 }

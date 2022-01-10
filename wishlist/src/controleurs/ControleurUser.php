@@ -1,11 +1,11 @@
 <?php
 
-namespace mywishlist\models;
+namespace mywishlist\controleurs;
 
 
 use Slim\Container;
 
-class UserController
+class ControleurUser
 {
 
     private $container;
@@ -45,8 +45,9 @@ class UserController
 
     public function inscription($rq, $rs, $args ){
         $user = new User();
-        $user->inscription($rq->getParsedBody()['username'],$rq->getParsedBody()['password']);
-
+        $username = $rq->getParsedBody()['username'];
+        $password = password_hash($rq->getParsedBody()['password'], PASSWORD_DEFAULT);
+        $user->inscription($username, $password);
     }
 
 }

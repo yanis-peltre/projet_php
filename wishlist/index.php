@@ -4,8 +4,10 @@ require_once __DIR__.'./vendor/autoload.php';
 $config = require_once __DIR__ . "/src/conf/settings.php";
 
 
-use mywishlist\models\ItemController;
-use mywishlist\models\UserController;
+use mywishlist\controleurs\ControleurItem;
+use mywishlist\controleurs\ControleurUser;
+use mywishlist\controleurs\ControleurListe;
+use mywishlist\controleurs\ControleurAccueil;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
