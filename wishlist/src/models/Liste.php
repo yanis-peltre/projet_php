@@ -18,7 +18,14 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
-        return $this->hasMany('mywishlist\models\Item', 'liste_id')->get();
+		$res="";
+		
+        $ob=$this->hasMany('mywishlist\models\Item', 'liste_id')->get();
+		foreach($ob as $i){
+			$res=$res.$i->id . ' : '.$i->nom.'<br>';
+		}
+		
+		return $res;
     }
 	
 	/**
@@ -26,6 +33,19 @@ class Liste extends Model{
 	*/
 	public static function allListe(){
 		return Liste::OrderBy('no')->get();
+	}
+	
+	/**
+	* Retourne la liste en parametres sous forme html
+	*/
+	public static function listListe($liste){
+		$res="";
+		
+		foreach($liste as $li){
+			$res=$res.$li->no . ' : '.$li->titre.'<br>';
+		}
+		
+		return $res;
 	}
 	
 	/**
@@ -42,6 +62,11 @@ class Liste extends Model{
 			$this->token=random_int(1,10000);
 			
 			$this->save();
+			
+			return "Liste ".$this->no. " ajoutée. Votre token est ".$this->token.".<br>";
+		}
+		else{
+			return "Impossible d'ajouter la liste";
 		}
 	}
 	
@@ -54,13 +79,21 @@ class Liste extends Model{
 		$this->titre=filter_var(filter_var($titre,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
 			
 		$this->save();
+			
+		return "Liste ".$this->no. " modifiée.<br>
+			<p><label>Titre : ".$this->titre."</label></p>
+			<p><label>Description : ".$this->description."</label></p>
+			<p><label>Expiration : ".$this->expiration."</label></p>";
 	}
 	
 	/**
 	* Permet de supprimer une liste
 	*/
 	public function deleteList(){
+		$num=$this->no;
 		$this->delete();
+		
+		return "Liste ".$num." supprimée.<br>";
 	}
 }
 

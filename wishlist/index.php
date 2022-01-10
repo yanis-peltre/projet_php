@@ -147,6 +147,11 @@ $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
 $app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
     ControleurItem::class.':deleteItem')->setName('supprimer_item');
 
+
+$app->post('/formulaire_modif_liste/commentaire/{token}[/]',
+    ItemController::class.':ajouterMessage')->setName('ajouter_message');
+
+
 $app->run();
 
 
