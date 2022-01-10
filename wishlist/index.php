@@ -41,25 +41,25 @@ $app->get('/cadeaux/{id}[/]',
 * Un item en particulier
 */
 $app->get('/item/{id}[/]',
-    ItemController::class.':getItem');
+    ItemController::class.':getItem')->setName("item");
 
 /**
 * Formulaire d'ajout de liste
 */
 $app->get('/formulaire_liste[/]',
-    ItemController::class.':formAddList');
+    ItemController::class.':formAddList')->setName("formAjouterListe");
 
 /**
 * Ajout de liste
 */
 $app->post('/ajouter_liste[/]',
-    ItemController::class.':addList');
+    ItemController::class.':addList')->setName("ajoutListe");
 
 /**
 * Formulaire ajout d'un item a une liste
 */
 $app->get('/formulaire_item/{token}[/]',
-    ItemController::class.':formAddItem');
+    ItemController::class.':formAddItem')->setName("formAjouterItemAListe");
 
 
 
@@ -67,35 +67,35 @@ $app->get('/formulaire_item/{token}[/]',
 * Ajout d'item a une liste
 */
 $app->post('/formulaire_item/ajouter_item/{token}[/]',
-    ItemController::class.':addItem');
+    ItemController::class.':addItem')->setName("ajouterItemAListe");
 
 
 /**
 * Formulaire modification d'une liste
 */
 $app->get('/formulaire_modif_liste/{token}[/]',
-    ItemController::class.':formModifyList');
+    ItemController::class.':formModifyList')->setName("formModifListe");
 
 
 /**
 * Modification d'une liste
 */
 $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
-    ItemController::class.':modifyList');
+    ItemController::class.':modifyList')->setName("modifListe");
 
 
 /**
 * Formulaire suppression d'une liste
 */
 $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
-    ItemController::class.':formDeleteList');
+    ItemController::class.':formDeleteList')->setName("formDeleteListe");
 
 
 /**
 * Suppression d'une liste
 */
 $app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',
-    ItemController::class.':deleteList')->setName("supprimer_liste");
+    ItemController::class.':deleteList')->setName("deleteListe");
 
 
 /**
@@ -136,6 +136,18 @@ $app->get('/users[/]',
  */
 $app->get('/roles[/]',
     UserController::class.':listerRoles')->setName('listRole');
+
+/**
+ * Formulaire inscription
+ */
+$app->get('/formulaireInscription[/]',
+    UserController::class.':formulaireInscription')->setName('formInscription');
+
+/**
+ * Inscription
+ */
+$app->post('/inscription[/]',
+    UserController::class.':inscription')->setName('inscription');
 
 $app->run();
 

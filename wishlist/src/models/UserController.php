@@ -34,4 +34,19 @@ class UserController
         return $rs;
     }
 
+    public function formulaireInscription($rq, $rs, $args ){
+        $rs->write("<form action=\"inscription/"."\" method=\"POST\" name=\"formInscr\" id=\"formInscr\">
+				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
+				<p><label>Password : </label><input type=\"text\" name=\"password\" size=60 required=\"true\"></p>
+				<input type=\"submit\" value=\"S'inscrire\">
+			</form>");
+        return $rs;
+    }
+
+    public function inscription($rq, $rs, $args ){
+        $user = new User();
+        $user->inscription($rq->getParsedBody()['username'],$rq->getParsedBody()['password']);
+
+    }
+
 }

@@ -15,4 +15,11 @@ class User extends Model
         return $this->belongsTo(Role::class,'roleid');
     }
 
+    public function inscription($nom,$password)
+    {
+        $this->username = filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+        $this->password = filter_var(filter_var($password,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+        $this->roleid = 1;
+        $this->save();
+    }
 }
