@@ -1,8 +1,7 @@
 <?php
 
-require_once __DIR__.'./vendor/autoload.php';
-$config = require_once __DIR__ . "/src/conf/settings.php";
-
+require_once __DIR__ .'/vendor/autoload.php';
+//$config = require_once __DIR__ . "/src/conf/settings.php";
 
 use mywishlist\controleurs\ControleurItem;
 use mywishlist\controleurs\ControleurUser;
@@ -11,14 +10,15 @@ use mywishlist\controleurs\ControleurAccueil;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
-$container = new Slim\Container($config);
+//$container = new Slim\Container($config);
+$config = ['settings' => ['displayErrorDetails' => true]];
 $app =new \Slim\App($config);
 
-$db=new DB();
+/*$db=new DB();
 $config=parse_ini_file('./src/conf/conf.ini');
 if($config) $db->addConnection($config);
 $db->setAsGlobal();
-$db->bootEloquent();
+$db->bootEloquent();*/
 
 
 /**
