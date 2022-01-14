@@ -43,9 +43,9 @@ class Item extends Model{
 	*/
 	public function addItem($des,$tarif,$nom,$token){
 		$l=Liste::where('token','=',filter_var($token,FILTER_SANITIZE_NUMBER_INT))->first();
-		$this->descr=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
-		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->nom=filter_var($nom,FILTER_SANITIZE_STRING);
 		$this->liste_id=$l->no;
 			
 		$this->save();
@@ -55,9 +55,9 @@ class Item extends Model{
 	* Permet de modifier un item
 	*/
 	public function modifyItem($des,$tarif,$nom){
-		$this->descr=filter_var(filter_var($des,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
-		$this->nom=filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+		$this->nom=filter_var($nom,FILTER_SANITIZE_STRING);
 			
 		$this->save();
 	}
@@ -67,6 +67,16 @@ class Item extends Model{
 	*/
 	public function deleteItem(){
 		$this->delete();
+	}
+	
+	/**
+	* Ajout cagnotte
+	*/
+	public function addCagnotte(){
+		if($this->cagnotte!=null){
+			$this->cagnotte=0;
+			$this->save();
+		}
 	}
 }
 

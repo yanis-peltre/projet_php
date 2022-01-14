@@ -23,7 +23,7 @@ class ControleurItem extends Controller
 	* Permet de lister les items d'une liste
 	*/
 	public function listItem(Request $rq, Response $rs, array $args) {
-		$liste = Liste::where('no','=',$_GET['id'])->first() ;
+		$liste = Liste::where('no','=',$rq->getQueryParam('id'))->first() ;
 		$v = new VueParticipant($liste->items()) ;
 		$rs->getBody()->write($v->render(2)) ;
 
@@ -34,7 +34,7 @@ class ControleurItem extends Controller
 	* Permet d'afficher un item
 	*/
 	public function getItem(Request $rq, Response $rs, array $args) {
-		$item = Item::where('id','=',$args['id'])->first() ;
+		$item = Item::where('id','=',intval($args['id']))->first() ;
 		$v = new VueParticipant( $item->getItem('id')) ;
 		$rs->getBody()->write($v->render(3)) ;
 
@@ -45,7 +45,7 @@ class ControleurItem extends Controller
 	* Affiche un formulaire pour ajouter un item a une liste
 	*/
 	public function formAddItem(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste=Liste::where('token','=',intval($args['token']))->first();
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(6)) ;
 
@@ -70,7 +70,7 @@ class ControleurItem extends Controller
 	* Modification d'un item d'une liste
 	*/
 	public function formModifyItem(Request $rq, Response $rs, array $args){
-		$item=Item::where('id','=',$args['id'])->first();
+		$item=Item::where('id','=',intval($args['id']))->first();
 		$v = new VueParticipant($item) ;
 		$rs->getBody()->write($v->render(12)) ;
 
@@ -82,7 +82,7 @@ class ControleurItem extends Controller
 	*/
 	public function modifyItem(Request $rq, Response $rs, array $args){
 		$param=$rq->getParsedBody();
-		$item=Item::where('id','=',$args['id'])->first();
+		$item=Item::where('id','=',intval($args['id']))->first();
 		$item->modifyItem($param['des'],$param['tarif'],$param['nom']);
 		$v = new VueParticipant($item) ;
 		$rs->getBody()->write($v->render(13)) ;
@@ -123,5 +123,15 @@ class ControleurItem extends Controller
 		
 		return $rs ;
 	}
-
+	
+	/**
+	* Ajout d'une cagnotte
+	*/
+	public function addCagnotte(Request $rq, Response $rs, array $args):Response{
+		$item=Item::where('id','=',intval($args['id']))->first();
+		$item->addCagnotte();
+		$v=new VueParticipant($item);
+		$rs->getBody()->write($v->render(20));
+		return $rs;
+	}
 }

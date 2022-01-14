@@ -123,6 +123,9 @@ class VueParticipant{
 			</form>
 			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
+			</form>
+			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
@@ -203,6 +206,9 @@ class VueParticipant{
 			</form>
 			<form action=\"../".$this->objet->getToken()."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
+			</form>
+			<form action=\"ajout_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
+				<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
 			</form>";
 		}
 		
@@ -276,6 +282,28 @@ class VueParticipant{
 		";
 	}
 	
+	private function render_displayPartageUrl(){
+		
+		return "
+			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
+			L'url de partage est /voir_liste_partager/{token}</p>
+		";
+	}
+	
+	private function render_displayPartageListe(){
+		$res="<ul>Les items de la liste :";
+		foreach($this->objet as $i){
+				$res=$res."<li>".$i->id . ' : '.$i->nom.'</li>';
+			}
+		$res=$res."</ul>";
+		
+		return $res;
+	}
+	
+	public function render_displayAjoutCagnotte(){
+		return "<p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p>";
+	}
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -346,17 +374,31 @@ class VueParticipant{
 				$content = $this->render_displayCadeaux();
 				break;
 			}
+			case 18 : {
+				$content = $this->render_displayPartageUrl();
+				break;
+			}
+			case 19 : {
+				$content = $this->render_displayPartageListe();
+				break;
+			}
+			case 20 : {
+				$content = $this->render_displayAjoutCagnotte();
+				break;
+			}
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
 			}
 		}
-		
+		/*echo <<<END
+		code
+		END;*/
 		$html = "
 		<!DOCTYPE html>
 		<html>
 			<head>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"projet_php/wishlist/web/css/style.css\"/>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
 				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
 				<title>sometext</title>
 				<meta charset=\"utf-8\"/>

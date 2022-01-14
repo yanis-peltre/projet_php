@@ -146,6 +146,27 @@ $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
 */
 $app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
     ControleurItem::class.':deleteItem')->setName('supprimer_item');
+	
+/**
+* Partager une liste 7524
+*/
+
+$app->get('/formulaire_modif_liste/partager_liste/{token}[/]',
+    ControleurListe::class.':shareList');
+	
+/**
+* Voir une liste partagée
+*/
+
+$app->get('/voir_liste_partager/{token}[/]',
+    ControleurListe::class.':checkList');
+	
+/**
+* Ajouter une cagnotte
+*/
+
+$app->post('/formulaire_modif_liste/formulaire_modification_item/ajout_cagnotte/{id}[/]',
+	ControleurItem::class.':addCagnotte')->setName('cagnotte');
 
 $app->run();
 

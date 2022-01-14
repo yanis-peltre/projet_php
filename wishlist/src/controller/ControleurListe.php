@@ -56,7 +56,7 @@ class ControleurListe extends Controller
 	* Formulaire modification d'une liste
 	*/
 	public function formModifyList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste=Liste::where('token','=',intval($args['token']))->first();
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(8)) ;
 
@@ -68,7 +68,7 @@ class ControleurListe extends Controller
 	*/
 	public function modifyList(Request $rq, Response $rs, array $args){
 		$param=$rq->getParsedBody();
-		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste=Liste::where('token','=',intval($args['token']))->first();
 		$liste->modifyList($param['des'],$param['exp'],$param['titre']);
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(9)) ;
@@ -80,7 +80,7 @@ class ControleurListe extends Controller
 	* Formulaire suppression d'une liste
 	*/
 	public function formDeleteList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste=Liste::where('token','=',intval($args['token']))->first();
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(10)) ;
 
@@ -91,11 +91,46 @@ class ControleurListe extends Controller
 	* Formulaire suppression d'une liste
 	*/
 	public function deleteList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',$args['token'])->first();
+		$liste=Liste::where('token','=',intval($args['token']))->first();
 		$v = new VueParticipant($liste) ;
 		$liste->deleteList();
 		$rs->getBody()->write($v->render(11)) ;
 
 		return $rs ;
 	}
+	
+	/**
+	* Partage d'une liste
+	*/
+	public function shareList(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token','=',intval($args['token']))->first();
+		$liste->shareList();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(18)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Voir une liste
+	*/
+	public function checkList(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token_partage','=',intval($args['token']))->first();
+		$v = new VueParticipant($liste->items()) ;
+		$rs->getBody()->write($v->render(19)) ;
+
+		return $rs ;
+	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
