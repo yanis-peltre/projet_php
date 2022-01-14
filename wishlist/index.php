@@ -1,20 +1,24 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/controller/ControleurAccueil.php';
-require_once __DIR__ . '/src/controller/ControleurItem.php';
-require_once __DIR__ . '/src/controller/ControleurListe.php';
+require_once __DIR__.'./vendor/autoload.php';
+$config = require_once __DIR__ . "/src/conf/settings.php";
 
-use mywishlist\models\Item;
-use mywishlist\models\Liste;
-use mywishlist\controller\ControleurAccueil;
-use mywishlist\controller\ControleurItem;
-use mywishlist\controller\ControleurListe;
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Psr\Http\Message\ServerRequestInterface as Request;
 
-$config = ['settings' => ['displayErrorDetails' => true]];
-$app=new \Slim\App($config);
+use mywishlist\controleurs\ControleurItem;
+use mywishlist\controleurs\ControleurUser;
+use mywishlist\controleurs\ControleurListe;
+use mywishlist\controleurs\ControleurAccueil;
+use Illuminate\Database\Capsule\Manager as DB;
+
+
+$container = new Slim\Container($config);
+$app =new \Slim\App($config);
+
+$db=new DB();
+$config=parse_ini_file('./src/conf/conf.ini');
+if($config) $db->addConnection($config);
+$db->setAsGlobal();
+$db->bootEloquent();
 
 
 /**
@@ -50,7 +54,7 @@ $app->get('/cadeaux/afficheCadeaux[/]',
 */
 
 $app->get('/item/{id}[/]',
-    ControleurItem::class.':getItem');
+    ControleurItem::class.':getItem')->setName("item");
 
 
 /**
@@ -58,7 +62,7 @@ $app->get('/item/{id}[/]',
 */
 
 $app->get('/formulaire_liste[/]',
-    ControleurListe::class.':formAddList');
+    ControleurListe::class.':formAddList')->setName("formAjouterListe");
 
 
 /**
@@ -66,7 +70,7 @@ $app->get('/formulaire_liste[/]',
 */
 
 $app->post('/ajouter_liste[/]',
-    ControleurListe::class.':addList');
+    ControleurListe::class.':addList')->setName("ajoutListe");
 
 
 /**
@@ -74,7 +78,7 @@ $app->post('/ajouter_liste[/]',
 */
 
 $app->get('/formulaire_item/{token}[/]',
-    ControleurItem::class.':formAddItem');
+    ControleurItem::class.':formAddItem')->setName("formAjouterItemAListe");
 
 
 /**
@@ -82,7 +86,7 @@ $app->get('/formulaire_item/{token}[/]',
 */
 
 $app->post('/formulaire_item/ajouter_item/{token}[/]',
-    ControleurItem::class.':addItem');
+    ControleurItem::class.':addItem')->setName("ajouterItemAListe");
 
 
 /**
@@ -90,7 +94,7 @@ $app->post('/formulaire_item/ajouter_item/{token}[/]',
 */
 
 $app->get('/formulaire_modif_liste/{token}[/]',
-    ControleurListe::class.':formModifyList');
+    ControleurListe::class.':formModifyList')->setName("formModifListe");
 
 
 /**
@@ -98,7 +102,7 @@ $app->get('/formulaire_modif_liste/{token}[/]',
 */
 
 $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
-    ControleurListe::class.':modifyList');
+    ControleurListe::class.':modifyList')->setName("modifListe");
 
 
 /**
@@ -106,7 +110,7 @@ $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
 */
 
 $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
-    ControleurListe::class.':formDeleteList');
+    ControleurListe::class.':formDeleteList')->setName("formDeleteListe");
 
 
 /**
@@ -114,7 +118,7 @@ $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
 */
 
 $app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',
-    ControleurListe::class.':deleteList')->setName("supprimer_liste");
+    ControleurListe::class.':deleteList')->setName("supprimer_liste")->setName("deleteListe");
 
 
 /**
@@ -138,7 +142,7 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{
 */
 
 $app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
-    ItemController::class.':formDeleteItem')->setName('formulaire_suppression_item');
+    ControleurItem::class.':formDeleteItem')->setName('formulaire_suppression_item');
 
 
 /**
@@ -168,31 +172,32 @@ $app->get('/voir_liste_partager/{token}[/]',
 $app->post('/formulaire_modif_liste/formulaire_modification_item/ajout_cagnotte/{id}[/]',
 	ControleurItem::class.':addCagnotte')->setName('cagnotte');
 
+
+$app->post('/formulaire_modif_liste/commentaire/{token}[/]',
+    ControleurItem::class.':ajouterMessage')->setName('ajouter_message');
+
+/**
+ * Liste tous les users A SUPPRIMER
+ */
+$app->get('/users[/]',
+    ControleurUser::class.':listerUsers')->setName('listUsers');
+
+/**
+ * Liste tous les roles A SUPPRIMER
+ */
+$app->get('/roles[/]',
+    ControleurUser::class.':listerRoles')->setName('listRole');
+
+/**
+ * Formulaire inscription
+ */
+$app->get('/formulaireInscription[/]',
+    ControleurUser::class.':formulaireInscription')->setName('formInscription');
+
+/**
+ * Inscription
+ */
+$app->post('/inscription[/]',
+    ControleurUser::class.':inscription')->setName('inscription');
+
 $app->run();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,18 +1,18 @@
 <?php
 
-namespace mywishlist\controller;
+namespace mywishlist\controleurs;
 
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/Controleur.php';
 
 use mywishlist\models\Item;
 use mywishlist\vue\VueParticipant;
-use mywishlist\controller\Controller;
+use mywishlist\controleurs\Controleur;
 use mywishlist\models\Liste;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class ControleurItem extends Controller
+class ControleurItem extends Controleur
 {
 	public function __construct(Container $c)
     {

@@ -18,7 +18,9 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
+		
         return $this->hasMany('mywishlist\models\Item', 'liste_id')->get();
+
     }
 	
 	/**

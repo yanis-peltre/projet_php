@@ -52,6 +52,5 @@ local.properties
 
 .idea
 out
-
 /wishlist/vendor/
 /wishlist/composer.lock

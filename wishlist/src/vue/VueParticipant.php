@@ -54,7 +54,7 @@ class VueParticipant{
 		else{
 			$res="<p>Cet objet n'existe pas.</p>";
 		}
-		
+		//getparsedbody
 		return $res;
 	}
 	
@@ -121,6 +121,7 @@ class VueParticipant{
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
 			</form>
+			
 			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
@@ -148,6 +149,16 @@ class VueParticipant{
 					<input type=\"submit\" value=\"Supprimer les items sélectionnés\" id=\"envoi\">
 				</form>";
 			}
+
+			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"formmess\" id=\"formmlist\">
+            <p>
+                <label> Message </label>
+            </p>
+            <p>
+                <textarea maxlength='300' cols='50' rows='6' name='Message' form='messagesubmit'>tapez votre message ici</textarea>
+            </p>
+                <input type=\"submit\" value=\"Ajouter Message\">
+            </form>";
 		}
 		
 		return $res;
@@ -214,6 +225,12 @@ class VueParticipant{
 		
 		return $res;
 	}
+
+	private function render_ajouterMessage(){
+        $res=$this->objet->addItem($_POST['Message']);
+
+        return $res;
+    }
 	
 	private function render_modifyItem() {
 		if($this->objet!==null){
@@ -386,6 +403,10 @@ class VueParticipant{
 				$content = $this->render_displayAjoutCagnotte();
 				break;
 			}
+            case 21 : {
+                $content = $this->render_ajouterMessage();
+                break;
+            }
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
