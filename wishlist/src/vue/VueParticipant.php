@@ -48,13 +48,20 @@ class VueParticipant{
 	}
 	
 	private function render_getItem() {
-		if($this->objet!==null){
+		if($this->objet!=null){
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
+			if($this->objet->cagnotte!==null){
+				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
+					<p><label>Entrer un montant pour la cagnotte : </label>
+					<input type=\"text\" name=\"cag\" size=40 required=\"true\"></p>
+					<input type=\"submit\" value=\"Participer\">
+				</form>";
+			}
 		}
 		else{
 			$res="<p>Cet objet n'existe pas.</p>";
 		}
-		//getparsedbody
+
 		return $res;
 	}
 	
@@ -310,7 +317,7 @@ class VueParticipant{
 	private function render_displayPartageListe(){
 		$res="<ul>Les items de la liste :";
 		foreach($this->objet as $i){
-				$res=$res."<li>".$i->id . ' : '.$i->nom.'</li>';
+				$res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
 		$res=$res."</ul>";
 		
@@ -319,6 +326,11 @@ class VueParticipant{
 	
 	public function render_displayAjoutCagnotte(){
 		return "<p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p>";
+	}
+	
+	public function render_giveCagnotte(){
+		return "<p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
+		.$this->objet[0]->nom.". Merci !</p>";
 	}
 	
 	public function render($selecteur) {
@@ -405,6 +417,10 @@ class VueParticipant{
 			}
             case 21 : {
                 $content = $this->render_ajouterMessage();
+                break;
+            }
+			case 22 : {
+                $content = $this->render_giveCagnotte();
                 break;
             }
 			default : {

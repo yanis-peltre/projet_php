@@ -168,11 +168,18 @@ $app->get('/voir_liste_partager/{token}[/]',
 /**
 * Ajouter une cagnotte
 */
-
 $app->post('/formulaire_modif_liste/formulaire_modification_item/ajout_cagnotte/{id}[/]',
 	ControleurItem::class.':addCagnotte')->setName('cagnotte');
+	
+/**
+* Donner de l'argent pour une cagnotte
+*/
+$app->post('/item/participer_cagnotte/{id}[/]',
+	ControleurItem::class.':giveCagnotte')->setName('donner_cagnotte');
 
-
+/**
+* Ajouter un message à une liste
+*/
 $app->post('/formulaire_modif_liste/commentaire/{token}[/]',
     ControleurItem::class.':ajouterMessage')->setName('ajouter_message');
 

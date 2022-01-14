@@ -74,9 +74,28 @@ class Item extends Model{
 	* Ajout cagnotte
 	*/
 	public function addCagnotte(){
-		if($this->cagnotte!=null){
+		if($this->cagnotte==null){
 			$this->cagnotte=0;
 			$this->save();
 		}
 	}
+	
+	/**
+	* Donner de l'argent pour une cagnotte
+	*/
+	public function giveCagnotte(int $v){
+		$this->cagnotte+=$v;
+		$this->save();
+	}
 }
+
+
+
+
+
+
+
+
+
+
+

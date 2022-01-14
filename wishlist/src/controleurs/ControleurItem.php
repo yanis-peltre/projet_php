@@ -134,4 +134,19 @@ class ControleurItem extends Controleur
 		$rs->getBody()->write($v->render(20));
 		return $rs;
 	}
+	
+	/**
+	* Donner de l'argent pour une cagnotte
+	*/
+	public function giveCagnotte(Request $rq, Response $rs, array $args):Response{
+		$item=Item::where('id','=',intval($args['id']))->first();
+		$param=$rq->getParsedBody();
+		$item->giveCagnotte($param['cag']);
+		$obj=[];
+		$obj[]=$item;
+		$obj[]=$param['cag'];
+		$v=new VueParticipant($obj);
+		$rs->getBody()->write($v->render(22));
+		return $rs;
+	}
 }
