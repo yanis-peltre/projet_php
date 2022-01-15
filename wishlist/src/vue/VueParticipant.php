@@ -458,17 +458,18 @@ class VueParticipant{
 				break;
 			}
 		}
+		
 		/*echo <<<END
 		code
 		END;*/
-		$html = "
+		return <<<END
 		<!DOCTYPE html>
-		<html>
+		<html lang='fr'>
 			<head>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
+				<meta charset="utf-8"/>
+				<link rel="stylesheet" media="screen" type="text/css" href="./../../web/css/style.css"/>
+				<script type="text/javascript" src="./../../web/css/script.js"></script>
 				<title>sometext</title>
-				<meta charset=\"utf-8\"/>
 			</head>
 			<body>
 				<h1>Site de fou furieux</h1>
@@ -476,8 +477,8 @@ class VueParticipant{
 					$content
 				</div>
 			</body>
-		<html>";
+		<html>
 		
-		return $html;
+		END;
 	}
 }
