@@ -12,7 +12,7 @@ use mywishlist\models\Liste;
 
 class VueParticipant{
 	protected $objet;
-	
+
 	public function __construct($ob=null){
 		$this->objet=$ob;
 	}
@@ -30,10 +30,10 @@ class VueParticipant{
 		else{
 			$res="<p>Il n'y a actuellement aucune liste.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_listItem() {
 		if($this->objet!==null){
 			$res="<ul>Les item de la liste :";
@@ -45,10 +45,10 @@ class VueParticipant{
 		else{
 			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_getItem() {
 		if($this->objet!=null){
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
@@ -66,7 +66,7 @@ class VueParticipant{
 
 		return $res;
 	}
-	
+
 	private function render_formAddList() {
 		$res="
 		<form action=\"ajouter_liste\" method=\"POST\" name=\"formlist\" id=\"formlist\">
@@ -76,10 +76,10 @@ class VueParticipant{
 			<p><label>Créateur (à remplacer par une variable de session) : </label><input type=\"text\" name=\"creator\" size=30 required=\"true\"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
 		</form>";
-		
+
 		return $res;
 	}
-	
+
 	private function render_addList() {
 		if($this->objet!==null){
 			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."</p>";
@@ -87,13 +87,13 @@ class VueParticipant{
 		else{
 			$res="<p>Cette liste n'existe pas.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_formAddItem() {
 		if($this->objet==null){
-			$res="Pas de liste correspondante";		
+			$res="Pas de liste correspondante";
 		}
 		else{
 			$res="
@@ -104,10 +104,10 @@ class VueParticipant{
 				<input type=\"submit\" value=\"Ajouter l'item\">
 			</form>";/*3026*/
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_addItem() {
 		if($this->objet!==null){
 			$res="<p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."</p>";
@@ -115,13 +115,13 @@ class VueParticipant{
 		else{
 			$res="<p>Impossible d'ajouter cet item.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_formModifyList() {
 		if($this->objet==null){
-			$res="Pas de liste correspondante";		
+			$res="Pas de liste correspondante";
 		}
 		else{
 			$res="
@@ -131,7 +131,7 @@ class VueParticipant{
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
 			</form>
-			
+
 			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
@@ -150,18 +150,18 @@ class VueParticipant{
 					<input type=\"submit\" value=\"Rendre la liste privée\">
 				</form>";
 			}
-			
+
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\"> 
+				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
 			foreach($liste_ob as $ob){
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
-					<a href=\"formulaire_modification_item/".$ob->id."\"> 
+					<a href=\"formulaire_modification_item/".$ob->id."\">
 						<img src=\"./../../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
@@ -183,10 +183,10 @@ class VueParticipant{
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_modifyList() {
 		if($this->objet!==null){
 			$res="<p>Liste modifiée en ".$this->objet->titre." .</p>";
@@ -194,13 +194,13 @@ class VueParticipant{
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_formDeleteList() {
 		if($this->objet==null){
-			$res="Pas de liste correspondante";		
+			$res="Pas de liste correspondante";
 		}
 		else{
 			$res="
@@ -211,10 +211,10 @@ class VueParticipant{
 				<input type=\"submit\" value=\"Non\">
 			</form>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_deleteList() {
 		if($this->objet!==null){
 			$res="<p>Liste ".$this->objet->titre." supprimée.</p>";
@@ -222,13 +222,13 @@ class VueParticipant{
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_formModifyItem() {
 		if($this->objet==null){
-			$res="Pas d'item correspondant";		
+			$res="Pas d'item correspondant";
 		}
 		else{
 			$res="
@@ -245,7 +245,7 @@ class VueParticipant{
 				<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
 			</form>";
 		}
-		
+
 		return $res;
 	}
 
@@ -254,7 +254,7 @@ class VueParticipant{
 
         return $res;
     }
-	
+
 	private function render_modifyItem() {
 		if($this->objet!==null){
 			$res="<p>Item ".$this->objet->nom." modifiée.</p>";
@@ -262,13 +262,13 @@ class VueParticipant{
 		else{
 			$res="<p>Pas d'item correspondant.</p>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_formDeleteItem() {
 		if(count($_GET)==0){
-			$res="Aucun item sélectionné.";		
+			$res="Aucun item sélectionné.";
 		}
 		else{
 			$res="<ul>Vous êtes sur le point de supprimer les items suivant(s) :";
@@ -284,7 +284,7 @@ class VueParticipant{
 				</li>";
 			}
 			$res=$res."</ul>";
-				
+
 			$res=$res."
 			<form action=\"supprimer_item/".$token."\" method=\"POST\" name=\"supitem\" id=\"supitem\">
 				<input type=\"submit\" value=\"Confirmer la suppression\">
@@ -293,14 +293,14 @@ class VueParticipant{
 				<input type=\"submit\" value=\"Annuler et revenir à la liste\">
 			</form>";
 		}
-		
+
 		return $res;
 	}
-	
+
 	private function render_deleteItem() {
 		return "<p>Les items ont été supprimés.</p>";
 	}
-	
+
 	private function render_displayAccueil() {
 
 		$html = "<h2>Que voulez-vous faire ?</h2>
@@ -326,7 +326,7 @@ class VueParticipant{
         }
         return $html;
 	}
-	
+
 	private function render_displayCadeaux() {
 		return "
 			<form action=\"cadeaux/afficheCadeaux/\" method=\"GET\">
@@ -335,34 +335,34 @@ class VueParticipant{
 			</form>
 		";
 	}
-	
+
 	private function render_displayPartageUrl(){
-		
+
 		return "
 			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
 			L'url de partage est /voir_liste_partager/{token}</p>
 		";
 	}
-	
+
 	private function render_displayPartageListe(){
 		$res="<ul>Les items de la liste :";
 		foreach($this->objet as $i){
 				$res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
 		$res=$res."</ul>";
-		
+
 		return $res;
 	}
-	
+
 	public function render_displayAjoutCagnotte(){
 		return "<p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p>";
 	}
-	
+
 	public function render_giveCagnotte(){
 		return "<p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
 		.$this->objet[0]->nom.". Merci !</p>";
 	}
-	
+
 	public function render_putPublique(){
 		if($this->objet->publique=='x'){
 			$res="<p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.</p>";
@@ -372,7 +372,7 @@ class VueParticipant{
 		}
 		return $res;
 	}
-	
+
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -473,14 +473,17 @@ class VueParticipant{
 			}
 		}
 
-		$html = "
+		/*echo <<<END
+		code
+		END;*/
+
 		<!DOCTYPE html>
-		<html>
+		<html lang='fr'>
 			<head>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
+				<meta charset="utf-8"/>
+				<link rel="stylesheet" media="screen" type="text/css" href="./../../web/css/style.css"/>
+				<script type="text/javascript" src="./../../web/css/script.js"></script>
 				<title>sometext</title>
-				<meta charset=\"utf-8\"/>
 			</head>
 			<body>
 				<h1>Site de fou furieux</h1>
@@ -488,9 +491,8 @@ class VueParticipant{
 					$content
 				</div>
 			</body>
-		<html>";
+		<html>
 
-
-		return $html;
+		END;
 	}
 }
