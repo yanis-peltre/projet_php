@@ -1,6 +1,6 @@
 <?php
 
-namespace mywishlist\exception;
+namespace mywishlist\exceptions;
 
 
 use Exception;
