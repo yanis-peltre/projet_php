@@ -476,13 +476,13 @@ class VueParticipant{
 		/*echo <<<END
 		code
 		END;*/
-		return <<<END
-		<!DOCTYPE html>
+		return 
+		"<!DOCTYPE html>
 		<html lang='fr'>
 			<head>
-				<meta charset="utf-8"/>
-				<link rel="stylesheet" media="screen" type="text/css" href="./../../web/css/style.css"/>
-				<script type="text/javascript" src="./../../web/css/script.js"></script>
+				<meta charset=\"utf-8\"/>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
+				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
 				<title>sometext</title>
 			</head>
 			<body>
@@ -491,8 +491,6 @@ class VueParticipant{
 					$content
 				</div>
 			</body>
-		<html>
-		
-		END;
+		<html>";
 	}
 }
