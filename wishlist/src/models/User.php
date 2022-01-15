@@ -3,6 +3,8 @@
 namespace mywishlist\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
+use mywishlist\exception\InscriptionException;
 
 class User extends Model
 {
@@ -15,11 +17,21 @@ class User extends Model
         return $this->belongsTo(Role::class,'roleid');
     }
 
-    public function inscrireUser($nom, $password)
+    /**
+     * @throws InscriptionException
+     */
+    public function inscrireUser($nom, $password, $rights)
     {
         $this->username = filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
-        $this->password = filter_var(filter_var($password,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
-        $this->roleid = 1;
-        $this->save();
+        $password = filter_var(filter_var($password,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->roleid = Role::firstWhere('auth_level',$rights)->roleid;
+        try{
+            $this->save();
+        }
+        catch (QueryException $e){
+            throw new InscriptionException("Username déjà utilisé");
+        }
+
     }
 }

@@ -9,6 +9,9 @@ use mywishlist\controleurs\ControleurListe;
 use mywishlist\controleurs\ControleurAccueil;
 use Illuminate\Database\Capsule\Manager as DB;
 
+session_start();
+
+
 
 $container = new Slim\Container($config);
 //$config = ['settings' => ['displayErrorDetails' => true]];
@@ -212,5 +215,20 @@ $app->post('/inscription[/]',
  */
 $app->post('/formulaire_modif_liste/publique/{token}[/]',
     ControleurListe::class.':putPublic')->setName('publique');
+
+/**
+ * Formulaire connexion
+ */
+$app->get('/formulaireConnexion[/]',
+    ControleurUser::class.':formulaireConnexion')->setName('formConnexion');
+
+/**
+ * Connexion
+ */
+$app->post('/connexion[/]',
+    ControleurUser::class.':connexion')->setName('connexion');
+
+$app->get('/deconnexion[/]',
+    ControleurUser::class.':deconnexion')->setName('deconnexion');
 
 $app->run();
