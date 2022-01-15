@@ -22,7 +22,7 @@ class VueParticipant{
 			$res="<ul>Toutes les listes :";
 			foreach($this->objet as $l){
 				if($l->publique=='x'){
-					$res=$res."<li>".$l->no . ' : '.$l->titre.'</li>';
+					$res=$res."<li><a href=\"cadeaux/afficheCadeaux/?id=".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
 				}
 			}
 			$res=$res."</ul>";

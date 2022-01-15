@@ -27,7 +27,7 @@ class Liste extends Model{
 	* Retourne toutes les listes
 	*/
 	public static function allListe(){
-		return Liste::OrderBy('no')->get();
+		return Liste::OrderBy('expiration')->get();
 	}
 	
 	/**
