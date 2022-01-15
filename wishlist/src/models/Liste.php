@@ -2,7 +2,6 @@
 
 namespace mywishlist\models;
 
-use mywishlist\models\Item;
 use Illuminate\Database\Eloquent\Model;
 
 class Liste extends Model{
@@ -19,7 +18,7 @@ class Liste extends Model{
 	*/
     public function items() {
 		
-        return $this->hasMany('mywishlist\models\Item', 'liste_id')->get();
+        return $this->hasMany(Item::class, 'liste_id')->get();
 
     }
 	

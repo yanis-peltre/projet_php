@@ -54,3 +54,4 @@ local.properties
 out
 /wishlist/vendor/
 /wishlist/composer.lock
+/wishlist/src/conf/conf.ini

@@ -11,7 +11,8 @@
       "mywishlist\\" : "./",
       "mywishlist\\vue\\" : "./src/vue",
       "mywishlist\\models\\" : "./src/models",
-      "mywishlist\\controleurs\\" : "./src/controleurs"
+      "mywishlist\\controleurs\\" : "./src/controleurs",
+      "mywishlist\\exceptions\\" : "./src/exceptions"
     }
   }
 }

@@ -302,15 +302,29 @@ class VueParticipant{
 	}
 	
 	private function render_displayAccueil() {
-		return 
-		"<h2>Que voulez-vous faire ?</h2>
+
+		$html = "<h2>Que voulez-vous faire ?</h2>
 			<form action=\"liste\" method=\"GET\">
 				<input type=\"submit\" value=\"Consulter les listes\">
 			</form>
 			<form action=\"cadeaux\" method=\"GET\">
 				<input type=\"submit\" value=\"Consulter les items d'une liste\">
-			</form>
+			</form>";
+        if(!isset($_SESSION['profile'])) {
+            $html .= "<form action = \"formulaireInscription\" method='GET'>
+			    <input type='submit' value=\"S'inscrire\">
+            </form>
+            <form action=\"formulaireConnexion\" method='GET'>
+			    <input type='submit' value=\"Se connecter\">
+            </form>
 		";
+        }
+        else{
+            $html .= "<form action = \"deconnexion\" method='GET'>
+			    <input type='submit' value=\"Se déconnecter\">
+            </form>";
+        }
+        return $html;
 	}
 	
 	private function render_displayCadeaux() {
@@ -473,7 +487,7 @@ class VueParticipant{
 			</head>
 			<body>
 				<h1>Site de fou furieux</h1>
-				<div class=\"content\">
+                <div class=\"content\">
 					$content
 				</div>
 			</body>
