@@ -2,8 +2,8 @@
 
 namespace mywishlist\controleurs;
 
-use mywishlist\exception\AuthException;
-use mywishlist\exception\InscriptionException;
+use mywishlist\exceptions\AuthException;
+use mywishlist\exceptions\InscriptionException;
 use mywishlist\models\User;
 
 class Authentification

@@ -3,10 +3,11 @@
 namespace mywishlist\controleurs;
 
 
-use mywishlist\exception\AuthException;
-use mywishlist\exception\InscriptionException;
+use mywishlist\exceptions\AuthException;
+use mywishlist\exceptions\InscriptionException;
 use mywishlist\models\Role;
 use mywishlist\models\User;
+use mywishlist\vue\VueAccount;
 use Slim\Container;
 
 class ControleurUser
@@ -39,11 +40,8 @@ class ControleurUser
     }
 
     public function formulaireInscription($rq, $rs, $args ){
-        $rs->write("<form action=\"inscription/"."\" method=\"POST\" name=\"formInscr\" id=\"formInscr\">
-				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
-				<p><label>Password : </label><input type=\"text\" name=\"password\" size=60 required=\"true\"></p>
-				<input type=\"submit\" value=\"S'inscrire\">
-			</form>");
+        $vue = new VueAccount();
+        $rs->write($vue->render(1));
         return $rs;
     }
 
@@ -62,23 +60,20 @@ class ControleurUser
     }
 
     public function formulaireConnexion($rq, $rs, $args ){
-        $rs->write("<form action=\"connexion/"."\" method=\"POST\" name=\"formConnex\" id=\"formConnex\">
-				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
-				<p><label>Password : </label><input type=\"text\" name=\"password\" size=60 required=\"true\"></p>
-				<input type=\"submit\" value=\"Connexion\">
-			</form>");
+        $vue = new VueAccount();
+        $rs->write($vue->render(2));
         return $rs;
     }
 
 
     public function connexion($rq, $rs, $args){
+        $vue = new VueAccount();
         $data = $rq->getParsedBody();
         $username = $data['username'];
         $password = $data['password'];
         try{
             Authentification::authenticate($username,$password);
-            $rs->write("<script>alert(\"Utilisateur $username connecté\")</script>");
-            $rs->write("<a href=\"..\">Accueil</a>");
+            $rs->write($vue->render(3));
         }
         catch(AuthException $e1){
             $rs->write($e1->getMessage());

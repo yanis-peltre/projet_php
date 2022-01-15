@@ -472,9 +472,7 @@ class VueParticipant{
 				break;
 			}
 		}
-		/*echo <<<END
-		code
-		END;*/
+
 		$html = "
 		<!DOCTYPE html>
 		<html>
