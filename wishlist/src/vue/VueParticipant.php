@@ -21,7 +21,9 @@ class VueParticipant{
 		if($this->objet!==null){
 			$res="<ul>Toutes les listes :";
 			foreach($this->objet as $l){
-				$res=$res."<li>".$l->no . ' : '.$l->titre.'</li>';
+				if($l->publique=='x'){
+					$res=$res."<li>".$l->no . ' : '.$l->titre.'</li>';
+				}
 			}
 			$res=$res."</ul>";
 		}
@@ -71,6 +73,7 @@ class VueParticipant{
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 			<p><label>Date d'expiration : </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
+			<p><label>Créateur (à remplacer par une variable de session) : </label><input type=\"text\" name=\"creator\" size=30 required=\"true\"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
 		</form>";
 		
@@ -135,6 +138,19 @@ class VueParticipant{
 			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
 				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
+			if($this->objet->publique==null){
+				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+					<p><label>La liste n'est pas publique </label></p>
+					<input type=\"submit\" value=\"Rendre la liste publique\">
+				</form>";
+			}
+			else{
+				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+					<p><label>La liste est publique </label></p>
+					<input type=\"submit\" value=\"Rendre la liste privée\">
+				</form>";
+			}
+			
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
@@ -333,6 +349,16 @@ class VueParticipant{
 		.$this->objet[0]->nom.". Merci !</p>";
 	}
 	
+	public function render_putPublique(){
+		if($this->objet->publique=='x'){
+			$res="<p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.</p>";
+		}
+		else{
+			$res="<p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.</p>";
+		}
+		return $res;
+	}
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -421,6 +447,10 @@ class VueParticipant{
             }
 			case 22 : {
                 $content = $this->render_giveCagnotte();
+                break;
+            }
+			case 23 : {
+                $content = $this->render_putPublique();
                 break;
             }
 			default : {

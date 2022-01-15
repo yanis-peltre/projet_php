@@ -45,7 +45,7 @@ class ControleurListe extends Controleur
 	public function addList(Request $rq, Response $rs, array $args){
 		$liste=new Liste();
 		$param=$rq->getParsedBody();
-		$liste->createList($param['des'],$param['exp'],$param['titre']);
+		$liste->createList($param['des'],$param['exp'],$param['titre'],$param['creator']);
 		$v = new VueParticipant($liste);
 		$rs->getBody()->write($v->render(5)) ;
 
@@ -122,7 +122,17 @@ class ControleurListe extends Controleur
 		return $rs ;
 	}
 	
-	
+	/**
+	* Rendre une liste publique
+	*/
+	public function putPublic(Request $rq, Response $rs, array $args){
+		$liste=Liste::where('token','=',intval($args['token']))->first();
+		$liste->putPublic();
+		$v = new VueParticipant($liste) ;
+		$rs->getBody()->write($v->render(23)) ;
+
+		return $rs ;
+	}
 }
 
 

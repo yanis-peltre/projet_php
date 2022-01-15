@@ -33,7 +33,7 @@ class Liste extends Model{
 	/**
 	* Permet de creer une liste et l'ajoute a la base
 	*/
-	public function createList($des,$exp,$titre){
+	public function createList($des,$exp,$titre,$creator){
 		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
 		$test=Liste::where('titre','=',$title)->first();
 		
@@ -42,6 +42,7 @@ class Liste extends Model{
 			$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
 			$this->titre=$title;
 			$this->token=random_int(1,10000);
+			$this->creator=$creator;
 			
 			$this->save();
 		}
@@ -70,6 +71,20 @@ class Liste extends Model{
 	*/
 	public function shareList(){
 		$this->token_partage=random_int(1,10000);
+		
+		$this->save();
+	}
+	
+	/**
+	* Rendre une liste publique
+	*/
+	public function putPublic(){
+		if($this->publique==null){
+			$this->publique='x';
+		}
+		else{
+			$this->publique=null;
+		}
 		
 		$this->save();
 	}
