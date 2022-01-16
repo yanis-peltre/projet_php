@@ -4,7 +4,9 @@ namespace mywishlist\controleurs;
 
 require_once __DIR__ . '/Controleur.php';
 
+use mywishlist\exceptions\AuthException;
 use mywishlist\models\Item;
+use mywishlist\vue\VueAccount;
 use mywishlist\vue\VueParticipant;
 use mywishlist\controleurs\Controleur;
 use mywishlist\models\Liste;
@@ -45,9 +47,19 @@ class ControleurItem extends Controleur
 	* Affiche un formulaire pour ajouter un item a une liste
 	*/
 	public function formAddItem(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$v = new VueParticipant($liste) ;
-		$rs->getBody()->write($v->render(6)) ;
+        $no = $args['no'];
+		$liste=Liste::where('no',$no)->first();
+        $creator = $liste->user;
+        try {
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $v = new VueParticipant($liste) ;
+            $rs->getBody()->write($v->render(6)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
+
 
 		return $rs ;
 	}
@@ -57,12 +69,21 @@ class ControleurItem extends Controleur
 	*/
 	public function addItem(Request $rq, Response $rs, array $args){
 		$item=new Item();
-		$param=$rq->getParsedBody();
-		$item->addItem($param['des'],$param['prix'],$param['nom'],$args['token'],$args['img']);
+        $param=$rq->getParsedBody();
+        $liste = Liste::firstWhere('no',$args['no']);
+        $creator = $liste->user;
+        try{
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
 
-		$v = new VueParticipant($item) ;
-		$rs->getBody()->write($v->render(7)) ;
-
+            if(!isset($args['img'])) $args['img'] = '';
+            $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$args['img']);
+            $v = new VueParticipant($item) ;
+            $rs->write($v->render(7)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 

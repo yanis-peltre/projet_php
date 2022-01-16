@@ -14,7 +14,7 @@ class Item extends Model{
 	}
 
     public function liste() {
-		$ob=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();
+		return $this->belongsTo('mywishlist\models\Liste', 'liste_id');
     }
 
 	public function getItem(){
@@ -43,8 +43,8 @@ class Item extends Model{
 	/**
 	* Permet d'ajouter un item dans une liste
 	*/
-	public function addItem($des,$tarif,$nom,$token,$img=''){
-		$l=Liste::where('token','=',filter_var($token,FILTER_SANITIZE_NUMBER_INT))->first();
+	public function addItem($des,$tarif,$nom,$no,$img){
+		$l=Liste::where('no',filter_var($no,FILTER_SANITIZE_NUMBER_INT))->first();
 
 		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 

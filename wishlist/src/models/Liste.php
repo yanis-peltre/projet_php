@@ -17,7 +17,7 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
-        return $this->hasMany(Item::class, 'liste_id')->get();
+        return $this->hasMany(Item::class, 'liste_id');
     }
 
     /**

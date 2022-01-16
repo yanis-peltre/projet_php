@@ -22,7 +22,7 @@ class VueParticipant{
 			$res="<ul>Toutes les listes :";
 			foreach($this->objet as $l){
 				if($l->publique=='x'){
-					$res=$res."<li><a href=\"cadeaux/afficheCadeaux/?id=".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
+					$res=$res."<li><a href=\"liste/".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
 				}
 			}
 			$res=$res."</ul>";
@@ -35,12 +35,13 @@ class VueParticipant{
 	}
 
 	private function render_listItem() {
-		if($this->objet!==null){
-			$res="<ul>Les item de la liste :";
-			foreach($this->objet as $i){
-				$res=$res."<li>".$i->id . ' : '.$i->nom.'</li>';
-			}
-			$res=$res."</ul>";
+        $res="<ul>Les items de la liste :";
+        $items = $this->objet->items;
+		if(count($items) != 0){
+            foreach($items as $i){
+                $res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
+            }
+            $res=$res."</ul>";
 		}
 		else{
 			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
@@ -97,7 +98,7 @@ class VueParticipant{
 		}
 		else{
 			$res="
-			<form action=\"ajouter_item/".$this->objet->token."\" method=\"POST\" name=\"formitem\" id=\"formitem\">
+			<form action=\"ajouter_item/\" method=\"POST\" name=\"formitem\" id=\"formitem\">
 				<p><label>Nom : </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
@@ -319,11 +320,8 @@ class VueParticipant{
 	private function render_displayAccueil() {
 
 		$html = "<h2>Que voulez-vous faire ?</h2>
-			<form action=\"liste\" method=\"GET\">
+			<form action=\"listePubliques\" method=\"GET\">
 				<input type=\"submit\" value=\"Consulter les listes publiques\">
-			</form>
-			<form action=\"cadeaux\" method=\"GET\">
-				<input type=\"submit\" value=\"Consulter les items d'une liste\">
 			</form>";
         // Si l'utilisateur n'est pas connecté :
         if(!isset($_SESSION['profile'])) {
@@ -367,9 +365,20 @@ END;
 		";
 	}
 
-	private function render_displayPartageListe(){
-		$res="<ul>Les items de la liste :";
-		foreach($this->objet as $i){
+	private function render_displayListePerso(){
+        $res ="
+        <form action=\"formulaire_modif_liste/";
+        $res.= $this->objet->no;
+        $res .= "\" method=\"GET\">
+           <input type=\"submit\" name=\"modifListe\" value='Modifier la liste'></p>
+        </form> 
+        <form action='".$this->objet->no."/formulaireAjoutItem'>
+            <input type='submit' name='ajouterItem' value='Ajouter un item'>
+        </form>";
+
+		$res.="<ul>Les items de la liste :";
+        $items = $this->objet->items;
+		foreach($items as $i){
 				$res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
 		$res=$res."</ul>";
@@ -403,7 +412,7 @@ END;
         $res.="<ul>Mes listes :";
         if($this->objet!==null){
             foreach($this->objet as $l){
-                $res.="<li><a href=\"cadeaux/afficheCadeaux/?id=".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
+                $res.="<li><a href=\"liste/".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
             }
             $res.="</ul>";
         }
@@ -412,6 +421,7 @@ END;
         }
         return $res;
     }
+
 
 	public function render($selecteur) {
 		switch ($selecteur) {
@@ -488,7 +498,7 @@ END;
 				break;
 			}
 			case 19 : {
-				$content = $this->render_displayPartageListe();
+				$content = $this->render_displayListePerso();
 				break;
 			}
 			case 20 : {
@@ -532,7 +542,7 @@ END;
 				<title>sometext</title>
 			</head>
 			<body>
-				<h1>Site de fou furieux</h1>
+				<h1>Site de fou furieux</></h1>
                 <div class=\"content\">
 					$content
 				</div>

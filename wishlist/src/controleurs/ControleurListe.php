@@ -24,21 +24,48 @@ class ControleurListe extends Controleur
     }
 	
 	/**
-	* Permet de lister les listes
+	* Permet de lister les listes publiques
 	*/
-	public function listListe(Request $rq, Response $rs, array $args) {
+	public function publicLists(Request $rq, Response $rs, array $args) {
 		$container = $this->container ;
-		$base = $rq->getUri()->getBasePath() ;
+		/**$base = $rq->getUri()->getBasePath() ;
 		$route_uri = $container->router->pathFor('liste') ;
-		$url = $base . $route_uri ;
+		$url = $base . $route_uri ;*/
 		
 		$v = new VueParticipant(Liste::allListe());
 		$rs->getBody()->write($v->render(1)) ;
 		
 		return $rs ;
 	}
-	
-	/**
+
+    /**
+     * Voir une liste
+     */
+    public function afficheListe(Request $rq, Response $rs, array $args){
+        try{
+            $no = $args['no'];
+            $liste=Liste::firstWhere('no',$no);
+            $creator = $liste->user;
+            if($liste->publique != 'x') Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $v = new VueParticipant($liste) ;
+            // Si createur
+            if($creator->userid == $_SESSION['profile']['userid']){
+                $rs->write($v->render(19)) ;
+            }
+            // Si visiteur
+            else{
+                $rs->write($v->render(2));
+            }
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
+        return $rs ;
+    }
+
+
+    /**
 	* Affiche un formulaire pour ajouter une liste
 	*/
 	public function formAddList(Request $rq, Response $rs, array $args){
@@ -85,8 +112,8 @@ class ControleurListe extends Controleur
 	* Formulaire modification d'une liste
 	*/
 	public function formModifyList(Request $rq, Response $rs, array $args){
-        $token = intval($args['token']);
-        $liste=Liste::where('token','=',$token)->first();
+        $no = intval($args['no']);
+        $liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
         try{
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
@@ -188,15 +215,15 @@ class ControleurListe extends Controleur
 
 		return $rs ;
 	}
-	
-	/**
-	* Voir une liste
-	*/
-	public function checkList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token_partage','=',intval($rq->getQueryParam('tok')))->first();
-		$v = new VueParticipant($liste->items()) ;
-		$rs->getBody()->write($v->render(19)) ;
 
+	/**
+	* Voir une liste partagée
+	*/
+	public function afficheListePartagee(Request $rq, Response $rs, array $args){
+        $tokenPartage = intval($rq->getQueryParam('sharedtoken'));
+        $liste=Liste::where('token_partage',$tokenPartage)->first();
+        $v = new VueParticipant($liste->items()) ;
+        $rs->getBody()->write($v->render(19)) ;
 		return $rs ;
 	}
 	
@@ -226,11 +253,6 @@ class ControleurListe extends Controleur
             $v = new VueAccount();
             $rs->write($v->render(5));
         }
-
-
-
-
-
 		return $rs ;
 	}
 }
