@@ -27,12 +27,15 @@ class Item extends Model{
 		return $liste->token;
 	}
 
-	public static function createItem($nom,$id_liste,$prix){
+	public static function createItem($nom,$id_liste,$prix,$img=''){
 		$item=new Item();
 
 		$item->nom=$nom;
 		$item->liste_id=$id_liste;
 		$item->tarif=$prix;
+
+		//rajout partie image
+		$item->img=$img;
 
 		$item->save();
 	}
