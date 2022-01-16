@@ -23,6 +23,11 @@ class ControleurListe extends Controleur
 	* Permet de lister les listes
 	*/
 	public function listListe(Request $rq, Response $rs, array $args) {
+		$container = $this->container ;
+		$base = $rq->getUri()->getBasePath() ;
+		$route_uri = $container->router->pathFor('liste') ;
+		$url = $base . $route_uri ;
+		
 		$v = new VueParticipant(Liste::allListe());
 		$rs->getBody()->write($v->render(1)) ;
 		
@@ -45,7 +50,7 @@ class ControleurListe extends Controleur
 	public function addList(Request $rq, Response $rs, array $args){
 		$liste=new Liste();
 		$param=$rq->getParsedBody();
-		$liste->createList($param['des'],$param['exp'],$param['titre'],$param['creator']);
+		$liste->createList($param['des'],$param['exp'],$param['titre']);
 		$v = new VueParticipant($liste);
 		$rs->getBody()->write($v->render(5)) ;
 
@@ -112,10 +117,20 @@ class ControleurListe extends Controleur
 	}
 	
 	/**
+	* Formulaire accès liste
+	*/
+	public function formCheckList(Request $rq, Response $rs, array $args){
+		$v = new VueParticipant() ;
+		$rs->getBody()->write($v->render(17)) ;
+
+		return $rs ;
+	}
+	
+	/**
 	* Voir une liste
 	*/
 	public function checkList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token_partage','=',intval($args['token']))->first();
+		$liste=Liste::where('token_partage','=',intval($rq->getQueryParam('tok')))->first();
 		$v = new VueParticipant($liste->items()) ;
 		$rs->getBody()->write($v->render(19)) ;
 
@@ -130,6 +145,16 @@ class ControleurListe extends Controleur
 		$liste->putPublic();
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(23)) ;
+
+		return $rs ;
+	}
+	
+	/**
+	* Listes persos
+	*/
+	public function myList(Request $rq, Response $rs, array $args){
+		$v = new VueParticipant(Liste::where('creator','=',$_SESSION['profile']['username'])->get()) ;
+		$rs->getBody()->write($v->render(24)) ;
 
 		return $rs ;
 	}

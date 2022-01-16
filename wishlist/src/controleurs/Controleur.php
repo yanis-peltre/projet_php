@@ -7,7 +7,7 @@ use Slim\Container;
 
 abstract class Controleur{
 	
-	private $container;
+	protected $container;
 
     public function __construct(Container $c)
     {

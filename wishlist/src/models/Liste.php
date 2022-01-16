@@ -32,7 +32,7 @@ class Liste extends Model{
 	/**
 	* Permet de creer une liste et l'ajoute a la base
 	*/
-	public function createList($des,$exp,$titre,$creator){
+	public function createList($des,$exp,$titre){
 		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
 		$test=Liste::where('titre','=',$title)->first();
 		
@@ -41,7 +41,9 @@ class Liste extends Model{
 			$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
 			$this->titre=$title;
 			$this->token=random_int(1,10000);
-			$this->creator=$creator;
+			if(isset($_SESSION['profile'])){
+				$this->creator=$_SESSION['profile']['username'];
+			}
 			
 			$this->save();
 		}

@@ -80,7 +80,7 @@ $app->post('/ajouter_liste[/]',
 * Formulaire ajout d'un item a une liste
 */
 
-$app->get('/formulaire_item/{token}[/]',
+$app->get('formulaire_modif_liste/formulaire_item/{token}[/]',
     ControleurItem::class.':formAddItem')->setName("formAjouterItemAListe");
 
 
@@ -162,11 +162,25 @@ $app->get('/formulaire_modif_liste/partager_liste/{token}[/]',
     ControleurListe::class.':shareList');
 	
 /**
+* Formulaire accès liste partagée
+*/
+
+$app->get('/acces_partage[/]',
+    ControleurListe::class.':formCheckList');
+	
+/**
 * Voir une liste partagée
 */
 
-$app->get('/voir_liste_partager/{token}[/]',
+$app->get('/acces_partagee/voir_liste_partagee[/]',
     ControleurListe::class.':checkList');
+	
+/**
+* Voir les listes personnelles créées
+*/
+
+$app->get('/listes_persos[/]',
+    ControleurListe::class.':myList');
 	
 /**
 * Ajouter une cagnotte
