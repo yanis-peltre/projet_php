@@ -157,6 +157,8 @@ class VueParticipant{
 				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
+
+
 			foreach($liste_ob as $ob){
 				$res=$res."
 				<li>
@@ -166,6 +168,7 @@ class VueParticipant{
 
 				$nomImg = $ob->img;
 
+				//si l'image commence 'http' on la lit direct sinon on prend le chemin relatif du dossier img
 				if(substr($nomImg,0,4)=='http') {
 					$res = $res . $ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
@@ -177,6 +180,7 @@ class VueParticipant{
 
 				}
 			}
+
 			if($liste_ob!=null){
 				$res=$res.
 				"	</ol>
