@@ -176,8 +176,11 @@ class VueParticipant{
 						$res=$res."</a></p></li>";
 					}
 
-					$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
-						<img src=\"";
+				
+				//ici on affiche une image soit qui est dans le dossier img soit une image en ligne quand cette dernière commence par 'http'
+				
+				$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
+					<img src=\"";
 
 				$nomImg = substr($ob->img,0,4);
 
