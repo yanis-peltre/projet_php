@@ -173,10 +173,13 @@ class VueParticipant{
 				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
+			
 			foreach($liste_ob as $ob){
+
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
+
 					<p><a href=\"formulaire_modification_item/".$ob->id."\">
 						<img src=\"./../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">";
 					if($ob->reserve!==null){
@@ -185,6 +188,23 @@ class VueParticipant{
 					else{
 						$res=$res."</a></p></li>";
 					}
+
+					$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
+						<img src=\"";
+
+				$nomImg = substr($ob->img,0,4);
+
+				if($nomImg == "http") {
+					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					</a>
+				</li>";
+				}else{
+					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					</a>
+				</li>";
+				}
+
+
 			}
 			if($liste_ob!=null){
 				$res=$res.
