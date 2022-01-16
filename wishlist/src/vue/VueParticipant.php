@@ -73,6 +73,7 @@ class VueParticipant{
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 			<p><label>Date d'expiration : </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
+			<p><label>Créateur (à remplacer par une variable de session) : </label><input type=\"text\" name=\"creator\" size=30 required=\"true\"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
 		</form>";
 
@@ -119,7 +120,6 @@ class VueParticipant{
 	}
 
 	private function render_formModifyList() {
-		
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
 		}
@@ -137,9 +137,6 @@ class VueParticipant{
 			</form>
 			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
 				<input type=\"submit\" value=\"Partager la liste\">
-			</form>
-			<form action=\"formulaire_item/".$this->objet->token."\" method=\"GET\" name=\"formadditem\" id=\"formadditem\">
-				<input type=\"submit\" value=\"Ajouter un item\">
 			</form>";
 			if($this->objet->publique==null){
 				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
@@ -160,41 +157,25 @@ class VueParticipant{
 				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
-			
 			foreach($liste_ob as $ob){
-
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
+					<a href=\"formulaire_modification_item/".$ob->id."\">
+						<img src=\"";
 
-					<p><a href=\"formulaire_modification_item/".$ob->id."\">
-						<img src=\"./../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">";
-					if($ob->reserve!==null){
-						$res=$res."</a> Réservé</p></li>";
-					}
-					else{
-						$res=$res."</a></p></li>";
-					}
+				$nomImg = $ob->img;
 
-				
-				//ici on affiche une image soit qui est dans le dossier img soit une image en ligne quand cette dernière commence par 'http'
-				
-				$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
-					<img src=\"";
-
-				$nomImg = substr($ob->img,0,4);
-
-				if($nomImg == "http") {
-					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+				if(substr($nomImg,0,4)=='http') {
+					$res = $res . $ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
-				}else{
-					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+				}else {
+					$res = $res . "../../web/img/" . $ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
+
 				}
-
-
 			}
 			if($liste_ob!=null){
 				$res=$res.
@@ -203,12 +184,12 @@ class VueParticipant{
 				</form>";
 			}
 
-			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
+			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"formmess\" id=\"formmlist\">
             <p>
                 <label> Message </label>
             </p>
             <p>
-                <textarea maxlength='300' cols='50' rows='6' name='Message' form=\"messagesubmit\">tapez votre message ici</textarea>
+                <textarea maxlength='300' cols='50' rows='6' name='Message' form='messagesubmit'>tapez votre message ici</textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form>";
@@ -337,8 +318,8 @@ class VueParticipant{
 			<form action=\"liste\" method=\"GET\">
 				<input type=\"submit\" value=\"Consulter les listes\">
 			</form>
-			<form action=\"acces_partage\" method=\"GET\">
-				<input type=\"submit\" value=\"Accéder à une liste\">
+			<form action=\"cadeaux\" method=\"GET\">
+				<input type=\"submit\" value=\"Consulter les items d'une liste\">
 			</form>";
         if(!isset($_SESSION['profile'])) {
             $html .= "<form action = \"formulaireInscription\" method='GET'>
@@ -350,14 +331,7 @@ class VueParticipant{
 		";
         }
         else{
-            $html .= "
-			<form action=\"formulaire_liste\" method='GET'>
-			    <input type='submit' value=\"Créer une liste\">
-            </form>
-			<form action=\"listes_persos\" method='GET'>
-			    <input type='submit' value=\"Mes listes\">
-            </form>
-			<form action = \"deconnexion\" method='GET'>
+            $html .= "<form action = \"deconnexion\" method='GET'>
 			    <input type='submit' value=\"Se déconnecter\">
             </form>";
         }
@@ -384,7 +358,7 @@ class VueParticipant{
 	private function render_displayPartageListe(){
 		$res="<ul>Les items de la liste :";
 		foreach($this->objet as $i){
-				$res=$res."<li><a href=\"../../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
+				$res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
 		$res=$res."</ul>";
 
@@ -407,36 +381,6 @@ class VueParticipant{
 		else{
 			$res="<p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.</p>";
 		}
-		return $res;
-	}
-	
-	public function render_formCheckList(){
-		return "
-			<form action=\"acces_partagee/voir_liste_partagee/\" method=\"GET\">
-				<p><label>Entrer votre code de partage : </label><input type=\"text\" name=\"tok\" size=10 required=\"true\"></p>
-				<input type=\"submit\" value=\"Valider\">
-			</form>
-		";
-	}
-	
-	public function render_myList(){
-		if($this->objet!=null){
-			$res="<ul>Mes listes :";
-			foreach($this->objet as $i){
-				$res=$res."<li><p><a href=\"formulaire_modif_liste/".$i->token."\">".$i->no . ' : '.$i->titre."</a>";
-				if($i->token_partage!=0){
-					$res=$res." Partagée</p></li>";
-				}
-				else{
-					$res=$res."</p></li>";
-				}
-			}
-			$res=$res."</ul>";
-		}
-		else{
-			$res="Aucune liste créée";
-		}
-		
 		return $res;
 	}
 
@@ -507,7 +451,7 @@ class VueParticipant{
 				break;
 			}
 			case 17 : {
-				$content = $this->render_formCheckList();
+				$content = $this->render_displayCadeaux();
 				break;
 			}
 			case 18 : {
@@ -534,10 +478,6 @@ class VueParticipant{
                 $content = $this->render_putPublique();
                 break;
             }
-			case 24 : {
-                $content = $this->render_myList();
-                break;
-            }
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
@@ -551,39 +491,19 @@ class VueParticipant{
 		return 
 		"<!DOCTYPE html>
 
-		<html lang=\"zxx\">
+		<html lang='fr'>
 			<head>
 				<meta charset=\"utf-8\"/>
-				<title>Projet wishlist</title>
-				<link rel=\"stylesheet\" href=\"./web/css/style.css\" media=\"screen\" type=\"text/css\"/>
-				<script type=\"text/javascript\" src=\"./web/css/script.js\"></script>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
+				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
 				<title>sometext</title>
 			</head>
 			<body>
-				<header>
-					<nav>
-						<h1>Site de fou furieux</h1>
-					</nav>
-				</header>
-				
+				<h1>Site de fou furieux</h1>
                 <div class=\"content\">
 					$content
 				</div>
 			</body>
-			
-			<footer>
-				<ul>
-					<li><a href=\"http://localhost/projet_php/wishlist/\">Accueil</a></li>
-					<li><a href=\"#\">Retourner en haut</a></li>
-				</ul>
-			</footer>
 		<html>";
 	}
 }
-
-
-
-
-
-
-
