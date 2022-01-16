@@ -16,8 +16,7 @@
 }
 
 div{
-	width:600px;
-	height:50px;
+
 	background-color:#00CCFF;
 	text-align:center;
 }
@@ -42,11 +41,6 @@ img {
   	grid-column-end: 2;
 	grid-row-start: 1;
   	grid-row-end: 2;
-}
-
-li {
-	list-style: none;
-	font-family: "josefin sans";
 }
 
 li{
