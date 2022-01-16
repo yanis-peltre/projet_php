@@ -23,7 +23,6 @@ if($config) $db->addConnection($config);
 $db->setAsGlobal();
 $db->bootEloquent();
 
-
 /**
  * Page d'accueil
  */
