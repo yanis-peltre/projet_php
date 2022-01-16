@@ -156,7 +156,7 @@ class ControleurItem extends Controleur
 	public function reservItem(Request $rq, Response $rs, array $args):Response{
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$param=$rq->getParsedBody();
-		$item->reservItem($param['name']);
+		$item->reservItem($param['name'],$param['mes']);
 		$v=new VueParticipant($item);
 		$rs->getBody()->write($v->render(25));
 		return $rs;

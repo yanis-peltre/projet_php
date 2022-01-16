@@ -60,6 +60,8 @@ class VueParticipant{
 						$res=$res."value=\"".$_SESSION['profile']['username']."\"";
 					}
 					$res=$res."></p>
+					<p><label>Ajouter un message parce que c'est sympa : 
+					</label><input type=\"textarea\" name=\"mes\" size=100></p>
 					<input type=\"submit\" value=\"Réserver\">
 				</form>";
 			}

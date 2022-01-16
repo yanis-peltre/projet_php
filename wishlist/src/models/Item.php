@@ -91,8 +91,9 @@ class Item extends Model{
 	/**
 	* Réserver un item
 	*/
-	public function reservItem(string $n){
+	public function reservItem(string $n,string $m){
 		$this->reserve=filter_var($n,FILTER_SANITIZE_STRING);
+		$this->message=filter_var($m,FILTER_SANITIZE_STRING);
 		$this->save();
 	}
 }
