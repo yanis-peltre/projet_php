@@ -63,7 +63,14 @@ class ControleurListe extends Controleur
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $liste=new Liste();
             $param=$rq->getParsedBody();
-            $liste->createList($param['des'],$param['exp'],$param['titre']);
+            $userid = $_SESSION['profile']['userid'];
+            if(isset($param['publique'])){
+                $publique = true;
+            }
+            else{
+                $publique = false;
+            }
+            $liste->createList($param['des'],$param['exp'],$param['titre'],$userid,$publique);
             $v = new VueParticipant($liste);
             $rs->getBody()->write($v->render(5)) ;
         }
@@ -208,9 +215,21 @@ class ControleurListe extends Controleur
 	/**
 	* Listes persos
 	*/
-	public function myList(Request $rq, Response $rs, array $args){
-		$v = new VueParticipant(Liste::where('creator','=',$_SESSION['profile']['username'])->get()) ;
-		$rs->getBody()->write($v->render(24)) ;
+	public function myLists(Request $rq, Response $rs, array $args){
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $userid = $_SESSION['profile']['userid'];
+            $v = new VueParticipant(Liste::where('user_id',$userid)->get()) ;
+            $rs->write($v->render(24)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
+
+
+
+
 
 		return $rs ;
 	}

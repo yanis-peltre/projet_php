@@ -90,6 +90,8 @@ class ControleurUser
     public function deconnexion($rq, $rs, $args){
         Authentification::deconnexion();
         $rs->write("Vous êtes déconnecté");
+        header("Location: ./");
+        Exit();
         return $rs;
     }
 

@@ -185,7 +185,7 @@ $app->get('/acces_partagee/voir_liste_partagee[/]',
 */
 
 $app->get('/listes_persos[/]',
-    ControleurListe::class.':myList');
+    ControleurListe::class.':myLists');
 	
 /**
 * Ajouter une cagnotte

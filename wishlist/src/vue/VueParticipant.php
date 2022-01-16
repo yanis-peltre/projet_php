@@ -73,7 +73,7 @@ class VueParticipant{
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 			<p><label>Date d'expiration : </label><input type=\"date\" name=\"exp\" required=\"true\"></p>
-			<p><label>Créateur (à remplacer par une variable de session) : </label><input type=\"text\" name=\"creator\" size=30 required=\"true\"></p>
+			<p><label>Rendre publique : </label><input type=\"checkbox\" name=\"publique\" \"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
 		</form>";
 
@@ -320,11 +320,12 @@ class VueParticipant{
 
 		$html = "<h2>Que voulez-vous faire ?</h2>
 			<form action=\"liste\" method=\"GET\">
-				<input type=\"submit\" value=\"Consulter les listes\">
+				<input type=\"submit\" value=\"Consulter les listes publiques\">
 			</form>
 			<form action=\"cadeaux\" method=\"GET\">
 				<input type=\"submit\" value=\"Consulter les items d'une liste\">
 			</form>";
+        // Si l'utilisateur n'est pas connecté :
         if(!isset($_SESSION['profile'])) {
             $html .= "<form action = \"formulaireInscription\" method='GET'>
 			    <input type='submit' value=\"S'inscrire\">
@@ -334,10 +335,17 @@ class VueParticipant{
             </form>
 		";
         }
+        // Si il est connecté
         else{
-            $html .= "<form action = \"deconnexion\" method='GET'>
-			    <input type='submit' value=\"Se déconnecter\">
-            </form>";
+            $html .= <<<END
+                <form action = "listes_persos" method='GET'>
+                    <input type='submit' value="Voir mes listes">
+                </form>
+                <form action = "deconnexion" method='GET'>
+			        <input type='submit' value="Se déconnecter">
+                </form>
+END;
+
         }
         return $html;
 	}
@@ -387,6 +395,23 @@ class VueParticipant{
 		}
 		return $res;
 	}
+
+    private function render_myLists(){
+        $res =  "<form action = \"formulaire_liste\" method='GET'>
+                    <input type='submit' value=\"Creer une liste\">
+                </form>";
+        $res.="<ul>Mes listes :";
+        if($this->objet!==null){
+            foreach($this->objet as $l){
+                $res.="<li><a href=\"cadeaux/afficheCadeaux/?id=".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
+            }
+            $res.="</ul>";
+        }
+        else{
+            $res.="<p>Vous n'avez pas encore créé de liste.</p>";
+        }
+        return $res;
+    }
 
 	public function render($selecteur) {
 		switch ($selecteur) {
@@ -480,6 +505,10 @@ class VueParticipant{
             }
 			case 23 : {
                 $content = $this->render_putPublique();
+                break;
+            }
+            case 24 : {
+                $content = $this->render_myLists();
                 break;
             }
 			default : {

@@ -56,6 +56,7 @@ class Authentification
     public static function authenticate ($username, $password ) {
         // charger utilisateur $user
         $user = User::firstWhere('username',$username);
+        if(!isset($user)) throw new AuthException("Mauvais nom d'utilisateur ou mot de passe");
         $passwordHash = $user->password;
 
         // vérifier $user->hash == hash($password)

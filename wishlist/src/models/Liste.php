@@ -37,21 +37,17 @@ class Liste extends Model{
 	/**
 	* Permet de creer une liste et l'ajoute a la base
 	*/
-	public function createList($des,$exp,$titre){
-		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
-		$test=Liste::where('titre','=',$title)->first();
-		
-		if($test==null){
-			$this->description=filter_var($des,FILTER_SANITIZE_STRING);
-			$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
-			$this->titre=$title;
-			$this->token=random_int(1,10000);
-			if(isset($_SESSION['profile'])){
-				$this->user_id=$_SESSION['profile']['userid'];
-			}
-			
-			$this->save();
-		}
+	public function createList($des,$exp,$titre,$userid,$publique){
+		$title=filter_var($titre,FILTER_SANITIZE_STRING);
+        $this->description=filter_var($des,FILTER_SANITIZE_STRING);
+        $this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
+        $this->titre=$title;
+        $this->token=random_int(1,10000);
+        $this->user_id = $userid;
+        if($publique){
+            $this->publique = 'x';
+        }
+        $this->save();
 	}
 	
 	/**
