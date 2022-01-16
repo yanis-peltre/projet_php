@@ -52,6 +52,17 @@ class VueParticipant{
 	private function render_getItem() {
 		if($this->objet!=null){
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
+			if($this->objet->reserve==null){
+				$res=$res."<form action=\"reserver/".$this->objet->id."\" method=\"POST\" name=\"res\" id=\"res\">
+					<p><label>Entrer un nom pour réserver l'item : </label>
+					<input type=\"text\" name=\"name\" size=40 required=\"true\" ";
+					if(isset($_SESSION['profile']['username'])){
+						$res=$res."value=\"".$_SESSION['profile']['username']."\"";
+					}
+					$res=$res."></p>
+					<input type=\"submit\" value=\"Réserver\">
+				</form>";
+			}
 			if($this->objet->cagnotte!==null){
 				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
@@ -356,7 +367,13 @@ class VueParticipant{
 	private function render_displayPartageListe(){
 		$res="<ul>Les items de la liste :";
 		foreach($this->objet as $i){
-				$res=$res."<li><a href=\"../../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
+				$res=$res."<li><p><a href=\"../../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a>";
+				if($i->reserve==null){
+					$res=$res." Disponible à la réservation</p></li>";
+				}
+				else{
+					$res=$res."</p></li>";
+				}
 			}
 		$res=$res."</ul>";
 
@@ -404,6 +421,10 @@ class VueParticipant{
 		}
 		
 		return $res;
+	}
+	
+	public function render_reservItem(){
+		return "<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
 	}
 
 	public function render($selecteur) {
@@ -502,6 +523,10 @@ class VueParticipant{
             }
 			case 24 : {
                 $content = $this->render_myList();
+                break;
+            }
+			case 25 : {
+                $content = $this->render_reservItem();
                 break;
             }
 			default : {

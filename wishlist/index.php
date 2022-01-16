@@ -59,6 +59,12 @@ $app->get('/cadeaux/afficheCadeaux[/]',
 $app->get('/item/{id}[/]',
     ControleurItem::class.':getItem')->setName("item");
 
+/**
+* Réservation d'item
+*/
+
+$app->post('/item/reserver/{id}[/]',
+    ControleurItem::class.':reservItem')->setName("reserver");
 
 /**
 * Formulaire d'ajout de liste 8569
@@ -80,7 +86,7 @@ $app->post('/ajouter_liste[/]',
 * Formulaire ajout d'un item a une liste
 */
 
-$app->get('formulaire_modif_liste/formulaire_item/{token}[/]',
+$app->get('/formulaire_modif_liste/formulaire_item/{token}[/]',
     ControleurItem::class.':formAddItem')->setName("formAjouterItemAListe");
 
 
@@ -88,7 +94,7 @@ $app->get('formulaire_modif_liste/formulaire_item/{token}[/]',
 * Ajout d'item a une liste
 */
 
-$app->post('/formulaire_item/ajouter_item/{token}[/]',
+$app->post('/formulaire_modif_liste/formulaire_item/ajouter_item/{token}[/]',
     ControleurItem::class.':addItem')->setName("ajouterItemAListe");
 
 
