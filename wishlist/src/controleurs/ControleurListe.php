@@ -4,6 +4,10 @@ namespace mywishlist\controleurs;
 
 require_once __DIR__ . '/Controleur.php';
 
+use Illuminate\Support\Facades\Auth;
+use mywishlist\exceptions\AuthException;
+use mywishlist\models\User;
+use mywishlist\vue\VueAccount;
 use mywishlist\vue\VueParticipant;
 use mywishlist\models\Liste;
 use mywishlist\controleurs\Controleur;
@@ -38,8 +42,15 @@ class ControleurListe extends Controleur
 	* Affiche un formulaire pour ajouter une liste
 	*/
 	public function formAddList(Request $rq, Response $rs, array $args){
-		$v = new VueParticipant(null) ;
-		$rs->getBody()->write($v->render(4)) ;
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $v = new VueParticipant(null) ;
+            $rs->getBody()->write($v->render(4)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 
 		return $rs ;
 	}
@@ -48,12 +59,18 @@ class ControleurListe extends Controleur
 	* Ajoute une liste
 	*/
 	public function addList(Request $rq, Response $rs, array $args){
-		$liste=new Liste();
-		$param=$rq->getParsedBody();
-		$liste->createList($param['des'],$param['exp'],$param['titre']);
-		$v = new VueParticipant($liste);
-		$rs->getBody()->write($v->render(5)) ;
-
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $liste=new Liste();
+            $param=$rq->getParsedBody();
+            $liste->createList($param['des'],$param['exp'],$param['titre']);
+            $v = new VueParticipant($liste);
+            $rs->getBody()->write($v->render(5)) ;
+        }
+        catch(AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
@@ -61,10 +78,18 @@ class ControleurListe extends Controleur
 	* Formulaire modification d'une liste
 	*/
 	public function formModifyList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$v = new VueParticipant($liste) ;
-		$rs->getBody()->write($v->render(8)) ;
-
+        $token = intval($args['token']);
+        $liste=Liste::where('token','=',$token)->first();
+        $creator = $liste->user;
+        try{
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
+            $v = new VueParticipant($liste) ;
+            $rs->write($v->render(8)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
@@ -74,10 +99,17 @@ class ControleurListe extends Controleur
 	public function modifyList(Request $rq, Response $rs, array $args){
 		$param=$rq->getParsedBody();
 		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$liste->modifyList($param['des'],$param['exp'],$param['titre']);
-		$v = new VueParticipant($liste) ;
-		$rs->getBody()->write($v->render(9)) ;
-
+        $creator = $liste->user;
+        try {
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $liste->modifyList($param['des'],$param['exp'],$param['titre']);
+            $v = new VueParticipant($liste) ;
+            $rs->getBody()->write($v->render(9)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
@@ -86,21 +118,36 @@ class ControleurListe extends Controleur
 	*/
 	public function formDeleteList(Request $rq, Response $rs, array $args){
 		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$v = new VueParticipant($liste) ;
-		$rs->getBody()->write($v->render(10)) ;
-
+        $creator = $liste->user;
+        try {
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $v = new VueParticipant($liste);
+            $rs->getBody()->write($v->render(10));
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
 	/**
-	* Formulaire suppression d'une liste
+	* Suppression d'une liste
 	*/
 	public function deleteList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$v = new VueParticipant($liste) ;
-		$liste->deleteList();
-		$rs->getBody()->write($v->render(11)) ;
-
+        $token = $args['token'];
+        $liste=Liste::where('token','=',intval($token))->first();
+        $creator = $liste->user;
+        try{
+            $v = new VueParticipant($liste) ;
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $liste->deleteList();
+            $rs->getBody()->write($v->render(11)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
@@ -108,11 +155,20 @@ class ControleurListe extends Controleur
 	* Partage d'une liste
 	*/
 	public function shareList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
-		$liste->shareList();
-		$v = new VueParticipant($liste) ;
-		$rs->getBody()->write($v->render(18)) ;
+        try{
+            $liste=Liste::where('token','=',intval($args['token']))->first();
+            if(!isset($liste)) throw new AuthException("Liste inexistante");
 
+            $creator = $liste->user;
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $liste->shareList();
+            $v = new VueParticipant($liste) ;
+            $rs->getBody()->write($v->render(18)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	

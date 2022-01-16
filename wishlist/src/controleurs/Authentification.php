@@ -4,20 +4,24 @@ namespace mywishlist\controleurs;
 
 use mywishlist\exceptions\AuthException;
 use mywishlist\exceptions\InscriptionException;
+use mywishlist\models\Role;
 use mywishlist\models\User;
 
 class Authentification
 {
 
     private $authSessionVar;
+    public static int $ADMIN_RIGHTS = 10000;
+    public static int $CREATOR_RIGHTS = 5000;
 
     /**
      * Crée un utilisateur
      * @param $username String nom d'utilisateur
      * @param $password String mot de passe
-     * @throws InscriptionException
+     * @param $roleId string label du role à donner
+     * @throws InscriptionException si le mot de passe ne correspond pas aux prérequis
      */
-    public static function createUser ($username, $password, $userRights){
+    public static function createUser ($username, $password, $role){
         // Teste taille du password.
         if(strlen($password) < 12){
             throw new InscriptionException("Le password doit avoir au moins 12 caractères");
@@ -35,15 +39,19 @@ class Authentification
 
 
      // créer et enregistrer l'utilisateur
+        $roleId = Role::firstWhere('label',$role)->roleid;
         $user = new User();
-        $user->inscrireUser($username, $password, $userRights);
+        $user->inscrireUser($username, $password, $roleId);
         $userid = $user->userid;
         self::loadProfile($userid);
 
     }
 
     /**
-     * @throws AuthException
+     * Teste la connexion de l'utilisateur
+     * @param $username string Username de l'utilisateur
+     * @param $password string Password de l'utilsateur
+     * @throws AuthException si l'identifiant ou le mot de passe ne sont pas les bons
      */
     public static function authenticate ($username, $password ) {
         // charger utilisateur $user
@@ -63,6 +71,10 @@ class Authentification
         }
     }
 
+    /**
+     * Charge le profiil de l'utilisateur et le connecte
+     * @param $userid
+     */
     private static function loadProfile( $userid ) {
         // charger l'utilisateur et ses droits
         $user = User::firstWhere('userid',$userid);
@@ -83,9 +95,23 @@ class Authentification
         ];
     }
 
-    public static function checkAccessRights ( $required ) {
-   /** si Authentication::$profil['level] < $required
-     throw new AuthException ;*/
+    /**
+     * Teste si l'utilateur a des droits suffisants ou s'il est propriétaire si renseigné dans l'appel à la fonction
+     * @param $required int droit minimum que l'utilisateur doit avoir
+     * @param null $propriétaire facultatif, user du proprietaire de la donnee
+     * @throws AuthException si l'utilisateur n'a pas les droits d'accès
+     */
+    public static function checkAccessRights ($required, $proprietaire = null) {
+        // Si l'utisateur connecté est propriétaire du contenu
+        if(isset($proprietaire)){
+            $proprietaireid = $proprietaire->userid;
+            if($proprietaireid == $_SESSION['profile']['userid']) return;
+        }
+        // Sinon si l'utilisateur a les droits suffisants pour accéder au contenu
+        else if(isset($_SESSION['profile'])){
+            if($_SESSION['profile']['auth_level'] >= $required) return;
+        }
+        throw new AuthException("Vous n'avez pas accès à cette page");
     }
 
     /**

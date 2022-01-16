@@ -39,18 +39,24 @@ class ControleurUser
         return $rs;
     }
 
+    /**
+     * Créé un formulaire d'inscription pour un utilisateur
+     */
     public function formulaireInscription($rq, $rs, $args ){
         $vue = new VueAccount();
         $rs->write($vue->render(1));
         return $rs;
     }
 
+    /**
+     * Inscrit un utilisateur
+     */
     public function inscription($rq, $rs, $args ){
         $data = $rq->getParsedBody();
         $username = $data['username'];
         $password = $data['password'];
         try{
-            Authentification::createUser($username,$password,1);
+            Authentification::createUser($username,$password,'Createur');
             $rs->write("Utilisateur ". $username." inscrit");
         }
         catch(InscriptionException $e1){
@@ -95,7 +101,7 @@ class ControleurUser
      * @param $password String mot de passe
      * @throws InscriptionException
      */
-    public static function createUser ($username, $password, $userRights){
+    public static function createUser ($username, $password, $userRole){
         // Teste taille du password.
         if(strlen($password) < 12){
             throw new InscriptionException("Le password doit avoir au moins 12 caractères");
@@ -114,7 +120,7 @@ class ControleurUser
 
         // créer et enregistrer l'utilisateur
         $user = new User();
-        $user->inscrireUser($username, $password, $userRights);
+        $user->inscrireUser($username, $password, $userRole);
         $userid = $user->userid;
         self::loadProfile($userid);
 

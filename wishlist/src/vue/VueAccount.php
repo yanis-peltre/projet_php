@@ -21,6 +21,9 @@ class VueAccount
             case 3 :
                 $content = $this->render_connexion();
                 break;
+            case 5 :
+                $content = $this->render_accessDenied();
+                break;
             default:
                 $content = "Pas de contenu disponible";
         }
@@ -71,5 +74,9 @@ class VueAccount
 
     private function render_deconnexion(){
         return "<a href =\"..\">Accueil</a> <script>window.alert(\"Vous êtes déconnecté\")</script>";
+    }
+
+    private function render_accessDenied(){
+        return "Vous n'avez pas accès à cette page";
     }
 }

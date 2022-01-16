@@ -4,7 +4,7 @@ namespace mywishlist\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
-use mywishlist\exception\InscriptionException;
+use mywishlist\exceptions\InscriptionException;
 
 class User extends Model
 {
@@ -20,12 +20,12 @@ class User extends Model
     /**
      * @throws InscriptionException
      */
-    public function inscrireUser($nom, $password, $rights)
+    public function inscrireUser($nom, $password, $roleId)
     {
         $this->username = filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
         $password = filter_var(filter_var($password,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
         $this->password = password_hash($password, PASSWORD_DEFAULT);
-        $this->roleid = Role::firstWhere('auth_level',$rights)->roleid;
+        $this->roleid = $roleId;
         try{
             $this->save();
         }

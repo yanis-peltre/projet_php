@@ -17,9 +17,14 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
-		
         return $this->hasMany(Item::class, 'liste_id')->get();
+    }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo l'id créateur de la liste
+     */
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
     }
 	
 	/**
@@ -42,7 +47,7 @@ class Liste extends Model{
 			$this->titre=$title;
 			$this->token=random_int(1,10000);
 			if(isset($_SESSION['profile'])){
-				$this->creator=$_SESSION['profile']['username'];
+				$this->user_id=$_SESSION['profile']['userid'];
 			}
 			
 			$this->save();

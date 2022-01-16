@@ -72,7 +72,7 @@ class VueParticipant{
 		<form action=\"ajouter_liste\" method=\"POST\" name=\"formlist\" id=\"formlist\">
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
-			<p><label>Date d'expiration : </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
+			<p><label>Date d'expiration : </label><input type=\"date\" name=\"exp\" required=\"true\"></p>
 			<p><label>Créateur (à remplacer par une variable de session) : </label><input type=\"text\" name=\"creator\" size=30 required=\"true\"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
 		</form>";
