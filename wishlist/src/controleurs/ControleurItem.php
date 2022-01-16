@@ -58,7 +58,7 @@ class ControleurItem extends Controleur
 	public function addItem(Request $rq, Response $rs, array $args){
 		$item=new Item();
 		$param=$rq->getParsedBody();
-		$item->addItem($param['des'],$param['prix'],$param['nom'],$args['token']);
+		$item->addItem($param['des'],$param['prix'],$param['nom'],$args['token'],$args['img']);
 
 		$v = new VueParticipant($item) ;
 		$rs->getBody()->write($v->render(7)) ;
