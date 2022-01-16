@@ -132,6 +132,7 @@ class VueParticipant{
 	}
 
 	private function render_formModifyList() {
+		
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
 		}
@@ -176,10 +177,14 @@ class VueParticipant{
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
-					<a href=\"formulaire_modification_item/".$ob->id."\">
-						<img src=\"./../../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
-					</a>
-				</li>";
+					<p><a href=\"formulaire_modification_item/".$ob->id."\">
+						<img src=\"./../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">";
+					if($ob->reserve!==null){
+						$res=$res."</a> Réservé</p></li>";
+					}
+					else{
+						$res=$res."</a></p></li>";
+					}
 			}
 			if($liste_ob!=null){
 				$res=$res.
@@ -414,7 +419,13 @@ class VueParticipant{
 		if($this->objet!=null){
 			$res="<ul>Mes listes :";
 			foreach($this->objet as $i){
-				$res=$res."<li><a href=\"formulaire_modif_liste/".$i->token."\">".$i->no . ' : '.$i->titre."</a></li>";
+				$res=$res."<li><p><a href=\"formulaire_modif_liste/".$i->token."\">".$i->no . ' : '.$i->titre."</a>";
+				if($i->token_partage!=0){
+					$res=$res." Partagée</p></li>";
+				}
+				else{
+					$res=$res."</p></li>";
+				}
 			}
 			$res=$res."</ul>";
 		}
@@ -544,19 +555,39 @@ class VueParticipant{
 		return 
 		"<!DOCTYPE html>
 
-		<html lang='fr'>
+		<html lang=\"zxx\">
 			<head>
 				<meta charset=\"utf-8\"/>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
+				<title>Projet wishlist</title>
+				<link rel=\"stylesheet\" href=\"./web/css/style.css\" media=\"screen\" type=\"text/css\"/>
+				<script type=\"text/javascript\" src=\"./web/css/script.js\"></script>
 				<title>sometext</title>
 			</head>
 			<body>
-				<h1>Site de fou furieux</h1>
+				<header>
+					<nav>
+						<h1>Site de fou furieux</h1>
+					</nav>
+				</header>
+				
                 <div class=\"content\">
 					$content
 				</div>
 			</body>
+			
+			<footer>
+				<ul>
+					<li><a href=\"http://localhost/projet_php/wishlist/\">Accueil</a></li>
+					<li><a href=\"#\">Retourner en haut</a></li>
+				</ul>
+			</footer>
 		<html>";
 	}
 }
+
+
+
+
+
+
+
