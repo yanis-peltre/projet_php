@@ -128,4 +128,11 @@ class ControleurUser
 
     }
 
+    /**
+     * Voir les infos de son compte
+     */
+    public function voirCompte($rq, $rs, $args){
+
+    }
+
 }

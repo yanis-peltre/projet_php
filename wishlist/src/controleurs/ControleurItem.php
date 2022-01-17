@@ -36,10 +36,18 @@ class ControleurItem extends Controleur
 	* Permet d'afficher un item
 	*/
 	public function getItem(Request $rq, Response $rs, array $args) {
-		$item = Item::where('id','=',intval($args['id']))->first() ;
-		$v = new VueParticipant( $item->getItem('id')) ;
-		$rs->getBody()->write($v->render(3)) ;
 
+        try{
+            $item = Item::where('id','=',intval($args['id']))->first() ;
+            $creator = $item->liste->user;
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $v = new VueParticipant( $item->getItem('id')) ;
+            $rs->getBody()->write($v->render(3)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	
@@ -91,10 +99,17 @@ class ControleurItem extends Controleur
 	* Modification d'un item d'une liste
 	*/
 	public function formModifyItem(Request $rq, Response $rs, array $args){
-		$item=Item::where('id','=',intval($args['id']))->first();
-		$v = new VueParticipant($item) ;
-		$rs->getBody()->write($v->render(12)) ;
-
+        try{
+            $item=Item::where('id','=',intval($args['id']))->first();
+            $creator = $item->liste->user;
+            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
+            $v = new VueParticipant($item) ;
+            $rs->getBody()->write($v->render(12)) ;
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount();
+            $rs->write($v->render(5));
+        }
 		return $rs ;
 	}
 	

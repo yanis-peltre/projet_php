@@ -265,4 +265,10 @@ $app->post('/connexion[/]',
 $app->get('/deconnexion[/]',
     ControleurUser::class.':deconnexion')->setName('deconnexion');
 
+/**
+ * Modification de compte
+ */
+$app->get('/monCompte[/]',
+ControleurUser::class.':voirCompte')->setName('modifCompte');
+
 $app->run();
