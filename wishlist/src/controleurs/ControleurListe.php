@@ -132,7 +132,8 @@ class ControleurListe extends Controleur
 	*/
 	public function modifyList(Request $rq, Response $rs, array $args){
 		$param=$rq->getParsedBody();
-		$liste=Liste::where('token','=',intval($args['token']))->first();
+        $no = intval($args['no']);
+		$liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
         try {
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
@@ -151,7 +152,8 @@ class ControleurListe extends Controleur
 	* Formulaire suppression d'une liste
 	*/
 	public function formDeleteList(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
+        $no = intval($args['no']);
+		$liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
         try {
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
@@ -169,8 +171,8 @@ class ControleurListe extends Controleur
 	* Suppression d'une liste
 	*/
 	public function deleteList(Request $rq, Response $rs, array $args){
-        $token = $args['token'];
-        $liste=Liste::where('token','=',intval($token))->first();
+        $no = $args['no'];
+        $liste=Liste::where('no',intval($no))->first();
         $creator = $liste->user;
         try{
             $v = new VueParticipant($liste) ;
@@ -190,7 +192,8 @@ class ControleurListe extends Controleur
 	*/
 	public function shareList(Request $rq, Response $rs, array $args){
         try{
-            $liste=Liste::where('token','=',intval($args['token']))->first();
+            $no = intval($args['no']);
+            $liste=Liste::where('no',$no)->first();
             if(!isset($liste)) throw new AuthException("Liste inexistante");
 
             $creator = $liste->user;
@@ -231,7 +234,8 @@ class ControleurListe extends Controleur
 	* Rendre une liste publique
 	*/
 	public function putPublic(Request $rq, Response $rs, array $args){
-		$liste=Liste::where('token','=',intval($args['token']))->first();
+        $no = intval($args['no']);
+		$liste=Liste::where('no',$no)->first();
 		$liste->putPublic();
 		$v = new VueParticipant($liste) ;
 		$rs->getBody()->write($v->render(23)) ;

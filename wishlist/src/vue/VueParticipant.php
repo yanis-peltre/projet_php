@@ -126,27 +126,27 @@ class VueParticipant{
 		}
 		else{
 			$res="
-			<form action=\"modifier_liste/".$this->objet->token."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"modifier_liste/".$this->objet->no."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
 				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
-				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
+				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"date\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
 			</form>
 
-			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+			<form action=\"formulaire_supprimer_liste/".$this->objet->no."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
-			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+			<form action=\"partager_liste/".$this->objet->no."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
 				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
 			if($this->objet->publique==null){
-				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+				$res=$res."<form action=\"publique/".$this->objet->no."\" method=\"POST\" name=\"pub\" id=\"pub\">
 					<p><label>La liste n'est pas publique </label></p>
 					<input type=\"submit\" value=\"Rendre la liste publique\">
 				</form>";
 			}
 			else{
-				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+				$res=$res."<form action=\"publique/".$this->objet->no."\" method=\"POST\" name=\"pub\" id=\"pub\">
 					<p><label>La liste est publique </label></p>
 					<input type=\"submit\" value=\"Rendre la liste privée\">
 				</form>";
@@ -155,7 +155,7 @@ class VueParticipant{
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
+				"<form action=\"supprimer_item/".$this->objet->no."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
 
@@ -219,11 +219,11 @@ class VueParticipant{
 			$res="Pas de liste correspondante";
 		}
 		else{
-			$res="
-			<form action=\"supprimer_liste/".$this->objet->token."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
+			$res=" Voulez vous vraiment supprimer la liste ? </br>
+			<form action=\"supprimer_liste/".$this->objet->no."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Oui\">
 			</form>
-			<form action=\"../".$this->objet->token."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
+			<form action=\"../".$this->objet->no."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Non\">
 			</form>";
 		}
@@ -254,7 +254,7 @@ class VueParticipant{
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
-			<form action=\"../".$this->objet->getToken()."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"../".$this->objet->liste->no."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
 			</form>
 			<form action=\"ajout_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">

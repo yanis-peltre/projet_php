@@ -1,5 +1,10 @@
 <?php
 
+//TODO Améliorer interface
+// Modification et suppression des comptes
+// Afficher la liste des créateurs au lieu des listes publiques
+
+
 require_once __DIR__ .'/vendor/autoload.php';
 $config = require_once __DIR__ . "/src/conf/settings.php";
 
@@ -86,7 +91,7 @@ $app->get('/liste/formulaire_modif_liste/{no}[/]',
  * Modification d'une liste
  */
 
-$app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/modifier_liste/{no}[/]',
     ControleurListe::class.':modifyList')->setName("modifListe");
 
 
@@ -94,7 +99,7 @@ $app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
  * Formulaire suppression d'une liste
  */
 
-$app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
+$app->get('/liste/formulaire_modif_liste/formulaire_supprimer_liste/{no}[/]',
     ControleurListe::class.':formDeleteList')->setName("formDeleteListe");
 
 
@@ -102,14 +107,14 @@ $app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
  * Suppression d'une liste
  */
 
-$app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{no}[/]',
     ControleurListe::class.':deleteList')->setName("supprimer_liste")->setName("deleteListe");
 
 /**
  * Partager une liste 7524
  */
 
-$app->get('/formulaire_modif_liste/partager_liste/{token}[/]',
+$app->get('/liste/formulaire_modif_liste/partager_liste/{no}[/]',
     ControleurListe::class.':shareList');
 
 /**
@@ -178,7 +183,7 @@ $app->post('/liste/{no}/ajouter_item[/]',
 * Formulaire de modification d'un item
 */
 
-$app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
+$app->get('/liste/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
     ControleurItem::class.':formModifyItem')->setName('formulaire_modification_item');
 
 
@@ -186,7 +191,7 @@ $app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
 * Modification d'un item
 */
 
-$app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
+$app->post('/liste/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
     ControleurItem::class.':modifyItem')->setName('modifier_item');
 
 
@@ -194,14 +199,14 @@ $app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{
 * Formulaire de suppression d'un item
 */
 
-$app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
+$app->get('/liste/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
     ControleurItem::class.':formDeleteItem')->setName('formulaire_suppression_item');
 
 
 /**
 * Suppression d'un item
 */
-$app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/supprimer_item/{no}[/]',
     ControleurItem::class.':deleteItem')->setName('supprimer_item');
 	
 
@@ -225,18 +230,6 @@ $app->post('/formulaire_modif_liste/commentaire/{token}[/]',
     ControleurItem::class.':ajouterMessage')->setName('ajouter_message');
 
 /**
- * Liste tous les users A SUPPRIMER
- */
-$app->get('/users[/]',
-    ControleurUser::class.':listerUsers')->setName('listUsers');
-
-/**
- * Liste tous les roles A SUPPRIMER
- */
-$app->get('/roles[/]',
-    ControleurUser::class.':listerRoles')->setName('listRole');
-
-/**
  * Formulaire inscription
  */
 $app->get('/formulaireInscription[/]',
@@ -251,7 +244,7 @@ $app->post('/inscription[/]',
 /**
  * Rendre une liste publique
  */
-$app->post('/formulaire_modif_liste/publique/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/publique/{no}[/]',
     ControleurListe::class.':putPublic')->setName('publique');
 
 /**
