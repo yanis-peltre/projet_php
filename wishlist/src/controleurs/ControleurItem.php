@@ -36,18 +36,10 @@ class ControleurItem extends Controleur
 	* Permet d'afficher un item
 	*/
 	public function getItem(Request $rq, Response $rs, array $args) {
-
-        try{
             $item = Item::where('id','=',intval($args['id']))->first() ;
             $creator = $item->liste->user;
-            Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
             $v = new VueParticipant($this->container, $item->getItem('id')) ;
             $rs->getBody()->write($v->render(3)) ;
-        }
-        catch (AuthException $e1){
-            $v = new VueAccount();
-            $rs->write($v->render(5));
-        }
 		return $rs ;
 	}
 	

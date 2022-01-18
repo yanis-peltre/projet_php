@@ -24,7 +24,7 @@ class VueParticipant{
 			$res="<ul>Toutes les listes :";
 			foreach($this->objet as $l){
 				if($l->publique=='x'){
-					$res.="<li><a href=". $this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
+					$res.="<li><a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->no . " : ".$l->titre."</a></li>";
 				}
 			}
 			$res=$res."</ul>";

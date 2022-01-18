@@ -49,7 +49,7 @@ class ControleurListe extends Controleur
             if($liste->publique != 'x') Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
             $v = new VueParticipant($this->container,$liste) ;
             // Si createur
-            if($creator->userid == $_SESSION['profile']['userid']){
+            if(isset($_SESSION['profile']) && $creator->userid == $_SESSION['profile']['userid']){
                 $rs->write($v->render(19)) ;
             }
             // Si visiteur

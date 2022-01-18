@@ -104,7 +104,7 @@ class Authentification
      */
     public static function checkAccessRights ($required, $proprietaire = null) {
         // Si l'utisateur connecté est propriétaire du contenu
-        if(isset($proprietaire)){
+        if(isset($proprietaire) && isset($_SESSION['profile'])){
             $proprietaireid = $proprietaire->userid;
             if($proprietaireid == $_SESSION['profile']['userid']) return;
         }
