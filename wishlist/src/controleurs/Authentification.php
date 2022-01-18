@@ -21,7 +21,7 @@ class Authentification
      * @param $roleId string label du role à donner
      * @throws InscriptionException si le mot de passe ne correspond pas aux prérequis
      */
-    public static function createUser ($username, $password, $role){
+    public static function createUser ($username, $password, $role, $email){
         // Teste taille du password.
         if(strlen($password) < 12){
             throw new InscriptionException("Le password doit avoir au moins 12 caractères");
@@ -41,7 +41,7 @@ class Authentification
      // créer et enregistrer l'utilisateur
         $roleId = Role::firstWhere('label',$role)->roleid;
         $user = new User();
-        $user->inscrireUser($username, $password, $roleId);
+        $user->inscrireUser($username, $password, $roleId,$email);
         $userid = $user->userid;
         self::loadProfile($userid);
 

@@ -3,11 +3,13 @@
 namespace mywishlist\controleurs;
 
 
+use Illuminate\Support\Facades\Auth;
 use mywishlist\exceptions\AuthException;
 use mywishlist\exceptions\InscriptionException;
 use mywishlist\models\Role;
 use mywishlist\models\User;
 use mywishlist\vue\VueAccount;
+use mywishlist\vue\VueParticipant;
 use Slim\Container;
 
 class ControleurUser
@@ -43,7 +45,7 @@ class ControleurUser
      * Créé un formulaire d'inscription pour un utilisateur
      */
     public function formulaireInscription($rq, $rs, $args ){
-        $vue = new VueAccount();
+        $vue = new VueAccount($this->container);
         $rs->write($vue->render(1));
         return $rs;
     }
@@ -55,8 +57,9 @@ class ControleurUser
         $data = $rq->getParsedBody();
         $username = $data['username'];
         $password = $data['password'];
+        $email = $data['email'];
         try{
-            Authentification::createUser($username,$password,'Createur');
+            Authentification::createUser($username,$password,'Createur', $email);
             $rs->write("Utilisateur ". $username." inscrit");
         }
         catch(InscriptionException $e1){
@@ -66,14 +69,14 @@ class ControleurUser
     }
 
     public function formulaireConnexion($rq, $rs, $args ){
-        $vue = new VueAccount();
+        $vue = new VueAccount($this->container);
         $rs->write($vue->render(2));
         return $rs;
     }
 
 
     public function connexion($rq, $rs, $args){
-        $vue = new VueAccount();
+        $vue = new VueAccount($this->container);
         $data = $rq->getParsedBody();
         $username = $data['username'];
         $password = $data['password'];
@@ -90,8 +93,8 @@ class ControleurUser
     public function deconnexion($rq, $rs, $args){
         Authentification::deconnexion();
         $rs->write("Vous êtes déconnecté");
-        header("Location: ./");
-        Exit();
+        $url = $this->container->router->pathFor('accueil');
+        $rs = $rs->withStatus(302)->withHeader('Location', $url);
         return $rs;
     }
 
@@ -101,9 +104,10 @@ class ControleurUser
      * Crée un utilisateur
      * @param $username String nom d'utilisateur
      * @param $password String mot de passe
+     * @param $email String email de l'utilisateur
      * @throws InscriptionException
      */
-    public static function createUser ($username, $password, $userRole){
+    public static function createUser ($username, $password, $userRole,$email){
         // Teste taille du password.
         if(strlen($password) < 12){
             throw new InscriptionException("Le password doit avoir au moins 12 caractères");
@@ -122,7 +126,7 @@ class ControleurUser
 
         // créer et enregistrer l'utilisateur
         $user = new User();
-        $user->inscrireUser($username, $password, $userRole);
+        $user->inscrireUser($username, $password, $userRole, $email);
         $userid = $user->userid;
         self::loadProfile($userid);
 
@@ -132,7 +136,63 @@ class ControleurUser
      * Voir les infos de son compte
      */
     public function voirCompte($rq, $rs, $args){
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $userid = $_SESSION['profile']['userid'];
+            $user = User::firstWhere('userid',$userid);
+            $vue = new VueAccount($this->container,$user);
+            $rs->write($vue->render(4));
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount($this->container);
+            $rs->write($v->render(5));
+        }
+        return $rs;
+    }
 
+    /**
+     * Modifier les infos de son compte
+     */
+    public function formModifCompte($rq, $rs, $args){
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $userid = $_SESSION['profile']['userid'];
+            $user = User::firstWhere('userid',$userid);
+            $v = new VueAccount($this->container,$user);
+            $rs->write($v->render(6));
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount($this->container);
+            $rs->write($v->render(5));
+        }
+        return $rs;
+    }
+
+    public function modifCompte($rq, $rs, $args){
+        try {
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $data = $rq->getParsedBody();
+            //TODO sécuriser injection
+            $newMail = $data['email'];
+            $newPassword = $data['password'];
+            $user = User::firstWhere('userid', $_SESSION['profile']['userid']);
+            $user->password = $newPassword;
+            $user->email = $newMail;
+            $user->save();
+            if (strlen($newPassword) != 0) {
+                Authentification::deconnexion();
+                $url = $this->container->router->pathFor('formConnexion');
+            } else {
+                $this->container->router->pathFor('formConnexion');
+                $url = $this->container->router->pathFor('voirProfil');
+            }
+            $rs = $rs->withStatus(302)->withHeader('Location', $url);
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount($this->container);
+            $rs->write($v->render(5));
+        }
+        return $rs;
     }
 
 }

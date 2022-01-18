@@ -2,18 +2,20 @@
 
 namespace mywishlist\vue;
 
-//require_once __DIR__. "/../../vendor/autoload.php";
 require_once 'src/conf/Database.php';
 require_once 'src/models/Item.php';
 require_once 'src/models/Liste.php';
 
 use mywishlist\models\Item;
 use mywishlist\models\Liste;
+use Slim\Container;
 
 class VueParticipant{
 	protected $objet;
+    protected $container;
 
-	public function __construct($ob=null){
+	public function __construct(Container $c, $ob=null){
+        $this->container = $c;
 		$this->objet=$ob;
 	}
 
@@ -22,13 +24,13 @@ class VueParticipant{
 			$res="<ul>Toutes les listes :";
 			foreach($this->objet as $l){
 				if($l->publique=='x'){
-					$res=$res."<li><a href=\"liste/".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
+					$res.="<li><a href=". $this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
 				}
 			}
 			$res=$res."</ul>";
 		}
 		else{
-			$res="<p>Il n'y a actuellement aucune liste.</p>";
+			$res="<p>Il n'y a actuellement aucune liste publique.</p>";
 		}
 
 		return $res;
@@ -39,7 +41,7 @@ class VueParticipant{
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
-                $res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
+                $res=$res."<li><a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
             }
             $res=$res."</ul>";
 		}
@@ -70,7 +72,7 @@ class VueParticipant{
 
 	private function render_formAddList() {
 		$res="
-		<form action=\"ajouter_liste\" method=\"POST\" name=\"formlist\" id=\"formlist\">
+		<form action=\"".$this->container->router->pathFor("ajoutListe") ."\" method=\"POST\" name=\"formlist\" id=\"formlist\">
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 			<p><label>Date d'expiration : </label><input type=\"date\" name=\"exp\" required=\"true\"></p>
@@ -98,7 +100,7 @@ class VueParticipant{
 		}
 		else{
 			$res="
-			<form action=\"ajouter_item/\" method=\"POST\" name=\"formitem\" id=\"formitem\">
+			<form action=\"".$this->container->router->pathFor('AddItemList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitem\" id=\"formitem\">
 				<p><label>Nom : </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
@@ -126,27 +128,27 @@ class VueParticipant{
 		}
 		else{
 			$res="
-			<form action=\"modifier_liste/".$this->objet->no."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"".$this->container->router->pathFor("modifListe",['no' => $this->objet->no]) ."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
 				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"date\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
 			</form>
 
-			<form action=\"formulaire_supprimer_liste/".$this->objet->no."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+			<form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$this->objet->no]) ."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
-			<form action=\"partager_liste/".$this->objet->no."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+			<form action=\"". $this->container->router->pathFor('shareList',['no'=>$this->objet->no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
 				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
 			if($this->objet->publique==null){
-				$res=$res."<form action=\"publique/".$this->objet->no."\" method=\"POST\" name=\"pub\" id=\"pub\">
+				$res=$res."<form action=\"".$this->container->router->pathFor('publique',['no'=>$this->objet->no])."\" method=\"POST\" name=\"pub\" id=\"pub\">
 					<p><label>La liste n'est pas publique </label></p>
 					<input type=\"submit\" value=\"Rendre la liste publique\">
 				</form>";
 			}
 			else{
-				$res=$res."<form action=\"publique/".$this->objet->no."\" method=\"POST\" name=\"pub\" id=\"pub\">
+				$res=$res."<form action=\"".$this->container->router->pathFor('publique',['no'=>$this->objet->no])."\" method=\"POST\" name=\"pub\" id=\"pub\">
 					<p><label>La liste est publique </label></p>
 					<input type=\"submit\" value=\"Rendre la liste privée\">
 				</form>";
@@ -155,7 +157,7 @@ class VueParticipant{
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"supprimer_item/".$this->objet->no."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
+				"<form action=\"".$this->container->router->pathFor('deleteItem',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
 
@@ -164,7 +166,7 @@ class VueParticipant{
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
-					<a href=\"formulaire_modification_item/".$ob->id."\">
+					<a href=\"".$this->container->router->pathfor('formModifItem',['id'=>$ob->id])."\">
 						<img src=\"";
 
 				$nomImg = $ob->img;
@@ -189,12 +191,12 @@ class VueParticipant{
 				</form>";
 			}
 
-			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"formmess\" id=\"formmlist\">
+			$res=$res."<form action=\"".$this->container->router->pathFor('ajouterMessageListe',['no'=>$this->objet->no])."\" method=\"POST\" id='messagesubmit' name=\"formmess\" id=\"formmlist\">
             <p>
                 <label> Message </label>
             </p>
             <p>
-                <textarea maxlength='300' cols='50' rows='6' name='Message' form='messagesubmit'>tapez votre message ici</textarea>
+                <textarea maxlength='300' cols='50' rows='6' name='message' form='messagesubmit' placeholder='tapez votre message ici'></textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form>";
@@ -220,14 +222,13 @@ class VueParticipant{
 		}
 		else{
 			$res=" Voulez vous vraiment supprimer la liste ? </br>
-			<form action=\"supprimer_liste/".$this->objet->no."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
+			<form action=\"".$this->container->router->pathFor('deleteList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Oui\">
 			</form>
-			<form action=\"../".$this->objet->no."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
+			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Non\">
 			</form>";
 		}
-
 		return $res;
 	}
 
@@ -248,16 +249,16 @@ class VueParticipant{
 		}
 		else{
 			$res="
-			<form action=\"modifier_item/".$this->objet->id."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
+			<form action=\"".$this->container->router->pathFor('modifItem',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
 				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
-			<form action=\"../".$this->objet->liste->no."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
 			</form>
-			<form action=\"ajout_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
+			<form action=\"".$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
 				<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
 			</form>";
 		}
@@ -302,7 +303,7 @@ class VueParticipant{
 			$res=$res."</ul>";
 
 			$res=$res."
-			<form action=\"supprimer_item/".$token."\" method=\"POST\" name=\"supitem\" id=\"supitem\">
+			<form action=\"".$this->container->router->pathFor('supprimer_item',['token'=>$token])."\" method=\"POST\" name=\"supitem\" id=\"supitem\">
 				<input type=\"submit\" value=\"Confirmer la suppression\">
 			</form>
 			<form action=\"../".$token."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
@@ -318,31 +319,32 @@ class VueParticipant{
 	}
 
 	private function render_displayAccueil() {
-
 		$html = "<h2>Que voulez-vous faire ?</h2>
-			<form action=\"listePubliques\" method=\"GET\">
-				<input type=\"submit\" value=\"Consulter les listes publiques\">
+			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>
+				<input type='submit' value='Consulter les listes publiques'>
 			</form>";
         // Si l'utilisateur n'est pas connecté :
         if(!isset($_SESSION['profile'])) {
-            $html .= "<form action = \"formulaireInscription\" method='GET'>
+            $html .= "<form action = \"".$this->container->router->pathFor('formInscription')."\" method='GET'>
 			    <input type='submit' value=\"S'inscrire\">
             </form>
-            <form action=\"formulaireConnexion\" method='GET'>
+            <form action=\"".$this->container->router->pathFor('formConnexion')."\" method='GET'>
 			    <input type='submit' value=\"Se connecter\">
             </form>
 		";
         }
         // Si il est connecté
         else{
-            $html .= <<<END
-                <form action = "listes_persos" method='GET'>
-                    <input type='submit' value="Voir mes listes">
+            $html .= "
+                <form action =". $this->container->router->pathFor('listesPersos')." method='GET'>
+                    <input type='submit' value='Voir mes listes'>
                 </form>
-                <form action = "deconnexion" method='GET'>
-			        <input type='submit' value="Se déconnecter">
+                <form action = '".$this->container->router->pathFor('voirProfil')."' method='GET'>
+			        <input type='submit' value='Voir mon profil'>
                 </form>
-END;
+                <form action = '".$this->container->router->pathFor('deconnexion')."' method='GET'>
+			        <input type='submit' value='Se déconnecter'>
+                </form>";
 
         }
         return $html;
@@ -360,26 +362,26 @@ END;
 	private function render_displayPartageUrl(){
 
 		return "
-			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
-			L'url de partage est /voir_liste_partager/{token}</p>
+			<ap>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
+			L'url de partage est : ".$this->container->router->pathFor('checkList',['tokenPartage' => $this->objet->token_partage]).
+            " <p>
 		";
 	}
 
 	private function render_displayListePerso(){
-        $res ="
-        <form action=\"formulaire_modif_liste/";
-        $res.= $this->objet->no;
-        $res .= "\" method=\"GET\">
+        $res ="<form action=\"".
+            $this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."
+            \" method=\"GET\">
            <input type=\"submit\" name=\"modifListe\" value='Modifier la liste'></p>
         </form> 
-        <form action='".$this->objet->no."/formulaireAjoutItem'>
+        <form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
         </form>";
 
 		$res.="<ul>Les items de la liste :";
         $items = $this->objet->items;
 		foreach($items as $i){
-				$res=$res."<li><a href=\"../item/".$i->id."\">".$i->id . ' : '.$i->nom."</a></li>";
+				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
 		$res=$res."</ul>";
 
@@ -406,13 +408,13 @@ END;
 	}
 
     private function render_myLists(){
-        $res =  "<form action = \"formulaire_liste\" method='GET'>
+        $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
         $res.="<ul>Mes listes :";
         if($this->objet!==null){
             foreach($this->objet as $l){
-                $res.="<li><a href=\"liste/".$l->no."\">".$l->no . " : ".$l->titre."</a></li>";
+                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
             }
             $res.="</ul>";
         }
@@ -542,7 +544,7 @@ END;
 				<title>sometext</title>
 			</head>
 			<body>
-				<h1>Site de fou furieux</></h1>
+				<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
                 <div class=\"content\">
 					$content
 				</div>

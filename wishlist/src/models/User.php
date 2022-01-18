@@ -20,11 +20,12 @@ class User extends Model
     /**
      * @throws InscriptionException
      */
-    public function inscrireUser($nom, $password, $roleId)
+    public function inscrireUser($nom, $password, $roleId, $email)
     {
         $this->username = filter_var(filter_var($nom,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
         $password = filter_var(filter_var($password,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
         $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->email = filter_var(filter_var($email,FILTER_SANITIZE_STRING),FILTER_SANITIZE_SPECIAL_CHARS);
         $this->roleid = $roleId;
         try{
             $this->save();

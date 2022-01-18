@@ -20,15 +20,14 @@ class ControleurAccueil extends Controleur
     }
 
     function displayAccueil(Request $rq, Response $rs, array $args){
-        $v = new VueParticipant(null) ;
-		$rs->getBody()->write($v->render(16)) ;
-
+        $v = new VueParticipant($this->container) ;
+		$rs->write($v->render(16)) ;
 		return $rs ;
     }
 
 	function displayItemListe(Request $rq, Response $rs, array $args){
 		$param=$rq->getParsedBody();
-        $v = new VueParticipant(null) ;
+        $v = new VueParticipant($this->container) ;
 		$rs->getBody()->write($v->render(17)) ;
 		
 		return $rs ;
