@@ -94,6 +94,9 @@ class VueAccount
         <form action='".$this->container->router->pathFor('formModifCompte')."'>
             <input type='submit' name='enter' value='Modifier mon compte'>
         </form>
+        <form action='".$this->container->router->pathFor('supprimerCompte')." ' method='post'>
+            <input type='submit' name='enter' value='Supprimer mon compte'>
+        </form>
         <p><ul>
             <li>Mon nom : ". $this->object->username."</li>    
             <li>Mon email : ".$this->object->email ."</li>

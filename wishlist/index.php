@@ -289,4 +289,10 @@ $app->get('/myProfile/formulaire_Modif[/]',
 $app->post('/myProfile/modification[/]',
     ControleurUser::class.':modifCompte')->setName('modifCompte');
 
+/**
+ * Modification de compte
+ */
+$app->post('/myProfile/deleteAccount[/]',
+    ControleurUser::class.':supprimerCompte')->setName('supprimerCompte');
+
 $app->run();

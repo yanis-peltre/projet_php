@@ -6,6 +6,7 @@ namespace mywishlist\controleurs;
 use Illuminate\Support\Facades\Auth;
 use mywishlist\exceptions\AuthException;
 use mywishlist\exceptions\InscriptionException;
+use mywishlist\models\Liste;
 use mywishlist\models\Role;
 use mywishlist\models\User;
 use mywishlist\vue\VueAccount;
@@ -186,6 +187,33 @@ class ControleurUser
                 $this->container->router->pathFor('formConnexion');
                 $url = $this->container->router->pathFor('voirProfil');
             }
+            $rs = $rs->withStatus(302)->withHeader('Location', $url);
+        }
+        catch (AuthException $e1){
+            $v = new VueAccount($this->container);
+            $rs->write($v->render(5));
+        }
+        return $rs;
+    }
+
+    public function supprimerCompte($rq, $rs, $args){
+        try{
+            Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
+            $userid = $_SESSION['profile']['userid'];
+            $user = User::firstWhere('userid',$userid);
+            $listes = $user->listes;
+            // Suppression des listes
+            foreach ($listes as $li){
+                $items = $li->items;
+                // Supression des items
+                foreach ($items as $item) {
+                    $item->delete();
+                }
+                $li->delete();
+            }
+            $user->delete();
+            Authentification::deconnexion();
+            $url = $this->container->router->pathFor('accueil');
             $rs = $rs->withStatus(302)->withHeader('Location', $url);
         }
         catch (AuthException $e1){

@@ -17,6 +17,10 @@ class User extends Model
         return $this->belongsTo(Role::class,'roleid');
     }
 
+    public function listes(){
+        return $this->hasMany(Liste::class,'user_id');
+    }
+
     /**
      * @throws InscriptionException
      */
@@ -31,6 +35,7 @@ class User extends Model
             $this->save();
         }
         catch (QueryException $e){
+            echo $e->getMessage();
             throw new InscriptionException("Username déjà utilisé");
         }
 
