@@ -169,7 +169,7 @@ class VueParticipant{
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
+				"<form action=\"".$this->container->router->pathFor('deleteItem',['no'=>$no])."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
 			foreach($liste_ob as $ob){
@@ -219,14 +219,11 @@ class VueParticipant{
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form></section>";
 
-			$res=$res."<aside><form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+			$res=$res."<aside><form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$no])."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
-			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+			<form action=\"".$this->container->router->pathFor('shareList',['no'=>$no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
 				<input type=\"submit\" value=\"Partager la liste\">
-			</form>
-			<form action=\"formulaire_item/".$this->objet->token."\" method=\"GET\" name=\"formadditem\" id=\"formadditem\">
-				<input type=\"submit\" value=\"Ajouter un item\">
 			</form>";
 			if($this->objet->publique==null){
 				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
@@ -495,7 +492,7 @@ class VueParticipant{
     }
 
     private function render_formShareList(){
-        $res = "<form action='". $this->container->router->pathFor('checkList')."' method='post'>
+        $res = "<form action='". $this->container->router->pathFor('checkList')."' method='GET'>
             <input type='text' name='sharedToken' placeholder='Rentrez le token de partage' size='25px'>
             <input type='submit'>
         </form>";

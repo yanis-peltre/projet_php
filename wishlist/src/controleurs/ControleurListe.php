@@ -219,12 +219,12 @@ class ControleurListe extends Controleur
 		return $rs ;
 	}
 
-    public function checkList(Request $rq, Response $rs, array $args){
+    /*public function checkList(Request $rq, Response $rs, array $args){
         $token = $rq->getParsedBody()['sharedToken'];
         $url = $this->container->router->pathFor('sharedList', ['sharedToken'=> $token]);
         $rs = $rs->withStatus(302)->withHeader('Location', $url);
         return $rs ;
-    }
+    }*/
 
 	/**
 	* Voir une liste partagée
@@ -276,13 +276,13 @@ class ControleurListe extends Controleur
     }
 
 
-    /*public function checkList(Request $rq, Response $rs, array $args) : Response{
+    public function checkList(Request $rq, Response $rs, array $args) : Response{
         $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('id'));
         $v = new VueParticipant($this->container,$liste) ;
         $rs->write($v->render(2));
 
         return $rs;
-    }*/
+    }
 
 }
 

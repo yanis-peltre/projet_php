@@ -133,8 +133,8 @@ $app->get('/acces_partage/voir_liste_partagee[/]',
 /**
  * Ajoute un message à une liste 7212
 */
-$app->post('/acces_partage[/]',
-    ControleurListe::class.':checkList')->setName('checkList');
+/*$app->post('/acces_partage[/]',
+    ControleurListe::class.':checkList')->setName('checkList');*/
 
 /**
  * Voir une liste partagée
@@ -201,7 +201,7 @@ $app->post('/liste/{no}/ajouter_item[/]',
 * Formulaire de modification d'un item
 */
 
-$app->get('/liste/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
+$app->get('/liste/formulaire_modif_liste/{no}/formulaire_modification_item/{id}[/]',
     ControleurItem::class.':formModifyItem')->setName('formModifItem');
 
 
@@ -244,8 +244,8 @@ $app->post('/item/participer_cagnotte/{id}[/]',
 /**
 * Ajouter un message à une liste
 */
-$app->post('/formulaire_modif_liste/commentaire/{token}[/]',
-    ControleurItem::class.':ajouterMessage')->setName('ajouterMessageItem');
+$app->post('/liste/formulaire_modif_liste/{no}/commentaire/{token}[/]',
+    ControleurListe::class.':ajouterMessage')->setName('ajouterMessageItem');
 
 /**
  * Formulaire inscription
@@ -262,7 +262,7 @@ $app->post('/inscription[/]',
 /**
  * Rendre une liste publique
  */
-$app->post('/liste/formulaire_modif_liste/publique/{no}[/]',
+$app->post('/liste/formulaire_modif_liste/{no}/publique/{token}[/]',
     ControleurListe::class.':putPublic')->setName('publique');
 
 /**
