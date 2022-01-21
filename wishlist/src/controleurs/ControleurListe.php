@@ -28,9 +28,6 @@ class ControleurListe extends Controleur
 	*/
 	public function publicLists(Request $rq, Response $rs, array $args) {
 		$container = $this->container ;
-		/**$base = $rq->getUri()->getBasePath() ;
-		$route_uri = $container->router->pathFor('liste') ;
-		$url = $base . $route_uri ;*/
 		
 		$v = new VueParticipant($this->container,Liste::allListe());
 		$rs->getBody()->write($v->render(1)) ;
@@ -222,13 +219,13 @@ class ControleurListe extends Controleur
 	/**
 	* Voir une liste partagée
 	*/
-	public function afficheListePartagee(Request $rq, Response $rs, array $args){
+	/*public function afficheListePartagee(Request $rq, Response $rs, array $args){
         $tokenPartage = intval($rq->getQueryParam('sharedtoken'));
         $liste=Liste::where('token_partage',$tokenPartage)->first();
         $v = new VueParticipant($this->container,$liste->items()) ;
         $rs->getBody()->write($v->render(19)) ;
 		return $rs ;
-	}
+	}*/
 	
 	/**
 	* Rendre une liste publique
@@ -269,8 +266,7 @@ class ControleurListe extends Controleur
     }
 
     public function checkList(Request $rq, Response $rs, array $args) : Response{
-        $tokenPartage = $args['tokenPartage'];
-        $liste=Liste::firstWhere('token_Partage',$tokenPartage);
+        $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('id'));
         $v = new VueParticipant($this->container,$liste) ;
         $rs->write($v->render(2));
 

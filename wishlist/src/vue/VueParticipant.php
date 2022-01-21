@@ -55,6 +55,19 @@ class VueParticipant{
 	private function render_getItem() {
 		if($this->objet!=null){
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
+			if($this->objet->reserve==null){
+				$res=$res."<form action=\"reserver/".$this->objet->id."\" method=\"POST\" name=\"res\" id=\"res\">
+					<p><label>Entrer un nom pour réserver l'item : </label>
+					<input type=\"text\" name=\"name\" size=40 required=\"true\" ";
+					if(isset($_SESSION['profile']['username'])){
+						$res=$res."value=\"".$_SESSION['profile']['username']."\"";
+					}
+					$res=$res."></p>
+					<p><label>Ajouter un message parce que c'est sympa : 
+					</label><input type=\"textarea\" name=\"mes\" size=100></p>
+					<input type=\"submit\" value=\"Réserver\">
+				</form>";
+			}
 			if($this->objet->cagnotte!==null){
 				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
@@ -134,72 +147,57 @@ class VueParticipant{
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"date\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
 
-			</form>
-
-			<form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$this->objet->no]) ."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
-				<input type=\"submit\" value=\"Supprimer la liste\">
-			</form>
-			<form action=\"". $this->container->router->pathFor('shareList',['no'=>$this->objet->no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
-				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
-			if($this->objet->publique==null){
-				$res=$res."<form action=\"".$this->container->router->pathFor('publique',['no'=>$this->objet->no])."\" method=\"POST\" name=\"pub\" id=\"pub\">
-					<p><label>La liste n'est pas publique </label></p>
-					<input type=\"submit\" value=\"Rendre la liste publique\">
-				</form>";
-			}
-			else{
-				$res=$res."<form action=\"".$this->container->router->pathFor('publique',['no'=>$this->objet->no])."\" method=\"POST\" name=\"pub\" id=\"pub\">
-					<p><label>La liste est publique </label></p>
-					<input type=\"submit\" value=\"Rendre la liste privée\">
-				</form>";
-			}
 
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
-				"<form action=\"".$this->container->router->pathFor('deleteItem',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
+				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
-
-
-
 			foreach($liste_ob as $ob){
+
 				$res=$res."
 				<li>
 					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
-					<a href=\"".$this->container->router->pathfor('formModifItem',['id'=>$ob->id])."\">
+
+					<p><a href=\"formulaire_modification_item/".$ob->id."\">
+						<img src=\"./../web/img/".$ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">";
+					if($ob->reserve!==null){
+						$res=$res."</a> Réservé</p></li>";
+					}
+					else{
+						$res=$res."</a></p></li>";
+					}
+
+					$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
 						<img src=\"";
 
-				$nomImg = $ob->img;
+				$nomImg = substr($ob->img,0,4);
 
-				//si l'image commence 'http' on la lit direct sinon on prend le chemin relatif du dossier img
-				if(substr($nomImg,0,4)=='http') {
-					$res = $res . $ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
+				if($nomImg == "http") {
+					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
-				}else {
-					$res = $res . "../../web/img/" . $ob->img."\" width=100 height=100 alt=\"".$ob->nom."\">
+				}else{
+					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
 					</a>
 				</li>";
-
 				}
 			}
-
 			if($liste_ob!=null){
 				$res=$res.
 				"	</ol>
 					<input type=\"submit\" value=\"Supprimer les items sélectionnés\" id=\"envoi\">
 				</form>";
 			}
-
-
-			$res=$res."<form action=\"".$this->container->router->pathFor('ajouterMessageListe',['no'=>$this->objet->no])."\" method=\"POST\" id='messagesubmit' name=\"formmess\" id=\"formmlist\">
+			
+			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
             <p>
                 <label> Message </label>
             </p>
             <p>
-                <textarea maxlength='300' cols='50' rows='6' name='message' form='messagesubmit' placeholder='tapez votre message ici'></textarea>
+                <textarea maxlength='300' cols='50' rows='6' name='Message' form=\"messagesubmit\">tapez votre message ici</textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form></section>";
@@ -347,6 +345,9 @@ class VueParticipant{
 		$html = "<h2>Que voulez-vous faire ?</h2>
 			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>
 				<input type='submit' value='Consulter les listes publiques'>
+			</form>
+			<form action=\"acces_partage\" method=\"GET\">
+				<input type=\"submit\" value=\"Accéder à une liste\">
 			</form>";
         // Si l'utilisateur n'est pas connecté :
         if(!isset($_SESSION['profile'])) {
@@ -377,7 +378,7 @@ class VueParticipant{
 
 	private function render_displayCadeaux() {
 		return "
-			<form action=\"cadeaux/afficheCadeaux/\" method=\"GET\">
+			<form action=\"acces_partage/voir_liste_partagee/\" method=\"GET\">
 				<p><label>Consulter les items d'une liste</label><input type=\"text\" name=\"id\" size=3 required=\"true\"></p>
 				<input type=\"submit\" value=\"Valider\">
 			</form>
@@ -387,9 +388,9 @@ class VueParticipant{
 	private function render_displayPartageUrl(){
 
 		return "
-			<ap>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
+			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
 			L'url de partage est : ".$this->container->router->pathFor('checkList',['tokenPartage' => $this->objet->token_partage]).
-            " <p>
+            " </p>
 		";
 	}
 
@@ -397,18 +398,11 @@ class VueParticipant{
         $res ="<form action=\"".
             $this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."
             \" method=\"GET\">
-           <input type=\"submit\" name=\"modifListe\" value='Modifier la liste'></p>
+           <p><input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\"></p>
         </form> 
         <form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
         </form>";
-
-		$res.="<ul>Les items de la liste :";
-        $items = $this->objet->items;
-		foreach($items as $i){
-				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
-			}
-		$res=$res."</ul>";
 
 		return $res;
 	}
@@ -440,7 +434,13 @@ class VueParticipant{
         if($this->objet!==null){
             foreach($this->objet as $l){
                 $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
-            }
+				if($l->token_partage!=0){
+					$res=$res." Partagée</p></li>";
+				}
+				else{
+					$res=$res."</p></li>";
+				}
+			}
             $res.="</ul>";
         }
         else{
