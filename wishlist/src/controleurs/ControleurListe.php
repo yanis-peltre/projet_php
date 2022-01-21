@@ -61,6 +61,10 @@ class ControleurListe extends Controleur
         return $rs ;
     }
 
+    public function afficheListePartage(){
+
+    }
+
 
     /**
 	* Affiche un formulaire pour ajouter une liste
@@ -207,14 +211,20 @@ class ControleurListe extends Controleur
 	}
 	
 	/**
-	* Formulaire accès liste
+	* Formulaire accès liste partagée
 	*/
 	public function formCheckList(Request $rq, Response $rs, array $args){
-		$v = new VueParticipant($this->container) ;
-		$rs->getBody()->write($v->render(17)) ;
-
+        $v = new VueParticipant($this->container) ;
+		$rs->write($v->render(26)) ;
 		return $rs ;
 	}
+
+    public function checkList(Request $rq, Response $rs, array $args){
+        $token = $rq->getParsedBody()['sharedToken'];
+        $url = $this->container->router->pathFor('sharedList', ['sharedToken'=> $token]);
+        $rs = $rs->withStatus(302)->withHeader('Location', $url);
+        return $rs ;
+    }
 
 	/**
 	* Voir une liste partagée
@@ -222,8 +232,8 @@ class ControleurListe extends Controleur
 	/*public function afficheListePartagee(Request $rq, Response $rs, array $args){
         $tokenPartage = intval($rq->getQueryParam('sharedtoken'));
         $liste=Liste::where('token_partage',$tokenPartage)->first();
-        $v = new VueParticipant($this->container,$liste->items()) ;
-        $rs->getBody()->write($v->render(19)) ;
+        $v = new VueParticipant($this->container,$liste) ;
+        $rs->getBody()->write($v->render(25)) ;
 		return $rs ;
 	}*/
 	
@@ -265,13 +275,15 @@ class ControleurListe extends Controleur
         return $rs;
     }
 
-    public function checkList(Request $rq, Response $rs, array $args) : Response{
+
+    /*public function checkList(Request $rq, Response $rs, array $args) : Response{
         $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('id'));
         $v = new VueParticipant($this->container,$liste) ;
         $rs->write($v->render(2));
 
         return $rs;
-    }
+    }*/
+
 }
 
 

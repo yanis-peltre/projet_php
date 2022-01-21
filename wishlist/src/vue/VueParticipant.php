@@ -21,13 +21,18 @@ class VueParticipant{
 
 	private function render_listList() {
 		if($this->objet!==null){
-			$res="<ul>Toutes les listes :";
+			$res="<ol>Toutes les listes publiques :";
 			foreach($this->objet as $l){
+                if(isset($l->user)){
+                    $creator = $l->user->username;
+                }else{
+                    $creator = "";
+                }
 				if($l->publique=='x'){
-					$res.="<li><a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->no . " : ".$l->titre."</a></li>";
+					$res.="<li>$creator - <a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->titre."</a></li>";
 				}
 			}
-			$res=$res."</ul>";
+			$res=$res."</ol>";
 		}
 		else{
 			$res="<p>Il n'y a actuellement aucune liste publique.</p>";
@@ -37,13 +42,16 @@ class VueParticipant{
 	}
 
 	private function render_listItem() {
-        $res="<ul>Les items de la liste :";
+        $titre = $this->objet->titre;
+        $desc = $this->objet->description;
+        $creator = $this->objet->user->username;
+        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
-                $res=$res."<li><a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
+                $res=$res."<li> <a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">$i->nom </a> - $i->tarif euros </br>$i->descr</li>";
             }
-            $res=$res."</ul>";
+            $res=$res."</ol>";
 		}
 		else{
 			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
@@ -54,6 +62,7 @@ class VueParticipant{
 
 	private function render_getItem() {
 		if($this->objet!=null){
+
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
 			if($this->objet->reserve==null){
 				$res=$res."<form action=\"reserver/".$this->objet->id."\" method=\"POST\" name=\"res\" id=\"res\">
@@ -68,6 +77,13 @@ class VueParticipant{
 					<input type=\"submit\" value=\"Réserver\">
 				</form>";
 			}
+
+            $item = $this->objet;
+			$res=$res."<h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
+            <p>Description : $item->descr</p>";
+            if(isset($item->img)) $res.="<img src ='$item->img' alt='Image'>";
+            if(isset($item->url)) $res.="<p>Plus de détails : <a href='$item->url'>Cliquez ici</a></p>";
+
 			if($this->objet->cagnotte!==null){
 				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
@@ -140,8 +156,9 @@ class VueParticipant{
 			$res="Pas de liste correspondante";
 		}
 		else{
+            $no = $this->objet->no;
 			$res="<section>
-			<form action=\"modifier_liste/".$this->objet->token."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
+			<form action='". $this->container->router->pathFor('modifListe',['no'=>$no])."' method=\"POST\" name=\"formmlist\" id=\"formmlist\">
 				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"date\" name=\"exp\" size=11 required=\"true\"></p>
@@ -223,6 +240,7 @@ class VueParticipant{
 					<input type=\"submit\" value=\"Rendre la liste privée\">
 				</form>";
 			}
+
 			$res=$res."</aside>";
 		}
 		return $res;
@@ -346,8 +364,10 @@ class VueParticipant{
 			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>
 				<input type='submit' value='Consulter les listes publiques'>
 			</form>
-			<form action=\"acces_partage\" method=\"GET\">
-				<input type=\"submit\" value=\"Accéder à une liste\">
+
+			<form action='".$this->container->router->pathFor('formCheckList'). "' method ='GET'>
+			    <input type='submit' value='Voir une liste partagée'>
+
 			</form>";
         // Si l'utilisateur n'est pas connecté :
         if(!isset($_SESSION['profile'])) {
@@ -394,15 +414,34 @@ class VueParticipant{
 		";
 	}
 
+    private function render_displayListePartage(){
+        $liste = $this->objet;
+        $creator = $liste->user->username;
+        $res = "<h2>Nom de la liste : $liste->titre</h2>";
+        $res.= "<section>Createur : $creator</br>Description : $liste->description</section>";
+        $res.="<ul>Les items de la liste :";
+        $items = $liste->items;
+        foreach($items as $i){
+            $res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
+        }
+        $res=$res."</ul>";
+
+        return $res;
+    }
+
 	private function render_displayListePerso(){
+        $no = $this->objet->no;
         $res ="<form action=\"".
-            $this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."
+            $this->container->router->pathFor('formModifyList',['no'=> $no])."
             \" method=\"GET\">
            <p><input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\"></p>
         </form> 
         <form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
         </form>";
+
+
+        $res.=$this->render_listItem();
 
 		return $res;
 	}
@@ -430,9 +469,10 @@ class VueParticipant{
         $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
-        $res.="<ul>Mes listes :";
+        $res.="<ol>Mes listes :";
         if($this->objet!==null){
             foreach($this->objet as $l){
+
                 $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
 				if($l->token_partage!=0){
 					$res=$res." Partagée</p></li>";
@@ -442,6 +482,11 @@ class VueParticipant{
 				}
 			}
             $res.="</ul>";
+
+                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">$l->titre</a></li>";
+            
+            $res.="</ol>";
+
         }
         else{
             $res.="<p>Vous n'avez pas encore créé de liste.</p>";
@@ -449,6 +494,13 @@ class VueParticipant{
         return $res;
     }
 
+    private function render_formShareList(){
+        $res = "<form action='". $this->container->router->pathFor('checkList')."' method='post'>
+            <input type='text' name='sharedToken' placeholder='Rentrez le token de partage' size='25px'>
+            <input type='submit'>
+        </form>";
+        return $res;
+    }
 
 	public function render($selecteur) {
 		switch ($selecteur) {
@@ -548,6 +600,13 @@ class VueParticipant{
                 $content = $this->render_myLists();
                 break;
             }
+            case 25 : {
+                $content = $this->render_displayListePartage();
+                break;
+            }
+            case 26 :
+                $content = $this->render_formShareList();
+                break;
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
