@@ -1,8 +1,6 @@
 <?php
 
-//TODO Améliorer interface
-// Modification et suppression des comptes
-// Afficher la liste des créateurs au lieu des listes publiques
+//TODO Afficher la liste des créateurs au lieu des listes publiques
 
 
 require_once __DIR__ .'/vendor/autoload.php';
@@ -62,7 +60,7 @@ $app->get('/liste/{no}[/]',
  */
 
 $app->get('/listePartagee/{sharedToken}[/]',
-    ControleurListe::class.":afficheListePartagee")->setName("sharedListe");
+    ControleurListe::class.":afficheListePartagee")->setName("sharedList");
 
 /**
  * Formulaire d'ajout de liste
@@ -122,14 +120,20 @@ $app->get('/liste/formulaire_modif_liste/partager_liste/{no}[/]',
  */
 
 $app->get('/acces_partage[/]',
-    ControleurListe::class.':formCheckList');
+    ControleurListe::class.':formCheckList')->setName('formCheckList');
+
+/**
+ * Accès liste partagée
+ */
+
+$app->post('/acces_partage[/]',
+    ControleurListe::class.':checkList')->setName('checkList');
 
 /**
  * Voir une liste partagée
  */
-
-$app->get('/acces_partagee/voir_liste_partagee/{tokenPartage}[/]',
-    ControleurListe::class.':checkList')->setName('checkList');
+//$app->get('/acces_partagee/voir_liste_partagee/{tokenPartage}[/]',
+  //  ControleurListe::class.':checkList')->setName('checkList');
 
 /**
  * Ajoute un message à une liste
@@ -290,7 +294,7 @@ $app->post('/myProfile/modification[/]',
     ControleurUser::class.':modifCompte')->setName('modifCompte');
 
 /**
- * Modification de compte
+ * Suppression de compte
  */
 $app->post('/myProfile/deleteAccount[/]',
     ControleurUser::class.':supprimerCompte')->setName('supprimerCompte');

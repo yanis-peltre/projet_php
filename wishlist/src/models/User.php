@@ -36,7 +36,7 @@ class User extends Model
         }
         catch (QueryException $e){
             echo $e->getMessage();
-            throw new InscriptionException("Username déjà utilisé");
+            if($e->getCode() == 23000) throw new InscriptionException("Username déjà utilisé");
         }
 
     }
