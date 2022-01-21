@@ -37,7 +37,10 @@ class VueParticipant{
 	}
 
 	private function render_listItem() {
-        $res="<ul>Les items de la liste :";
+        $titre = $this->objet->titre;
+        $desc = $this->objet->description;
+        $creator = $this->objet->user->username;
+        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ul>Les items de la liste :";
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
@@ -127,8 +130,9 @@ class VueParticipant{
 			$res="Pas de liste correspondante";
 		}
 		else{
+            $no = $this->objet->no;
 			$res="<section>
-			<form action=\"modifier_liste/".$this->objet->token."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
+			<form action='". $this->container->router->pathFor('modifListe',['no'=>$no])."' method=\"POST\" name=\"formmlist\" id=\"formmlist\">
 				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"date\" name=\"exp\" size=11 required=\"true\"></p>
@@ -387,8 +391,9 @@ class VueParticipant{
 
     private function render_displayListePartage(){
         $liste = $this->objet;
+        $creator = $liste->user->username;
         $res = "<h2>Nom de la liste : $liste->titre</h2>";
-        $res.= "<section>$liste->description</section>";
+        $res.= "<section>Createur : $creator</br>Description : $liste->description</section>";
         $res.="<ul>Les items de la liste :";
         $items = $liste->items;
         foreach($items as $i){
@@ -410,13 +415,7 @@ class VueParticipant{
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
         </form>";
 
-		$res.="<ul>Les items de la liste :";
-        $items = $this->objet->items;
-		foreach($items as $i){
-				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
-			}
-		$res=$res."</ul>";
-
+        $res.=$this->render_listItem();
 		return $res;
 	}
 
