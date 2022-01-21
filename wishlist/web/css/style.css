@@ -15,10 +15,48 @@
 	src: url(../polices/josefinsans.ttf);
 }
 
-div{
+aside{
+    display : grid;
+    grid-template-columns: 1fr ;
+    grid-template-rows: 1fr 1fr;
+    grid-column-start: 2;
+  	grid-column-end: 3;
+	grid-row-start: 1;
+  	grid-row-end: 2;
+    padding: 55%;
+	grid-gap: 20%;
+    
+}
 
-	background-color:#00CCFF;
+section{
+    grid-template-columns: 0.5fr 1fr 1fr;
+		grid-template-rows: 0.3fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+		grid-gap: 1em
+            
+}
+
+input[type = submit] {
+            box-shadow: 8px 3px 15px 1px #00C0FF;
+         }
+
+form{
+    border-radius: 18px 18px 18px 18px;
+    border : solid 5px #7B98FF
+    background: #205956;
+    background: linear-gradient(93deg,rgba(32,89,86,0.5), #DFFAFF) 
+}
+
+div{
 	text-align:center;
+	display: grid;
+	grid-template-columns: 2fr 0.50fr;
+	grid-template-rows: 4fr 0.01fr;
+	background-color: #D3CDC3;
+	padding: 1%;
+	grid-gap: 1%;
+	box-shadow: 2px 2px 0px #111111;
+	transition: box-shadow 200ms;
+    
 }
 
 html { 
@@ -43,6 +81,10 @@ img {
   	grid-row-end: 2;
 }
 
+label{
+    text-shadow: 2px 3px 5px rgba(0,0,0,0.8);
+}
+
 li{
 	color: #FF4655;
 	transition: color 300ms;
@@ -58,6 +100,7 @@ p {
 	font-size: 1em;
 	text-align: justify;
 	font-family: "josefin sans";
+    text-shadow: 2px 3px 5px rgba(0,0,0,0.8);
 }
 
 @media screen and (max-width: 1200px) and (min-width: 600px) {

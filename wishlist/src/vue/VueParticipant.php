@@ -137,43 +137,20 @@ class VueParticipant{
 			$res="Pas de liste correspondante";
 		}
 		else{
-			$res="
+			$res="<section>
 			<form action=\"modifier_liste/".$this->objet->token."\" method=\"POST\" name=\"formmlist\" id=\"formmlist\">
 				<p><label>Titre : ".$this->objet->titre." </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->description." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Expiration : ".$this->objet->expiration." </label><input type=\"text\" name=\"exp\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Modifier la liste\">
-			</form>
-
-			<form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
-				<input type=\"submit\" value=\"Supprimer la liste\">
-			</form>
-			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
-				<input type=\"submit\" value=\"Partager la liste\">
-			</form>
-			<form action=\"formulaire_item/".$this->objet->token."\" method=\"GET\" name=\"formadditem\" id=\"formadditem\">
-				<input type=\"submit\" value=\"Ajouter un item\">
 			</form>";
-			if($this->objet->publique==null){
-				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
-					<p><label>La liste n'est pas publique </label></p>
-					<input type=\"submit\" value=\"Rendre la liste publique\">
-				</form>";
-			}
-			else{
-				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
-					<p><label>La liste est publique </label></p>
-					<input type=\"submit\" value=\"Rendre la liste privée\">
-				</form>";
-			}
-
+			
 			$liste_ob=$this->objet->hasMany('mywishlist\models\Item', 'liste_id')->get();
 			if($liste_ob!=null){
 				$res=$res.
 				"<form action=\"supprimer_item/".$this->objet->token."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
-			
 			foreach($liste_ob as $ob){
 
 				$res=$res."
@@ -203,8 +180,6 @@ class VueParticipant{
 					</a>
 				</li>";
 				}
-
-
 			}
 			if($liste_ob!=null){
 				$res=$res.
@@ -212,7 +187,7 @@ class VueParticipant{
 					<input type=\"submit\" value=\"Supprimer les items sélectionnés\" id=\"envoi\">
 				</form>";
 			}
-
+			
 			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
             <p>
                 <label> Message </label>
@@ -221,9 +196,31 @@ class VueParticipant{
                 <textarea maxlength='300' cols='50' rows='6' name='Message' form=\"messagesubmit\">tapez votre message ici</textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
-            </form>";
-		}
+            </form></section>";
 
+			$res=$res."<aside><form action=\"formulaire_supprimer_liste/".$this->objet->token."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+				<input type=\"submit\" value=\"Supprimer la liste\">
+			</form>
+			<form action=\"partager_liste/".$this->objet->token."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+				<input type=\"submit\" value=\"Partager la liste\">
+			</form>
+			<form action=\"formulaire_item/".$this->objet->token."\" method=\"GET\" name=\"formadditem\" id=\"formadditem\">
+				<input type=\"submit\" value=\"Ajouter un item\">
+			</form>";
+			if($this->objet->publique==null){
+				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+					<p><label>La liste n'est pas publique </label></p>
+					<input type=\"submit\" value=\"Rendre la liste publique\">
+				</form>";
+			}
+			else{
+				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+					<p><label>La liste est publique </label></p>
+					<input type=\"submit\" value=\"Rendre la liste privée\">
+				</form>";
+			}
+			$res=$res."</aside>";
+		}
 		return $res;
 	}
 
