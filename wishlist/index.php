@@ -232,7 +232,7 @@ $app->post('/liste/formulaire_modif_liste/supprimer_item/{no}[/]',
 /**
 * Ajouter une cagnotte
 */
-$app->post('/formulaire_modif_liste/formulaire_modification_item/ajout_cagnotte/{id}[/]',
+$app->post('/liste/formulaire_modif_liste/formulaire_modification_item/ajout_cagnotte/{id}[/]',
 	ControleurItem::class.':addCagnotte')->setName('cagnotte');
 	
 /**
