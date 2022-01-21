@@ -17,9 +17,14 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
-		
-        return $this->hasMany(Item::class, 'liste_id')->get();
+        return $this->hasMany(Item::class, 'liste_id');
+    }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo l'id créateur de la liste
+     */
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
     }
 	
 	/**
@@ -32,21 +37,17 @@ class Liste extends Model{
 	/**
 	* Permet de creer une liste et l'ajoute a la base
 	*/
-	public function createList($des,$exp,$titre){
-		$title=filter_var($titre,FILTER_SANITIZE_STRING); 
-		$test=Liste::where('titre','=',$title)->first();
-		
-		if($test==null){
-			$this->description=filter_var($des,FILTER_SANITIZE_STRING);
-			$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
-			$this->titre=$title;
-			$this->token=random_int(1,10000);
-			if(isset($_SESSION['profile'])){
-				$this->creator=$_SESSION['profile']['username'];
-			}
-			
-			$this->save();
-		}
+	public function createList($des,$exp,$titre,$userid,$publique){
+		$title=filter_var($titre,FILTER_SANITIZE_STRING);
+        $this->description=filter_var($des,FILTER_SANITIZE_STRING);
+        $this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
+        $this->titre=$title;
+        $this->token=random_int(1,10000);
+        $this->user_id = $userid;
+        if($publique){
+            $this->publique = 'x';
+        }
+        $this->save();
 	}
 	
 	/**
@@ -89,6 +90,13 @@ class Liste extends Model{
 		
 		$this->save();
 	}
+
+    /**
+     * Ajoute un message à une liste
+     */
+    public function ajouterMessage(String $message){
+        //TODO
+    }
 }
 
 

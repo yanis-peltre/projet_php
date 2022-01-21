@@ -1,5 +1,10 @@
 <?php
 
+//TODO Améliorer interface
+// Modification et suppression des comptes
+// Afficher la liste des créateurs au lieu des listes publiques
+
+
 require_once __DIR__ .'/vendor/autoload.php';
 $config = require_once __DIR__ . "/src/conf/settings.php";
 
@@ -24,18 +29,118 @@ $db->setAsGlobal();
 $db->bootEloquent();
 
 
+// ACCUEIL -----------------------------
 /**
  * Page d'accueil
  */
 $app->get('/',
     ControleurAccueil::class.":displayAccueil")->setName("accueil");
 
-/**
-* Liste des listes
-*/
 
-$app->get('/liste[/]',
-    ControleurListe::class.":listListe")->setName("liste");
+// LISTE -----------------------------
+/**
+* Voir toutes les listes publiques
+*/
+$app->get('/listesPubliques[/]',
+    ControleurListe::class.":publicLists")->setName("listesPubliques");
+
+/**
+ * Voir les listes personnelles créées
+ */
+
+$app->get('/listes_persos[/]',
+    ControleurListe::class.':myLists')->setName('listesPersos');
+
+/**
+ * Affiche une liste
+ */
+$app->get('/liste/{no}[/]',
+    ControleurListe::class.":afficheListe")->setName("liste");
+
+/**
+ * Affiche une liste partagée
+ */
+
+$app->get('/listePartagee/{sharedToken}[/]',
+    ControleurListe::class.":afficheListePartagee")->setName("sharedListe");
+
+/**
+ * Formulaire d'ajout de liste
+ */
+
+$app->get('/formulaire_liste[/]',
+    ControleurListe::class.':formAddList')->setName("formAjouterListe");
+
+/**
+ * Ajout de liste
+ */
+
+$app->post('/ajouter_liste[/]',
+    ControleurListe::class.':addList')->setName("ajoutListe");
+
+
+/**
+ * Formulaire modification d'une liste
+ */
+
+$app->get('/liste/formulaire_modif_liste/{no}[/]',
+    ControleurListe::class.':formModifyList')->setName("formModifyList");
+
+
+/**
+ * Modification d'une liste
+ */
+
+$app->post('/liste/formulaire_modif_liste/modifier_liste/{no}[/]',
+    ControleurListe::class.':modifyList')->setName("modifListe");
+
+
+/**
+ * Formulaire suppression d'une liste
+ */
+
+$app->get('/liste/formulaire_modif_liste/formulaire_supprimer_liste/{no}[/]',
+    ControleurListe::class.':formDeleteList')->setName("formDeleteList");
+
+
+/**
+ * Suppression d'une liste
+ */
+
+$app->post('/liste/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{no}[/]',
+    ControleurListe::class.':deleteList')->setName("deleteList");
+
+/**
+ * Partager une liste 7524
+ */
+
+$app->get('/liste/formulaire_modif_liste/partager_liste/{no}[/]',
+    ControleurListe::class.':shareList')->setName("shareList");
+
+/**
+ * Formulaire accès liste partagée
+ */
+
+$app->get('/acces_partage[/]',
+    ControleurListe::class.':formCheckList');
+
+/**
+ * Voir une liste partagée
+ */
+
+$app->get('/acces_partagee/voir_liste_partagee/{tokenPartage}[/]',
+    ControleurListe::class.':checkList')->setName('checkList');
+
+/**
+ * Ajoute un message à une liste
+ */
+$app->post('/liste/{no}/ajouterMessage[/]',
+    ControleurListe::class.':ajouterMessage')->setName("ajouterMessageListe");
+
+
+
+
+// ITEMS ----------------------------------------------
 
 /**
 * Formulaire des items d'une liste
@@ -45,15 +150,7 @@ $app->get('/cadeaux[/]',
     ControleurAccueil::class.":displayItemListe")->setName("cadeaux");
 
 /**
-* Liste des items d'une liste
-*/
-
-$app->get('/cadeaux/afficheCadeaux[/]',
-    ControleurItem::class.":listItem")->setName("cadeaux");
-
-
-/**
-* Un item en particulier
+* Voir un item en particulier
 */
 
 $app->get('/item/{id}[/]',
@@ -66,127 +163,59 @@ $app->get('/item/{id}[/]',
 $app->post('/item/reserver/{id}[/]',
     ControleurItem::class.':reservItem')->setName("reserver");
 
-/**
-* Formulaire d'ajout de liste 8569
-*/
 
-$app->get('/formulaire_liste[/]',
-    ControleurListe::class.':formAddList')->setName("formAjouterListe");
+
 
 
 /**
-* Ajout de liste
-*/
+ * Formulaire ajout d'un item a une liste
+ */
 
-$app->post('/ajouter_liste[/]',
-    ControleurListe::class.':addList')->setName("ajoutListe");
-
-
-/**
-* Formulaire ajout d'un item a une liste
-*/
-
-$app->get('/formulaire_modif_liste/formulaire_item/{token}[/]',
-    ControleurItem::class.':formAddItem')->setName("formAjouterItemAListe");
-
+$app->get('/liste/{no}/formulaireAjoutItem[/]',
+    ControleurItem::class.':formAddItem')->setName("formAddItemList");
 
 /**
 * Ajout d'item a une liste
 */
 
-$app->post('/formulaire_modif_liste/formulaire_item/ajouter_item/{token}[/]',
-    ControleurItem::class.':addItem')->setName("ajouterItemAListe");
+$app->post('/liste/{no}/ajouter_item[/]',
+    ControleurItem::class.':addItem')->setName("AddItemList");
 
 
-/**
-* Formulaire modification d'une liste
-*/
 
-$app->get('/formulaire_modif_liste/{token}[/]',
-    ControleurListe::class.':formModifyList')->setName("formModifListe");
-
-
-/**
-* Modification d'une liste
-*/
-
-$app->post('/formulaire_modif_liste/modifier_liste/{token}[/]',
-    ControleurListe::class.':modifyList')->setName("modifListe");
-
-
-/**
-* Formulaire suppression d'une liste
-*/
-
-$app->get('/formulaire_modif_liste/formulaire_supprimer_liste/{token}[/]',
-    ControleurListe::class.':formDeleteList')->setName("formDeleteListe");
-
-
-/**
-* Suppression d'une liste
-*/
-
-$app->post('/formulaire_modif_liste/formulaire_supprimer_liste/supprimer_liste/{token}[/]',
-    ControleurListe::class.':deleteList')->setName("supprimer_liste")->setName("deleteListe");
 
 
 /**
 * Formulaire de modification d'un item
 */
 
-$app->get('/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
-    ControleurItem::class.':formModifyItem')->setName('formulaire_modification_item');
+$app->get('/liste/formulaire_modif_liste/formulaire_modification_item/{id}[/]',
+    ControleurItem::class.':formModifyItem')->setName('formModifItem');
 
 
 /**
 * Modification d'un item
 */
 
-$app->post('/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
-    ControleurItem::class.':modifyItem')->setName('modifier_item');
+$app->post('/liste/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
+    ControleurItem::class.':modifyItem')->setName('modifItem');
 
 
 /**
 * Formulaire de suppression d'un item
 */
 
-$app->get('/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
+$app->get('/liste/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
     ControleurItem::class.':formDeleteItem')->setName('formulaire_suppression_item');
 
 
 /**
 * Suppression d'un item
 */
-$app->post('/formulaire_modif_liste/supprimer_item/{token}[/]',
-    ControleurItem::class.':deleteItem')->setName('supprimer_item');
+$app->post('/liste/formulaire_modif_liste/supprimer_item/{no}[/]',
+    ControleurItem::class.':deleteItem')->setName('deleteItem');
 	
-/**
-* Partager une liste 7524
-*/
 
-$app->get('/formulaire_modif_liste/partager_liste/{token}[/]',
-    ControleurListe::class.':shareList');
-	
-/**
-* Formulaire accès liste partagée
-*/
-
-$app->get('/acces_partage[/]',
-    ControleurListe::class.':formCheckList');
-	
-/**
-* Voir une liste partagée
-*/
-
-$app->get('/acces_partagee/voir_liste_partagee[/]',
-    ControleurListe::class.':checkList');
-	
-/**
-* Voir les listes personnelles créées
-*/
-
-$app->get('/listes_persos[/]',
-    ControleurListe::class.':myList');
 	
 /**
 * Ajouter une cagnotte
@@ -204,19 +233,7 @@ $app->post('/item/participer_cagnotte/{id}[/]',
 * Ajouter un message à une liste
 */
 $app->post('/formulaire_modif_liste/commentaire/{token}[/]',
-    ControleurItem::class.':ajouterMessage')->setName('ajouter_message');
-
-/**
- * Liste tous les users A SUPPRIMER
- */
-$app->get('/users[/]',
-    ControleurUser::class.':listerUsers')->setName('listUsers');
-
-/**
- * Liste tous les roles A SUPPRIMER
- */
-$app->get('/roles[/]',
-    ControleurUser::class.':listerRoles')->setName('listRole');
+    ControleurItem::class.':ajouterMessage')->setName('ajouterMessageItem');
 
 /**
  * Formulaire inscription
@@ -233,7 +250,7 @@ $app->post('/inscription[/]',
 /**
  * Rendre une liste publique
  */
-$app->post('/formulaire_modif_liste/publique/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/publique/{no}[/]',
     ControleurListe::class.':putPublic')->setName('publique');
 
 /**
@@ -248,7 +265,34 @@ $app->get('/formulaireConnexion[/]',
 $app->post('/connexion[/]',
     ControleurUser::class.':connexion')->setName('connexion');
 
+/**
+ * Deconnexion
+ */
 $app->get('/deconnexion[/]',
     ControleurUser::class.':deconnexion')->setName('deconnexion');
+
+/**
+ * Voir profil
+ */
+$app->get('/myProfile[/]',
+ControleurUser::class.':voirCompte')->setName('voirProfil');
+
+/**
+ * formulaire Modification de compte
+ */
+$app->get('/myProfile/formulaire_Modif[/]',
+    ControleurUser::class.':formModifCompte')->setName('formModifCompte');
+
+/**
+ * Modification de compte
+ */
+$app->post('/myProfile/modification[/]',
+    ControleurUser::class.':modifCompte')->setName('modifCompte');
+
+/**
+ * Modification de compte
+ */
+$app->post('/myProfile/deleteAccount[/]',
+    ControleurUser::class.':supprimerCompte')->setName('supprimerCompte');
 
 $app->run();
