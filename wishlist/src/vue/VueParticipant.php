@@ -21,13 +21,18 @@ class VueParticipant{
 
 	private function render_listList() {
 		if($this->objet!==null){
-			$res="<ul>Toutes les listes publiques :";
+			$res="<ol>Toutes les listes publiques :";
 			foreach($this->objet as $l){
+                if(isset($l->user)){
+                    $creator = $l->user->username;
+                }else{
+                    $creator = "";
+                }
 				if($l->publique=='x'){
-					$res.="<li><a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->no . " : ".$l->titre."</a></li>";
+					$res.="<li>$creator - <a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->titre."</a></li>";
 				}
 			}
-			$res=$res."</ul>";
+			$res=$res."</ol>";
 		}
 		else{
 			$res="<p>Il n'y a actuellement aucune liste publique.</p>";
@@ -40,13 +45,13 @@ class VueParticipant{
         $titre = $this->objet->titre;
         $desc = $this->objet->description;
         $creator = $this->objet->user->username;
-        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ul>Les items de la liste :";
+        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
-                $res=$res."<li><a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
+                $res=$res."<li> <a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">$i->nom </a> - $i->tarif euros </br>$i->descr</li>";
             }
-            $res=$res."</ul>";
+            $res=$res."</ol>";
 		}
 		else{
 			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
@@ -57,7 +62,11 @@ class VueParticipant{
 
 	private function render_getItem() {
 		if($this->objet!=null){
-			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
+            $item = $this->objet;
+			$res="<h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
+            <p>Description : $item->descr</p>";
+            if(isset($item->img)) $res.="<img src ='$item->img' alt='Image'>";
+            if(isset($item->url)) $res.="<p>Plus de détails : <a href='$item->url'>Cliquez ici</a></p>";
 			if($this->objet->cagnotte!==null){
 				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
@@ -442,12 +451,12 @@ class VueParticipant{
         $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
-        $res.="<ul>Mes listes :";
+        $res.="<ol>Mes listes :";
         if($this->objet!==null){
             foreach($this->objet as $l){
-                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
+                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">$l->titre</a></li>";
             }
-            $res.="</ul>";
+            $res.="</ol>";
         }
         else{
             $res.="<p>Vous n'avez pas encore créé de liste.</p>";
