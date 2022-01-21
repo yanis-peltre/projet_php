@@ -187,7 +187,7 @@ class ControleurItem extends Controleur
 		$param=$rq->getParsedBody();
 		$item->reservItem($param['name'],$param['mes']);
 		$v=new VueParticipant($this->container,$item);
-		$rs->getBody()->write($v->render(25));
+		$rs->getBody()->write($v->render(27));
 		return $rs;
 	}
 

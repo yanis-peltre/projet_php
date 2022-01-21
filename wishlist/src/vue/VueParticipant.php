@@ -49,7 +49,13 @@ class VueParticipant{
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
-                $res=$res."<li> <a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">$i->nom </a> - $i->tarif euros </br>$i->descr</li>";
+                $res=$res."<li> <a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">$i->nom </a> - $i->tarif euros <br>$i->descr";
+				if($i->reserve!==null){
+					$res=$res."<br><label> Reservé</label></li>";
+				}
+				else{
+					$res=$res."</li>";
+				}
             }
             $res=$res."</ol>";
 		}
@@ -65,7 +71,7 @@ class VueParticipant{
 
 			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
 			if($this->objet->reserve==null){
-				$res=$res."<form action=\"reserver/".$this->objet->id."\" method=\"POST\" name=\"res\" id=\"res\">
+				$res=$res."<form action=\"".$this->container->router->pathFor('reserver',['id'=>$this->objet->id])."\" method=\"POST\" name=\"res\" id=\"res\">
 					<p><label>Entrer un nom pour réserver l'item : </label>
 					<input type=\"text\" name=\"name\" size=40 required=\"true\" ";
 					if(isset($_SESSION['profile']['username'])){
@@ -498,6 +504,10 @@ class VueParticipant{
         </form>";
         return $res;
     }
+	
+	public function render_reservItem(){
+		return "<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
+	}
 
 	public function render($selecteur) {
 		switch ($selecteur) {
@@ -603,6 +613,9 @@ class VueParticipant{
             }
             case 26 :
                 $content = $this->render_formShareList();
+                break;
+			case 27 :
+                $content = $this->render_reservItem();
                 break;
 			default : {
 				$content = "Pas de contenu<br>";
