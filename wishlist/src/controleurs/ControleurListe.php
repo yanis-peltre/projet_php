@@ -274,7 +274,7 @@ class ControleurListe extends Controleur
         $liste->ajouterMessage($message);
 		
 		$v = new VueParticipant($this->container,$liste) ;
-		$rs->write($v->render(8));
+		$rs->write($v->render(28));
         return $rs;
     }
 

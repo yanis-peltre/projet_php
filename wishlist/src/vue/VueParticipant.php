@@ -512,6 +512,16 @@ class VueParticipant{
 	public function render_reservItem(){
 		return "<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
 	}
+	
+	private function render_addMessage(){
+		if($this->objet->message!==null){
+			$res="<p>Message ajouté à la liste ".$this->objet->titre.".</p>";
+		}
+        else{
+			$res="<p>Aucun message ajouté.</p>";
+		}
+		return $res;
+    }
 
 	public function render($selecteur) {
 		switch ($selecteur) {
@@ -620,6 +630,9 @@ class VueParticipant{
                 break;
 			case 27 :
                 $content = $this->render_reservItem();
+                break;
+			case 28 :
+                $content = $this->render_addMessage();
                 break;
 			default : {
 				$content = "Pas de contenu<br>";
