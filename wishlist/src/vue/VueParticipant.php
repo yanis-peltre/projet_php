@@ -280,14 +280,11 @@ class VueParticipant{
 
 	private function render_deleteList() {
 		if($this->objet!==null){
-<<<<<<< HEAD
+
 			$res="<p>Liste ".$this->objet->titre." supprimée.<a href=\"".
 			$this->container->router->pathFor('listesPersos')."\">Retourner à ma liste</a></p>";
-=======
-			$res="<p>Liste ".$this->objet->titre." supprimée. <a href=\"".
-			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>
-			";
->>>>>>> parent of 5c6b8b0 (Update VueParticipant.php)
+
+
 		}
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
