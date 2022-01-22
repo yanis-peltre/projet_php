@@ -15,7 +15,7 @@ class VueListe
 	
 	private function render_listList() {
 		if($this->objet!==null){
-			$res="<ol>Toutes les listes publiques :";
+			$res="<section><ol>Toutes les listes publiques :";
 			foreach($this->objet as $l){
                 if(isset($l->user)){
                     $creator = $l->user->username;
@@ -26,10 +26,10 @@ class VueListe
 					$res.="<li>$creator - <a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->titre."</a></li>";
 				}
 			}
-			$res=$res."</ol>";
+			$res=$res."</ol></section>";
 		}
 		else{
-			$res="<p>Il n'y a actuellement aucune liste publique.</p>";
+			$res="<section><p>Il n'y a actuellement aucune liste publique.</p></section>";
 		}
 
 		return $res;
@@ -37,7 +37,7 @@ class VueListe
 	
 	private function render_displayListePerso(){
         $no = $this->objet->no;
-        $res ="<form action=\"".
+        $res ="<section><form action=\"".
             $this->container->router->pathFor('formModifyList',['no'=> $no])."
             \" method=\"GET\">
            <p><input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\"></p>
@@ -52,7 +52,7 @@ class VueListe
 			$titre = $this->objet->titre;
 			$desc = $this->objet->description;
 			$creator = $this->objet->user->username;
-			$res=$res."<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
+			$res=$res."<h2>Liste : $titre</h2>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
 			
             foreach($items as $i){
                 $res=$res."<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
@@ -63,10 +63,10 @@ class VueListe
 					$res=$res."</li>";
 				}
             }
-            $res=$res."</ol>";
+            $res=$res."</ol></section>";
 		}
 		else{
-			$res=$res."<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
+			$res=$res."<section><p>Il n'y a actuellement aucun objet dans cette liste.</p></section>";
 		}
 
 		return $res;
@@ -396,10 +396,20 @@ class VueListe
 				<title>sometext</title>
 			</head>
 			<body>
-				<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+				<header>
+					<nav>
+						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+					</nav>
+				</header>
+				
                 <div class=\"content\">
 					$content
 				</div>
+				<footer>
+					<ul>
+						<li><a href=\"#\">Retourner en haut</a></li>
+					</ul>
+				</footer>
 			</body>
 		<html>";
 	}

@@ -271,10 +271,20 @@ class VueItem
 				<title>sometext</title>
 			</head>
 			<body>
-				<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+				<header>
+					<nav>
+						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+					</nav>
+				</header>
+				
                 <div class=\"content\">
 					$content
 				</div>
+				<footer>
+					<ul>
+						<li><a href=\"#\">Retourner en haut</a></li>
+					</ul>
+				</footer>
 			</body>
 		<html>";
 	}

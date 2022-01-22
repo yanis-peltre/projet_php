@@ -37,23 +37,33 @@ class VueAccount
             default:
                 $content = "Pas de contenu disponible";
         }
-        $html = "
-		<!DOCTYPE html>
-		<html>
+        return 
+		"<!DOCTYPE html>
+
+		<html lang='fr'>
 			<head>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/js/script.js\"></script>
-				<title>sometext</title>
 				<meta charset=\"utf-8\"/>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
+				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
+				<title>sometext</title>
 			</head>
 			<body>
-				<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+				<header>
+					<nav>
+						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+					</nav>
+				</header>
+				
                 <div class=\"content\">
 					$content
 				</div>
+				<footer>
+					<ul>
+						<li><a href=\"#\">Retourner en haut</a></li>
+					</ul>
+				</footer>
 			</body>
 		<html>";
-        return $html;
     }
 
     /**
