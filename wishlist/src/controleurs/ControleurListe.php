@@ -268,10 +268,10 @@ class ControleurListe extends Controleur
 	}
 
     public function ajouterMessage(Request $rq, Response $rs, array $args) : Response{
-        $token = $args['token'];
-        $message = $rq->getParsedBody()['Message'];
-        $liste = Liste::firstWhere('token',$token);
-        $liste->ajouterMessage($message);
+        $no = $args['no'];
+        $message = $rq->getParsedBody();
+        $liste = Liste::firstWhere('no',$no);
+        $liste->ajouterMessage($message['Message']);
 		
 		$v = new VueParticipant($this->container,$liste) ;
 		$rs->write($v->render(28));

@@ -134,7 +134,7 @@ $app->get('/acces_partage/voir_liste_partagee[/]',
  * Ajoute un message à une liste
 
  */
-$app->post('/liste/{no}/ajouterMessage[/]',
+$app->post('/liste/formulaire_modif_liste/ajouterMessage/{no}[/]',
     ControleurListe::class.':ajouterMessage')->setName("ajouterMessageListe");
 
 

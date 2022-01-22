@@ -148,7 +148,9 @@ class VueParticipant{
 
 	private function render_addItem() {
 		if($this->objet!==null){
-			$res="<p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."</p>";
+			$res="<p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."
+			<a href=\"".
+			$this->container->router->pathFor('liste',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p>";
 		}
 		else{
 			$res="<p>Impossible d'ajouter cet item.</p>";
@@ -210,12 +212,12 @@ class VueParticipant{
 				</form>";
 			}
 			
-			$res=$res."<form action=\"".$this->container->router->pathFor('ajouterMessageItem',['token'=>$this->objet->token])."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
+			$res=$res."<form action=\"".$this->container->router->pathFor('ajouterMessageListe',['no'=>$this->objet->no])."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
             <p>
                 <label> Message </label>
             </p>
             <p>
-                <textarea maxlength='300' cols='50' rows='6' name='Message' placeholder='tapez votre message ici' form=\"messagesubmit\"></textarea>
+                <textarea maxlength='300' cols='50' rows='6' name='Message' placeholder='tapez votre message ici'></textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form></section>";
@@ -250,7 +252,8 @@ class VueParticipant{
 
 	private function render_modifyList() {
 		if($this->objet!==null){
-			$res="<p>Liste modifiée en ".$this->objet->titre." .</p>";
+			$res="<p>Liste modifiée en ".$this->objet->titre." .<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
 		}
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
@@ -311,15 +314,10 @@ class VueParticipant{
 		return $res;
 	}
 
-	private function render_ajouterMessage(){
-        $res=$this->objet->addItem($_POST['Message']);
-
-        return $res;
-    }
-
 	private function render_modifyItem() {
 		if($this->objet!==null){
-			$res="<p>Item ".$this->objet->nom." modifiée.</p>";
+			$res="<p>Item ".$this->objet->nom." modifiée.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p>";
 		}
 		else{
 			$res="<p>Pas d'item correspondant.</p>";
@@ -360,7 +358,8 @@ class VueParticipant{
 	}
 
 	private function render_deleteItem() {
-		return "<p>Les items ont été supprimés.</p>";
+		return "<p>Les items ont été supprimés.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet])."\">Retourner à ma liste</a></p>";
 	}
 
 	private function render_displayAccueil() {
@@ -414,7 +413,8 @@ class VueParticipant{
 		return "
 			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
 			L'url de partage est : ".$this->container->router->pathFor('checkList',['tokenPartage' => $this->objet->token_partage]).
-            " </p>
+            " <a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>
 		";
 	}
 
@@ -486,10 +486,12 @@ class VueParticipant{
 
 	public function render_putPublique(){
 		if($this->objet->publique=='x'){
-			$res="<p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.</p>";
+			$res="<p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
 		}
 		else{
-			$res="<p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.</p>";
+			$res="<p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
 		}
 		return $res;
 	}
@@ -528,13 +530,16 @@ class VueParticipant{
         return $res;
     }
 	
-	public function render_reservItem(){
-		return "<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
+	public function render_reservItem(){	
+		$res="<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
+		
+		return $res;
 	}
 	
 	private function render_addMessage(){
 		if($this->objet->message!==null){
-			$res="<p>Message ajouté à la liste ".$this->objet->titre.".</p>";
+			$res="<p>Message ajouté à la liste ".$this->objet->titre.".<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
 		}
         else{
 			$res="<p>Aucun message ajouté.</p>";

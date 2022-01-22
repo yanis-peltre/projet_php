@@ -143,10 +143,11 @@ class ControleurItem extends Controleur
 		
 		foreach($param as $cle=>$value){
 			$item=Item::where('id','=',$cle)->first();
+			$id=$item->liste_id;
 			$item->deleteItem();
 		}
 		
-		$v = new VueParticipant($this->container) ;
+		$v = new VueParticipant($this->container,$id) ;
 		$rs->getBody()->write($v->render(15)) ;
 		
 		return $rs ;

@@ -95,10 +95,8 @@ class Liste extends Model{
      * Ajoute un message à une liste
      */
     public function ajouterMessage(String $message){
-		if($this->message!=null){
-			$this->message=$message;
-			$this->save();
-		}
+		$this->message=$message;
+		$this->save();
     }
 }
 
