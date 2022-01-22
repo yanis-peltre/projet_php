@@ -131,18 +131,6 @@ $app->get('/acces_partage/voir_liste_partagee[/]',
     ControleurListe::class.':checkList')->setName('checkList');
 
 /**
- * Ajoute un message à une liste 7212
-*/
-/*$app->post('/acces_partage[/]',
-    ControleurListe::class.':checkList')->setName('checkList');*/
-
-/**
- * Voir une liste partagée
- */
-//$app->get('/acces_partagee/voir_liste_partagee/{tokenPartage}[/]',
-  //  ControleurListe::class.':checkList')->setName('checkList');
-
-/**
  * Ajoute un message à une liste
 
  */

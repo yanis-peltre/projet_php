@@ -280,9 +280,9 @@ class ControleurListe extends Controleur
 
 
     public function checkList(Request $rq, Response $rs, array $args) : Response{
-        $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('id'));
+        $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('sharedToken'));
         $v = new VueParticipant($this->container,$liste) ;
-        $rs->write($v->render(2));
+        $rs->write($v->render(25));
 
         return $rs;
     }

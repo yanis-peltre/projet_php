@@ -156,8 +156,7 @@ class ControleurItem extends Controleur
 	* Ajout d'une cagnotte
 	*/
 	public function addCagnotte(Request $rq, Response $rs, array $args):Response{
-        $id = intval($args['id']);
-		$item=Item::whereFirst('id',$id);
+		$item=Item::where('id','=',intval($args['id']))->first();
 		$item->addCagnotte();
 		$v=new VueParticipant($this->container,$item);
 		$rs->getBody()->write($v->render(20));
