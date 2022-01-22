@@ -275,7 +275,9 @@ class VueParticipant{
 
 	private function render_deleteList() {
 		if($this->objet!==null){
-			$res="<p>Liste ".$this->objet->titre." supprimée.</p>";
+			$res="<p>Liste ".$this->objet->titre." supprimée. <a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>
+			";
 		}
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
@@ -494,8 +496,9 @@ class VueParticipant{
         $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
+		if(count($this->objet) != 0){
         $res.="<ol>Mes listes :";
-        if($this->objet!==null){
+        
             foreach($this->objet as $l){
 
                 $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
@@ -506,10 +509,6 @@ class VueParticipant{
 					$res=$res."</p></li>";
 				}
 			}
-            $res.="</ul>";
-
-                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">$l->titre</a></li>";
-            
             $res.="</ol>";
 
         }
