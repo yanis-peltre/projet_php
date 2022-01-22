@@ -118,7 +118,9 @@ class VueParticipant{
 
 	private function render_addList() {
 		if($this->objet!==null){
-			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."</p>";
+			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
+			<a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
 		}
 		else{
 			$res="<p>Cette liste n'existe pas.</p>";

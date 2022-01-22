@@ -29,7 +29,7 @@ class ControleurListe extends Controleur
 	public function publicLists(Request $rq, Response $rs, array $args) {
 		$container = $this->container ;
 		
-		$v = new VueParticipant($this->container,Liste::allListe());
+		$v = new VueParticipant($this->container,Liste::orderBy('expiration')->get());
 		$rs->getBody()->write($v->render(1)) ;
 		
 		return $rs ;
