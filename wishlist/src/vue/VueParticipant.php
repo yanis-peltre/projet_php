@@ -49,7 +49,7 @@ class VueParticipant{
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
-                $res=$res."<li> <a href=\"".$this->container->router->pathFor('item',['id'=>$i->id])."\">$i->nom </a> - $i->tarif euros <br>$i->descr";
+                $res=$res."<li>$i->nom - $i->tarif euros <br>$i->descr";
 				if($i->reserve!==null){
 					$res=$res."<br><label> Reservé</label></li>";
 				}
@@ -60,7 +60,7 @@ class VueParticipant{
             $res=$res."</ol>";
 		}
 		else{
-			$res="<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
+			$res=$res."<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
 		}
 
 		return $res;
@@ -68,8 +68,12 @@ class VueParticipant{
 
 	private function render_getItem() {
 		if($this->objet!=null){
+            $item = $this->objet;
+			$res="<h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
+            <p>Description : $item->descr</p>";
+            if(isset($item->img)) $res.="<img src ='$item->img' alt='Image'>";
+            if(isset($item->url)) $res.="<p>Plus de détails : <a href='$item->url'>Cliquez ici</a></p>";
 
-			$res="<p>".$this->objet->id." : ".$this->objet->nom."</p>";
 			if($this->objet->reserve==null){
 				$res=$res."<form action=\"".$this->container->router->pathFor('reserver',['id'=>$this->objet->id])."\" method=\"POST\" name=\"res\" id=\"res\">
 					<p><label>Entrer un nom pour réserver l'item : </label>
@@ -84,14 +88,8 @@ class VueParticipant{
 				</form>";
 			}
 
-            $item = $this->objet;
-			$res=$res."<h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
-            <p>Description : $item->descr</p>";
-            if(isset($item->img)) $res.="<img src ='$item->img' alt='Image'>";
-            if(isset($item->url)) $res.="<p>Plus de détails : <a href='$item->url'>Cliquez ici</a></p>";
-
 			if($this->objet->cagnotte!==null){
-				$res=$res."<form action=\"participer_cagnotte/".$this->objet->id."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
+				$res=$res."<form action=\"".$this->container->router->pathFor('donner_cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
 					<input type=\"text\" name=\"cag\" size=40 required=\"true\"></p>
 					<input type=\"submit\" value=\"Participer\">
@@ -120,7 +118,9 @@ class VueParticipant{
 
 	private function render_addList() {
 		if($this->objet!==null){
-			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."</p>";
+			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
+			<a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
 		}
 		else{
 			$res="<p>Cette liste n'existe pas.</p>";
@@ -180,47 +180,30 @@ class VueParticipant{
 				"<form action=\"".$this->container->router->pathFor('deleteItem',['no'=>$no])."\" method=\"POST\" name=\"formitems\" id=\"formitems\">
 					<ol>Les items de la liste :";
 			}
-
-			$path = getcwd();
-			$path = str_replace("\\", "/", $path);
-			
-			$res = $res . "
-			<!-- " . $path . "-->
-			";
 			foreach($liste_ob as $ob){
-
-				$nomImg = substr($ob->img,0,4);
 
 				$res=$res."
 				<li>
-					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">
+					<input type=\"checkbox\" id=\"".$ob->id."\" name=\"".$ob->id."\">";
 
-					<a href=\"formulaire_modification_item/".$ob->id."\">
+					$res=$res."<a href=\"formulaire_modification_item/".$ob->id."\">
 						<img src=\"";
-					
-					if($nomImg == "http") {
-						$res =  $res . $ob->img . "\" width=100 height=100 alt=\"".$ob->nom."\">
-						</a>
-					</li>";
-					}else{
-						$res = $res . $path . "/web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
-						</a>
-					</li>";
-					}
-					
-					if($ob->reserve!==null){
-						$res=$res."</a> Réservé</p></li>";
-					}
-					else{
-						$res=$res."</a></p></li>";
-					}
 
-					$res=$res."
-					<a href=\"formulaire_modification_item/".$ob->id."\">
-						";
+				$nomImg = substr($ob->img,0,4);
 
-
+				if($nomImg == "http") {
+					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					</a>";
 				
+				}
+				else{
+					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					</a>";
+				}
+				if($ob->reserve!==null){
+					$res = $res ."<label>Reservé</label>";
+				}
+				 $res = $res ."</li>";
 			}
 			if($liste_ob!=null){
 				$res=$res.
@@ -297,8 +280,14 @@ class VueParticipant{
 
 	private function render_deleteList() {
 		if($this->objet!==null){
+<<<<<<< HEAD
 			$res="<p>Liste ".$this->objet->titre." supprimée.<a href=\"".
 			$this->container->router->pathFor('listesPersos')."\">Retourner à ma liste</a></p>";
+=======
+			$res="<p>Liste ".$this->objet->titre." supprimée. <a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>
+			";
+>>>>>>> parent of 5c6b8b0 (Update VueParticipant.php)
 		}
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
@@ -435,16 +424,21 @@ class VueParticipant{
 	}
 
     private function render_displayListePartage(){
-        $liste = $this->objet;
-        $creator = $liste->user->username;
-        $res = "<h2>Nom de la liste : $liste->titre</h2>";
-        $res.= "<section>Createur : $creator</br>Description : $liste->description</section>";
-        $res.="<ul>Les items de la liste :";
-        $items = $liste->items;
-        foreach($items as $i){
-            $res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
-        }
-        $res=$res."</ul>";
+		if($this->objet!==null){
+			$liste = $this->objet;
+			$creator = $liste->user->username;
+			$res = "<h2>Nom de la liste : $liste->titre</h2>";
+			$res.= "<section>Createur : $creator</br>Description : $liste->description</section>";
+			$res.="<ul>Les items de la liste :";
+			$items = $liste->items;
+			foreach($items as $i){
+				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
+			}
+			$res=$res."</ul>";
+		}
+        else{
+			$res="<p>Aucune liste correspondante</p>";
+		}
 
         return $res;
     }
@@ -460,8 +454,28 @@ class VueParticipant{
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
         </form>";
 
-
-        $res.=$this->render_listItem();
+		$items = $this->objet->items;
+        
+		if(count($items) != 0){
+			$titre = $this->objet->titre;
+			$desc = $this->objet->description;
+			$creator = $this->objet->user->username;
+			$res=$res."<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
+			
+            foreach($items as $i){
+                $res=$res."<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
+				if($i->reserve!==null){
+					$res=$res."<br><label> Reservé</label></li>";
+				}
+				else{
+					$res=$res."</li>";
+				}
+            }
+            $res=$res."</ol>";
+		}
+		else{
+			$res=$res."<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
+		}
 
 		return $res;
 	}
@@ -491,8 +505,9 @@ class VueParticipant{
         $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
+		if(count($this->objet) != 0){
         $res.="<ol>Mes listes :";
-        if($this->objet!==null){
+        
             foreach($this->objet as $l){
 
                 $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">".$l->no . " : ".$l->titre."</a></li>";
