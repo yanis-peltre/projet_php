@@ -40,7 +40,7 @@ class VueListe
         $res ="<section><form action=\"".
             $this->container->router->pathFor('formModifyList',['no'=> $no])."
             \" method=\"GET\">
-           <p><input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\"></p>
+           <input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\">
         </form> 
         <form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
             <input type='submit' name='ajouterItem' value='Ajouter un item'>
@@ -52,7 +52,7 @@ class VueListe
 			$titre = $this->objet->titre;
 			$desc = $this->objet->description;
 			$creator = $this->objet->user->username;
-			$res=$res."<h2>Liste : $titre</h2>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
+			$res=$res."<h2>Liste : $titre</h2>Createur : $creator</br>Description : $desc<ol>Les items de la liste :";
 			
             foreach($items as $i){
                 $res=$res."<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
@@ -74,13 +74,13 @@ class VueListe
 	
 	private function render_formAddList() {
 		$res="
-		<form action=\"".$this->container->router->pathFor("ajoutListe") ."\" method=\"POST\" name=\"formlist\" id=\"formlist\">
+		<section><form action=\"".$this->container->router->pathFor("ajoutListe") ."\" method=\"POST\" name=\"formlist\" id=\"formlist\">
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
 			<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 			<p><label>Date d'expiration : </label><input type=\"date\" name=\"exp\" required=\"true\"></p>
 			<p><label>Rendre publique : </label><input type=\"checkbox\" name=\"publique\" \"></p>
 			<input type=\"submit\" value=\"Ajouter la liste\">
-		</form>";
+		</form></section>";
 
 		return $res;
 	}
