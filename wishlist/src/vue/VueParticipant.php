@@ -220,7 +220,7 @@ class VueParticipant{
                 <label> Message </label>
             </p>
             <p>
-                <textarea maxlength='300' cols='50' rows='6' name='Message' form=\"messagesubmit\">tapez votre message ici</textarea>
+                <textarea maxlength='300' cols='50' rows='6' name='Message' placeholder='tapez votre message ici' form=\"messagesubmit\"></textarea>
             </p>
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form></section>";

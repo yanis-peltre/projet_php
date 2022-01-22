@@ -269,7 +269,7 @@ class ControleurListe extends Controleur
 
     public function ajouterMessage(Request $rq, Response $rs, array $args) : Response{
         $no = $args['no'];
-        $message = $rq->getParsedBody()['message'];
+        $message = $rq->getParsedBody()['Message'];
         $liste = Liste::firstWhere('no',$no);
         $liste->ajouterMessage($message);
         return $rs;
