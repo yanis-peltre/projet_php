@@ -244,7 +244,7 @@ $app->post('/item/participer_cagnotte/{id}[/]',
 /**
 * Ajouter un message à une liste
 */
-$app->post('/liste/formulaire_modif_liste/{no}/commentaire/{token}[/]',
+$app->post('/liste/formulaire_modif_liste/commentaire/{token}[/]',
     ControleurListe::class.':ajouterMessage')->setName('ajouterMessageItem');
 
 /**

@@ -215,7 +215,7 @@ class VueParticipant{
 				</form>";
 			}
 			
-			$res=$res."<form action=\"commentaire/".$this->objet->token."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
+			$res=$res."<form action=\"".$this->container->router->pathFor('ajouterMessageItem',['token'=>$this->objet->token])."\" method=\"POST\" id='messagesubmit' name=\"messagesubmit\">
             <p>
                 <label> Message </label>
             </p>
@@ -225,7 +225,11 @@ class VueParticipant{
                 <input type=\"submit\" value=\"Ajouter Message\">
             </form></section>";
 
-			$res=$res."<aside><form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$no])."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
+			$res=$res."<aside>";
+			if($this->objet->message!==null){
+				$res=$res."<p>".$this->objet->message."</p>";
+			}
+			$res=$res."<form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$no])."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
 			</form>
 			<form action=\"".$this->container->router->pathFor('shareList',['no'=>$no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
