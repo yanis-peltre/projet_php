@@ -137,8 +137,17 @@ $app->get('/acces_partage/voir_liste_partagee[/]',
 $app->post('/liste/formulaire_modif_liste/ajouterMessage/{no}[/]',
     ControleurListe::class.':ajouterMessage')->setName("ajouterMessageListe");
 
+/**
+* Ajouter un message à une liste
+*/
+$app->post('/liste/formulaire_modif_liste/commentaire/{token}[/]',
+    ControleurListe::class.':ajouterMessage')->setName('ajouterMessageItem');
 
-
+/**
+ * Rendre une liste publique
+ */
+$app->post('/liste/formulaire_modif_liste/{no}/publique/{token}[/]',
+    ControleurListe::class.':putPublic')->setName('publique');
 
 // ITEMS ----------------------------------------------
 
@@ -147,7 +156,7 @@ $app->post('/liste/formulaire_modif_liste/ajouterMessage/{no}[/]',
 */
 
 $app->get('/cadeaux[/]',
-    ControleurAccueil::class.":displayItemListe")->setName("cadeaux");
+    ControleurItem::class.":displayItemListe")->setName("cadeaux");
 
 /**
 * Voir un item en particulier
@@ -163,10 +172,6 @@ $app->get('/item/{id}[/]',
 $app->post('/item/reserver/{id}[/]',
     ControleurItem::class.':reservItem')->setName("reserver");
 
-
-
-
-
 /**
  * Formulaire ajout d'un item a une liste
  */
@@ -180,10 +185,6 @@ $app->get('/liste/{no}/formulaireAjoutItem[/]',
 
 $app->post('/liste/{no}/ajouter_item[/]',
     ControleurItem::class.':addItem')->setName("AddItemList");
-
-
-
-
 
 /**
 * Formulaire de modification d'un item
@@ -229,11 +230,9 @@ $app->post('/liste/formulaire_modif_liste/formulaire_modification_item/ajout_cag
 $app->post('/item/participer_cagnotte/{id}[/]',
 	ControleurItem::class.':giveCagnotte')->setName('donner_cagnotte');
 
-/**
-* Ajouter un message à une liste
-*/
-$app->post('/liste/formulaire_modif_liste/commentaire/{token}[/]',
-    ControleurListe::class.':ajouterMessage')->setName('ajouterMessageItem');
+
+// USER -----------------------------------------------
+
 
 /**
  * Formulaire inscription
@@ -246,12 +245,6 @@ $app->get('/formulaireInscription[/]',
  */
 $app->post('/inscription[/]',
     ControleurUser::class.':inscription')->setName('inscription');
-	
-/**
- * Rendre une liste publique
- */
-$app->post('/liste/formulaire_modif_liste/{no}/publique/{token}[/]',
-    ControleurListe::class.':putPublic')->setName('publique');
 
 /**
  * Formulaire connexion
@@ -275,7 +268,7 @@ $app->get('/deconnexion[/]',
  * Voir profil
  */
 $app->get('/myProfile[/]',
-ControleurUser::class.':voirCompte')->setName('voirProfil');
+	ControleurUser::class.':voirCompte')->setName('voirProfil');
 
 /**
  * formulaire Modification de compte

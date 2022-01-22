@@ -7,7 +7,7 @@ require_once __DIR__ . '/Controleur.php';
 use mywishlist\exceptions\AuthException;
 use mywishlist\models\Item;
 use mywishlist\vue\VueAccount;
-use mywishlist\vue\VueParticipant;
+use mywishlist\vue\VueItem;
 use mywishlist\controleurs\Controleur;
 use mywishlist\models\Liste;
 use Slim\Container;
@@ -21,12 +21,20 @@ class ControleurItem extends Controleur
         parent::__construct($c);
     }
 
+	function displayItemListe(Request $rq, Response $rs, array $args){
+		$param=$rq->getParsedBody();
+        $v = new VueItem($this->container) ;
+		$rs->getBody()->write($v->render(1)) ;
+		
+		return $rs ;
+    }
+
 	/**
 	* Permet de lister les items d'une liste
 	*/
 	public function listItem(Request $rq, Response $rs, array $args) {
 		$liste = Liste::where('no','=',$rq->getQueryParam('id'))->first() ;
-		$v = new VueParticipant($this->container, $liste->items()) ;
+		$v = new VueItem($this->container, $liste->items()) ;
 		$rs->write($v->render(2)) ;
 
 		return $rs ;
@@ -38,7 +46,7 @@ class ControleurItem extends Controleur
 	public function getItem(Request $rq, Response $rs, array $args) {
             $item = Item::where('id','=',intval($args['id']))->first() ;
             $creator = $item->liste->user;
-            $v = new VueParticipant($this->container, $item->getItem('id')) ;
+            $v = new VueItem($this->container, $item->getItem('id')) ;
             $rs->getBody()->write($v->render(3)) ;
 		return $rs ;
 	}
@@ -52,8 +60,8 @@ class ControleurItem extends Controleur
         $creator = $liste->user;
         try {
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
-            $v = new VueParticipant($this->container,$liste) ;
-            $rs->getBody()->write($v->render(6)) ;
+            $v = new VueItem($this->container,$liste) ;
+            $rs->getBody()->write($v->render(4)) ;
         }
         catch (AuthException $e1){
             $v = new VueAccount();
@@ -77,8 +85,8 @@ class ControleurItem extends Controleur
 
             if(!isset($args['img'])) $args['img'] = '';
             $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$args['img']);
-            $v = new VueParticipant($this->container, $item) ;
-            $rs->write($v->render(7)) ;
+            $v = new VueItem($this->container, $item) ;
+            $rs->write($v->render(5)) ;
         }
         catch (AuthException $e1){
             $v = new VueAccount();
@@ -95,8 +103,8 @@ class ControleurItem extends Controleur
             $item=Item::where('id','=',intval($args['id']))->first();
             $creator = $item->liste->user;
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
-            $v = new VueParticipant($this->container, $item) ;
-            $rs->getBody()->write($v->render(12)) ;
+            $v = new VueItem($this->container, $item) ;
+            $rs->getBody()->write($v->render(6)) ;
         }
         catch (AuthException $e1){
             $v = new VueAccount();
@@ -112,8 +120,8 @@ class ControleurItem extends Controleur
 		$param=$rq->getParsedBody();
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$item->modifyItem($param['des'],$param['tarif'],$param['nom']);
-		$v = new VueParticipant($this->container, $item) ;
-		$rs->getBody()->write($v->render(13)) ;
+		$v = new VueItem($this->container, $item) ;
+		$rs->getBody()->write($v->render(7)) ;
 
 		return $rs ;
 	}
@@ -129,8 +137,8 @@ class ControleurItem extends Controleur
 			$item[]=Item::where('id','=',$cle)-first();
 		}
 		
-		$v = new VueParticipant($this->container, $item) ;
-		$rs->getBody()->write($v->render(14)) ;
+		$v = new VueItem($this->container, $item) ;
+		$rs->getBody()->write($v->render(8)) ;
 
 		return $rs ;
 	}
@@ -147,8 +155,8 @@ class ControleurItem extends Controleur
 			$item->deleteItem();
 		}
 		
-		$v = new VueParticipant($this->container,$id) ;
-		$rs->getBody()->write($v->render(15)) ;
+		$v = new VueItem($this->container,$id) ;
+		$rs->getBody()->write($v->render(9)) ;
 		
 		return $rs ;
 	}
@@ -159,8 +167,8 @@ class ControleurItem extends Controleur
 	public function addCagnotte(Request $rq, Response $rs, array $args):Response{
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$item->addCagnotte();
-		$v=new VueParticipant($this->container,$item);
-		$rs->getBody()->write($v->render(20));
+		$v=new VueItem($this->container,$item);
+		$rs->getBody()->write($v->render(10));
 		return $rs;
 	}
 	
@@ -174,8 +182,8 @@ class ControleurItem extends Controleur
 		$obj=[];
 		$obj[]=$item;
 		$obj[]=$param['cag'];
-		$v=new VueParticipant($this->container,$obj);
-		$rs->getBody()->write($v->render(22));
+		$v=new VueItem($this->container,$obj);
+		$rs->getBody()->write($v->render(11));
 		return $rs;
 	}
 	
@@ -186,8 +194,8 @@ class ControleurItem extends Controleur
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$param=$rq->getParsedBody();
 		$item->reservItem($param['name'],$param['mes']);
-		$v=new VueParticipant($this->container,$item);
-		$rs->getBody()->write($v->render(27));
+		$v=new VueItem($this->container,$item);
+		$rs->getBody()->write($v->render(12));
 		return $rs;
 	}
 

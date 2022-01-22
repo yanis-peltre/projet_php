@@ -64,7 +64,7 @@ class VueAccount
             <form action=\"".$this->container->router->pathFor('inscription')."\" method=\"POST\" name=\"formInscr\" id=\"formInscr\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
 				<p><label>Adresse email : </label><input type=\"text\" name=\"email\" size=40 required=\"true\"></p>
-				<p><label>Password : </label><input type=\"text\" name=\"password\" size=60 required=\"true\"></p>
+				<p><label>Password : </label><input type=\"password\" name=\"password\" size=60 required=\"true\"></p>
 				<input type=\"submit\" value=\"S'inscrire\">
 			</form>";
     }
@@ -76,7 +76,7 @@ class VueAccount
         return "<h2>Connexion</h2>
             <form action=\"".$this->container->router->pathFor('connexion')."\" method=\"POST\" name=\"formConnex\" id=\"formConnex\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
-				<p><label>Password : </label><input type=\"text\" name=\"password\" size=60 required=\"true\"></p>
+				<p><label>Password : </label><input type=\"password\" name=\"password\" size=60 required=\"true\"></p>
 				<input type=\"submit\" value=\"Connexion\">
 			</form>";
     }

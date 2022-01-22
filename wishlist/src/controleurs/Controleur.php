@@ -1,7 +1,7 @@
 <?php
 
 namespace mywishlist\controleurs;
-require_once __DIR__ . '/../vue/VueParticipant.php';
+
 
 use Slim\Container;
 
