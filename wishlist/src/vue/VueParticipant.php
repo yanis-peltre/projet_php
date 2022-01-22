@@ -297,7 +297,8 @@ class VueParticipant{
 
 	private function render_deleteList() {
 		if($this->objet!==null){
-			$res="<p>Liste ".$this->objet->titre." supprimée.</p>";
+			$res="<p>Liste ".$this->objet->titre." supprimée.<a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à ma liste</a></p>";
 		}
 		else{
 			$res="<p>Pas de liste correspondante.</p>";
@@ -502,12 +503,7 @@ class VueParticipant{
 					$res=$res."</p></li>";
 				}
 			}
-            $res.="</ul>";
-
-                $res.="<li><a href=\"".$this->container->router->pathFor('liste',['no'=>$l->no])."\">$l->titre</a></li>";
-            
             $res.="</ol>";
-
         }
         else{
             $res.="<p>Vous n'avez pas encore créé de liste.</p>";
