@@ -1,19 +1,32 @@
 <?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
-use mywishlist\vue\Vue;
 use Slim\Container;
 
-class VueItem extends Vue
+class VueItem
 {
-	/**
-	* Contenu liste publique
-	*/
+	protected $objet;
+    protected $container;
+
+	public function __construct(Container $c, $ob=null){
+        $this->container = $c;
+		$this->objet=$ob;
+	}
+	
+	private function render_displayItemListe():String {
+		return "
+			<section><form action=\"acces_partage/voir_liste_partagee/\" method=\"GET\">
+				<p><label>Consulter les items d'une liste</label><input type=\"text\" name=\"id\" size=3 required=\"true\"></p>
+				<input type=\"submit\" value=\"Valider\">
+			</form></section>
+		";
+	}
+	
 	private function render_listItem():String {
         $titre = $this->objet->titre;
         $desc = $this->objet->description;
         $creator = $this->objet->user->username;
-        $res="<section><h2>Liste : $titre</h2>Createur : $creator</br>Description : $desc<ol>Les items de la liste :";
+        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc<ol>Les items de la liste :";
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
@@ -47,9 +60,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Item d'une liste partagée
-	*/
 	private function render_getItem() :String{
 		if($this->objet!=null){
             $item = $this->objet;
@@ -92,9 +102,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Formulaire d'ajout d'item
-	*/
 	private function render_formAddItem() :String{
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
@@ -107,8 +114,8 @@ class VueItem extends Vue
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
 				<p>
 				<label>Image : 
-				<input list=\"images\" name=\"lImages\" /></label>
-				<datalist id=\"images\">";
+				<input list=\"img\" name=\"img\" /></label>
+				<datalist id=\"img\">";
 				 
 
 				$path = getcwd();
@@ -133,9 +140,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Vue item ajouté
-	*/
 	private function render_addItem():String {
 		if($this->objet!==null){
 			$res="<section><p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."
@@ -149,9 +153,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Formulaire de modification d'item
-	*/
 	private function render_formModifyItem():String {
 		if($this->objet==null){
 			$res="Pas d'item correspondant";
@@ -162,6 +163,27 @@ class VueItem extends Vue
 				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
+				<p>
+				<label>Image : " .$this->objet->img . " 
+				<input list=\"img\" name=\"img\" /></label>
+				<datalist id=\"img\">";
+				 
+
+				$path = getcwd();
+				$path = str_replace("\\", "/", $path);
+				$path = $path . "/web/img";
+				$array = scandir($path);
+
+				foreach ($array as $value) {
+
+					if (!in_array($value,array(".",".."))){
+						$res = $res . "
+						<option value=\"" . $value . "\">";
+					}
+				}
+				
+				$res = $res . "
+				</datalist> </p>
 				<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
 			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
@@ -180,9 +202,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Vue item modifié
-	*/
 	private function render_modifyItem():String {
 		if($this->objet!==null){
 			$res="<section><p>Item ".$this->objet->nom." modifiée.<a href=\"".
@@ -195,9 +214,6 @@ class VueItem extends Vue
 		return $res;
 	}
 	
-	/**
-	* Vue items supprimés
-	*/
 	private function render_deleteItem():String {
 		if($this->objet!==null){
 			return "<section><p>Les items ont été supprimés.<a href=\"".
@@ -208,24 +224,15 @@ class VueItem extends Vue
 		}
 	}
 	
-	/**
-	* Vue ouverture de cagnotte d'un item
-	*/
 	public function render_displayAjoutCagnotte():String{
 		return "<section><p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p><a href=\"javascript:history.go(-1)\">Retourner à l'objet</a></section>";
 	}
 	
-	/**
-	* Vue don d'argent sur une cagnotte
-	*/
 	public function render_giveCagnotte():String{
 		return "<section><p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
-		.$this->objet[0]->nom.". Merci !<a href=\"javascript:history.go(-2)\">Retourner aux objets</a></p></section>";
+		.$this->objet[0]->nom.". Merci !</p></section>";
 	}
 	
-	/**
-	* Vue réservation d'item
-	*/
 	public function render_reservItem():String{	
 		$res="<section><p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .<a href=\"javascript:history.go(-2)\">
 		Retourner aux objets</a></p></section>";
@@ -235,6 +242,10 @@ class VueItem extends Vue
 	
 	public function render($selecteur) :String{
 		switch ($selecteur) {
+			case 1 : {
+				$content = $this->render_displayItemListe();
+				break;
+			}
 			case 2 : {
 				$content = $this->render_listItem();
 				break;

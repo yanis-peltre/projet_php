@@ -73,7 +73,7 @@ class ControleurItem extends Controleur
         try{
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
 
-            if(!isset($args['img'])) $args['img'] = '';
+            if(!isset($args['img'])) $args['img'] = 'X';
             $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$args['img']);
             $v = new VueItem($this->container, $item) ;
             $rs->getBody()->write($v->render(5)) ;
@@ -109,7 +109,8 @@ class ControleurItem extends Controleur
 	public function modifyItem(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
 		$item=Item::where('id','=',intval($args['id']))->first();
-		$item->modifyItem($param['des'],$param['tarif'],$param['nom']);
+		if(!isset($args['img'])) $args['img'] = 'X';
+		$item->modifyItem($param['des'],$param['tarif'],$param['nom'],$param['img']);
 		$v = new VueItem($this->container, $item) ;
 		$rs->getBody()->write($v->render(7)) ;
 
