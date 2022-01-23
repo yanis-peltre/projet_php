@@ -40,7 +40,7 @@ class Item extends Model{
 	/**
 	* Permet de modifier un item
 	*/
-	public function modifyItem($des,$tarif,$nom,$img='X'){
+	public function modifyItem($des,$tarif,$nom,$img){
 		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
 		$this->nom=filter_var($nom,FILTER_SANITIZE_STRING);

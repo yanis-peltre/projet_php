@@ -114,8 +114,8 @@ class VueItem
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
 				<p>
 				<label>Image : 
-				<input list=\"images\" name=\"img\" /></label>
-				<datalist id=\"images\">";
+				<input list=\"img\" name=\"img\" /></label>
+				<datalist id=\"img\">";
 				 
 
 				$path = getcwd();
@@ -165,8 +165,8 @@ class VueItem
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
 				<p>
 				<label>Image : " .$this->objet->img . " 
-				<input list=\"images\" name=\"img\" /></label>
-				<datalist id=\"images\">";
+				<input list=\"img\" name=\"img\" /></label>
+				<datalist id=\"img\">";
 				 
 
 				$path = getcwd();

@@ -63,12 +63,23 @@ class VueListe extends Vue
 			$res=$res."<h2>Liste : $titre</h2>Createur : $creator</br>Description : $desc<ol>Les items de la liste :";
 			
             foreach($items as $i){
-                $res=$res."<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
+                $res=$res."
+				<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
 				if($i->reserve!==null){
 					$res=$res."<label> Reservé</label></li>";
 				}
 				else{
 					$res=$res."</li>";
+				}
+				
+				$res = $res . "<img src=\"";
+				if(substr($i->img,0,4)=="http"){
+					$res = $res . $i->img . "width=100 height=100>";
+				}else {
+					$path = getcwd();
+					$path = str_replace("\\", "/", $path);
+	
+					$res = $res . $path . "/web/img/" . $i->img ."\" width=100 height=100>";
 				}
             }
             $res=$res."</ol></section>";
@@ -148,11 +159,14 @@ class VueListe extends Vue
 				$nomImg = substr($ob->img,0,4);
 
 				if($nomImg == "http") {
-					$res =  $res . $ob->url . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
 					</a>";
 				}
 				else{
-					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					$path = getcwd();
+					$path = str_replace("\\", "/", $path);
+					
+					$res = $res . $path . "/web/img" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
 					</a>";
 				}
 				if($ob->reserve!==null){
