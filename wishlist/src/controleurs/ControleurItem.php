@@ -74,7 +74,7 @@ class ControleurItem extends Controleur
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
 
             if(!isset($args['img'])) $args['img'] = 'X';
-            $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$args['img']);
+            $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$param['img']);
             $v = new VueItem($this->container, $item) ;
             $rs->getBody()->write($v->render(5)) ;
         }
