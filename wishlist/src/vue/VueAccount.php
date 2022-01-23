@@ -43,14 +43,13 @@ class VueAccount
 		<html lang='fr'>
 			<head>
 				<meta charset=\"utf-8\"/>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
 				<title>sometext</title>
 			</head>
 			<body>
 				<header>
 					<nav>
-						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+						<h1><a href =".$this->container->router->pathFor("accueil").">The Wishlist</a></h1>
 					</nav>
 				</header>
 				
@@ -68,25 +67,25 @@ class VueAccount
      * @return string La chaine html correspondant à un formulaire d'inscription
      */
     private function render_formulaireInscription(){
-        return "<h2>Inscription</h2>
+        return "<section><h2>Inscription</h2>
             <form action=\"".$this->container->router->pathFor('inscription')."\" method=\"POST\" name=\"formInscr\" id=\"formInscr\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
 				<p><label>Adresse email : </label><input type=\"text\" name=\"email\" size=40 required=\"true\"></p>
 				<p><label>Password : </label><input type=\"password\" name=\"password\" size=60 required=\"true\"></p>
 				<input type=\"submit\" value=\"S'inscrire\">
-			</form>";
+			</form></section>";
     }
 
     /**
      * @return string La chaine html correspondant à un formulaire de connexion
      */
     private function render_formulaireConnexion(){
-        return "<h2>Connexion</h2>
+        return "<section><h2>Connexion</h2>
             <form action=\"".$this->container->router->pathFor('connexion')."\" method=\"POST\" name=\"formConnex\" id=\"formConnex\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
 				<p><label>Password : </label><input type=\"password\" name=\"password\" size=60 required=\"true\"></p>
 				<input type=\"submit\" value=\"Connexion\">
-			</form>";
+			</form></section>";
     }
 
     private function render_connexion(){
@@ -98,7 +97,7 @@ class VueAccount
     }
 
     private function render_profile(){
-        $html = "<h2>Mon compte</h2>
+        $html = "<section><h2>Mon compte</h2>
         <form action='".$this->container->router->pathFor('formModifCompte')."'>
             <input type='submit' name='enter' value='Modifier mon compte'>
         </form>
@@ -108,7 +107,7 @@ class VueAccount
         <p><ul>
             <li>Mon nom : ". $this->object->username."</li>    
             <li>Mon email : ".$this->object->email ."</li>
-        </ul></p>
+        </ul></p></section>
         ";
         return $html;
     }
@@ -118,14 +117,14 @@ class VueAccount
     }
 
     private function render_formModifCompte(){
-        $html = "<h2>Modifier mon compte</h2>
+        $html = "<section><h2>Modifier mon compte</h2>
         <form action='".$this->container->router->pathFor('modifCompte')."' method='POST'>
         <ul>
             <li><input type='text' name='email' placeholder='email'></li>
             <li><input type='password' name='password' placeholder='password'></li>
             <li> <input type='submit' name='enter' value='Modifier mon compte'></li>
         </ul>    
-        </form>";
+        </form></section>";
         return $html;
     }
 

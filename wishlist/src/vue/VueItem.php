@@ -15,10 +15,10 @@ class VueItem
 	
 	private function render_displayItemListe() {
 		return "
-			<form action=\"acces_partage/voir_liste_partagee/\" method=\"GET\">
+			<section><form action=\"acces_partage/voir_liste_partagee/\" method=\"GET\">
 				<p><label>Consulter les items d'une liste</label><input type=\"text\" name=\"id\" size=3 required=\"true\"></p>
 				<input type=\"submit\" value=\"Valider\">
-			</form>
+			</form></section>
 		";
 	}
 	
@@ -26,11 +26,24 @@ class VueItem
         $titre = $this->objet->titre;
         $desc = $this->objet->description;
         $creator = $this->objet->user->username;
-        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc</section><ol>Les items de la liste :";
+        $res="<h2>Liste : $titre</h2><section>Createur : $creator</br>Description : $desc<ol>Les items de la liste :";
         $items = $this->objet->items;
 		if(count($items) != 0){
             foreach($items as $i){
                 $res=$res."<li>$i->nom - $i->tarif euros <br>$i->descr";
+				$res=$res."
+						<img src=\"";
+
+				$nomImg = substr($i->img,0,4);
+
+				if($nomImg == "http") {
+					$res =  $res . $i->url . "\"width=100 height=100 alt=\"".$i->nom."\">
+					";
+				}
+				else{
+					$res = $res . "../../web/img/" . $i->img . "\"width=100 height=100 alt=\"".$i->nom."\">
+					";
+				}
 				if($i->reserve!==null){
 					$res=$res."<br><label> Reservé</label></li>";
 				}
@@ -38,10 +51,10 @@ class VueItem
 					$res=$res."</li>";
 				}
             }
-            $res=$res."</ol>";
+            $res=$res."</ol></section>";
 		}
 		else{
-			$res=$res."<p>Il n'y a actuellement aucun objet dans cette liste.</p>";
+			$res=$res."<section><p>Il n'y a actuellement aucun objet dans cette liste.</p></section>";
 		}
 
 		return $res;
@@ -50,7 +63,7 @@ class VueItem
 	private function render_getItem() {
 		if($this->objet!=null){
             $item = $this->objet;
-			$res="<h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
+			$res="<section><h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
             <p>Description : $item->descr</p>";
             if(isset($item->img)) $res.="<img src ='$item->img' alt='Image'>";
             if(isset($item->url)) $res.="<p>Plus de détails : <a href='$item->url'>Cliquez ici</a></p>";
@@ -76,6 +89,7 @@ class VueItem
 					<input type=\"submit\" value=\"Participer\">
 				</form>";
 			}
+			$res=$res."</section>";
 		}
 		else{
 			$res="<p>Cet objet n'existe pas.</p>";
@@ -90,12 +104,12 @@ class VueItem
 		}
 		else{
 			$res="
-			<form action=\"".$this->container->router->pathFor('AddItemList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitem\" id=\"formitem\">
+			<section><form action=\"".$this->container->router->pathFor('AddItemList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitem\" id=\"formitem\">
 				<p><label>Nom : </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
 				<input type=\"submit\" value=\"Ajouter l'item\">
-			</form>";/*3026*/
+			</form></section>";
 		}
 
 		return $res;
@@ -103,12 +117,12 @@ class VueItem
 	
 	private function render_addItem() {
 		if($this->objet!==null){
-			$res="<p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."
+			$res="<section><p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."
 			<a href=\"".
-			$this->container->router->pathFor('liste',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p>";
+			$this->container->router->pathFor('liste',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p></section>";
 		}
 		else{
-			$res="<p>Impossible d'ajouter cet item.</p>";
+			$res="<section><p>Impossible d'ajouter cet item.</p></section>";
 		}
 
 		return $res;
@@ -120,7 +134,7 @@ class VueItem
 		}
 		else{
 			$res="
-			<form action=\"".$this->container->router->pathFor('modifItem',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
+			<section><form action=\"".$this->container->router->pathFor('modifItem',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
 				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
@@ -131,7 +145,7 @@ class VueItem
 			</form>
 			<form action=\"".$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
 				<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
-			</form>";
+			</form></section>";
 		}
 
 		return $res;
@@ -139,11 +153,11 @@ class VueItem
 	
 	private function render_modifyItem() {
 		if($this->objet!==null){
-			$res="<p>Item ".$this->objet->nom." modifiée.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p>";
+			$res="<section><p>Item ".$this->objet->nom." modifiée.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p></section>";
 		}
 		else{
-			$res="<p>Pas d'item correspondant.</p>";
+			$res="<section><p>Pas d'item correspondant.</p></section>";
 		}
 
 		return $res;
@@ -154,7 +168,7 @@ class VueItem
 			$res="Aucun item sélectionné.";
 		}
 		else{
-			$res="<ul>Vous êtes sur le point de supprimer les items suivant(s) :";
+			$res="<section><ul>Vous êtes sur le point de supprimer les items suivant(s) :";
 			$token=0;
 			foreach($_GET as $cle=>$val){
 				$ob=Item::where('id','=',$cle)->first();
@@ -174,28 +188,28 @@ class VueItem
 			</form>
 			<form action=\"../".$token."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Annuler et revenir à la liste\">
-			</form>";
+			</form></section>";
 		}
 
 		return $res;
 	}
 	
 	private function render_deleteItem() {
-		return "<p>Les items ont été supprimés.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet])."\">Retourner à ma liste</a></p>";
+		return "<section><p>Les items ont été supprimés.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet])."\">Retourner à ma liste</a></p></section>";
 	}
 	
 	public function render_displayAjoutCagnotte(){
-		return "<p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p>";
+		return "<section><p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p></section>";
 	}
 	
 	public function render_giveCagnotte(){
-		return "<p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
-		.$this->objet[0]->nom.". Merci !</p>";
+		return "<section><p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
+		.$this->objet[0]->nom.". Merci !</p></section>";
 	}
 	
 	public function render_reservItem(){	
-		$res="<p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p>";
+		$res="<section><p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p></section>";
 		
 		return $res;
 	}
@@ -262,14 +276,13 @@ class VueItem
 		<html lang='fr'>
 			<head>
 				<meta charset=\"utf-8\"/>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
 				<title>sometext</title>
 			</head>
 			<body>
 				<header>
 					<nav>
-						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+						<h1><a href =".$this->container->router->pathFor("accueil").">The Wishlist</a></h1>
 					</nav>
 				</header>
 				

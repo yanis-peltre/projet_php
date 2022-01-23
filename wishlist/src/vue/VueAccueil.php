@@ -14,7 +14,7 @@ class VueAccueil
 	}
 	
 	private function render_displayAccueil() {
-		$html = "<h2>Que voulez-vous faire ?</h2>
+		$html = "<section><h2>Que voulez-vous faire ?</h2>
 			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>
 				<input type='submit' value='Consulter les listes publiques'>
 			</form>
@@ -30,7 +30,7 @@ class VueAccueil
             </form>
             <form action=\"".$this->container->router->pathFor('formConnexion')."\" method='GET'>
 			    <input type='submit' value=\"Se connecter\">
-            </form>
+            </form></section>
 		";
         }
         // Si il est connecté
@@ -44,7 +44,7 @@ class VueAccueil
                 </form>
                 <form action = '".$this->container->router->pathFor('deconnexion')."' method='GET'>
 			        <input type='submit' value='Se déconnecter'>
-                </form>";
+                </form></section>";
 
         }
         return $html;
@@ -68,14 +68,13 @@ class VueAccueil
 		<html lang='fr'>
 			<head>
 				<meta charset=\"utf-8\"/>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
 				<title>sometext</title>
 			</head>
 			<body>
 				<header>
 					<nav>
-						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+						<h1><a href =".$this->container->router->pathFor("accueil").">The Wishlist</a></h1>
 					</nav>
 				</header>
 				

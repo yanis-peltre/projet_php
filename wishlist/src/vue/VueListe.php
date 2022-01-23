@@ -75,7 +75,7 @@ class VueListe
             $res=$res."</ol></section>";
 		}
 		else{
-			$res=$res."<section><p>Il n'y a actuellement aucun objet dans cette liste.</p></section>";
+			$res=$res."<p>Il n'y a actuellement aucun objet dans cette liste.</p></section>";
 		}
 
 		return $res;
@@ -96,12 +96,12 @@ class VueListe
 	
 	private function render_addList() {
 		if($this->objet!==null){
-			$res="<p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
+			$res="<section><p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
 			<a href=\"".
-			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p></section>";
 		}
 		else{
-			$res="<p>Cette liste n'existe pas.</p>";
+			$res="<p>Cette liste n'existe pas.</p></section>";
 		}
 
 		return $res;
@@ -109,7 +109,7 @@ class VueListe
 	
 	private function render_formModifyList() {
 		if($this->objet==null){
-			$res="Pas de liste correspondante";
+			$res="<section><p>Pas de liste correspondante</p></section>";
 		}
 		else{
             $no = $this->objet->no;
@@ -140,9 +140,8 @@ class VueListe
 				$nomImg = substr($ob->img,0,4);
 
 				if($nomImg == "http") {
-					$res =  $res . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
+					$res =  $res . $ob->url . "\"width=100 height=100 alt=\"".$ob->nom."\">
 					</a>";
-				
 				}
 				else{
 					$res = $res . "../../web/img/" . $ob->img . "\"width=100 height=100 alt=\"".$ob->nom."\">
@@ -151,7 +150,7 @@ class VueListe
 				if($ob->reserve!==null){
 					$res = $res ."<label>Reservé</label>";
 				}
-				 $res = $res ."</li>";
+				$res = $res ."</li>";
 			}
 			if($liste_ob!=null){
 				$res=$res.
@@ -211,11 +210,11 @@ class VueListe
 	
 	private function render_modifyList() {
 		if($this->objet!==null){
-			$res="<p>Liste modifiée en ".$this->objet->titre." .<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
+			$res="<section><p>Liste modifiée en ".$this->objet->titre." .<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
 		}
 		else{
-			$res="<p>Pas de liste correspondante.</p>";
+			$res="<section><p>Pas de liste correspondante.</p></section>";
 		}
 
 		return $res;
@@ -226,21 +225,21 @@ class VueListe
 			$res="Pas de liste correspondante";
 		}
 		else{
-			$res=" Voulez vous vraiment supprimer la liste ? </br>
+			$res="<section>Voulez vous vraiment supprimer la liste ? </br>
 			<form action=\"".$this->container->router->pathFor('deleteList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Oui\">
 			</form>
 			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\" method=\"GET\" name=\"suplist\" id=\"suplist\">
 				<input type=\"submit\" value=\"Non\">
-			</form>";
+			</form></section>";
 		}
 		return $res;
 	}
 	
 	private function render_deleteList() {
 		if($this->objet!==null){
-			$res="<p>Liste ".$this->objet->titre." supprimée. <a href=\"".
-			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>
+			$res="<section><p>Liste ".$this->objet->titre." supprimée. <a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p></section>
 			";
 		}
 		else{
@@ -253,35 +252,35 @@ class VueListe
 	private function render_displayPartageUrl(){
 
 		return "
-			<p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
+			<section><p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
 			L'url de partage est : ".$this->container->router->pathFor('checkList',['tokenPartage' => $this->objet->token_partage]).
             " <a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>
 		";
 	}
 	
 	private function render_formShareList(){
-        $res = "<form action='". $this->container->router->pathFor('checkList')."' method='GET'>
+        $res = "<section><form action='". $this->container->router->pathFor('checkList')."' method='GET'>
             <input type='text' name='sharedToken' placeholder='Rentrez le token de partage' size='25px'>
             <input type='submit'>
-        </form>";
+        </form></section>";
         return $res;
     }
 	
 	public function render_putPublique(){
 		if($this->objet->publique=='x'){
-			$res="<p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
+			$res="<section><p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
 		}
 		else{
-			$res="<p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
+			$res="<section><p>Votre liste est maintenant privée. Elle ne sera visible plus par les utilisateurs.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
 		}
 		return $res;
 	}
 	
 	private function render_myLists(){
-        $res =  "<form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
+        $res =  "<section><form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
 		if(count($this->objet) != 0){
@@ -297,22 +296,22 @@ class VueListe
 					$res=$res."</p></li>";
 				}
 			}
-            $res.="</ol>";
+            $res.="</ol></section>";
 
         }
         else{
-            $res.="<p>Vous n'avez pas encore créé de liste.</p>";
+            $res.="<p>Vous n'avez pas encore créé de liste.</p></section>";
         }
         return $res;
     }
 	
 	private function render_addMessage(){
 		if($this->objet->message!==null){
-			$res="<p>Message ajouté à la liste ".$this->objet->titre.".<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p>";
+			$res="<section><p>Message ajouté à la liste ".$this->objet->titre.".<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
 		}
         else{
-			$res="<p>Aucun message ajouté.</p>";
+			$res="<section><p>Aucun message ajouté.</p></section>";
 		}
 		return $res;
     }
@@ -321,17 +320,17 @@ class VueListe
 		if($this->objet!==null){
 			$liste = $this->objet;
 			$creator = $liste->user->username;
-			$res = "<h2>Nom de la liste : $liste->titre</h2>";
-			$res.= "<section>Createur : $creator</br>Description : $liste->description</section>";
+			$res = "<section><h2>Nom de la liste : $liste->titre</h2>";
+			$res.= "Createur : $creator</br>Description : $liste->description";
 			$res.="<ul>Les items de la liste :";
 			$items = $liste->items;
 			foreach($items as $i){
 				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
 			}
-			$res=$res."</ul>";
+			$res=$res."</ul></section>";
 		}
         else{
-			$res="<p>Aucune liste correspondante</p>";
+			$res="<section><p>Aucune liste correspondante</p></section>";
 		}
 
         return $res;
@@ -367,7 +366,7 @@ class VueListe
 		}
 		
 		$res=$res."<p><a href=\"".
-		$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
+		$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p></section>";
 
 		return $res;
 	}
@@ -450,14 +449,14 @@ class VueListe
 		<html lang='fr'>
 			<head>
 				<meta charset=\"utf-8\"/>
-				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"./../../web/css/style.css\"/>
+				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
 				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
 				<title>sometext</title>
 			</head>
 			<body>
 				<header>
 					<nav>
-						<h1><a href =".$this->container->router->pathFor("accueil").">Site de fou furieux</a></h1>
+						<h1><a href =".$this->container->router->pathFor("accueil").">The Wishlist</a></h1>
 					</nav>
 				</header>
 				
