@@ -182,7 +182,9 @@ class VueItem
 					}
 				}
 				
-				$res = $res . "<input type=\"submit\" value=\"Modifier l'item\">
+				$res = $res . "
+				</datalist> </p>
+				<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
 			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">

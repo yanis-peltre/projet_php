@@ -109,7 +109,7 @@ class ControleurItem extends Controleur
 	public function modifyItem(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
 		$item=Item::where('id','=',intval($args['id']))->first();
-		$item->modifyItem($param['des'],$param['tarif'],$param['nom']);
+		$item->modifyItem($param['des'],$param['tarif'],$param['nom'],$param['img']);
 		$v = new VueItem($this->container, $item) ;
 		$rs->getBody()->write($v->render(7)) ;
 
