@@ -10,7 +10,7 @@ modifier le cookie et donc voir le nom des participants.
 Sinon, j'ai mis en place la base de l'index et du modèle MVC, la création de l'accueil et j'ai fait un peu de css.
 
 Maxence : Fonctionnalités :
-11, 12, 13, 24
+11, 12, 13
 
 Paul : Fonctionnalités : 
 17, 18, 19, 25, 26, 27, 28

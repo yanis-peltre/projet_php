@@ -8,3 +8,7 @@ Des listes sont déjà créées, certaines avec des objets réservés.
 Une des listes est expirée.
 
 Pour installer le dossier en local, il faut placer le dossier projet_php dans le htdocs de xampp.
+
+url dépôt git : https://github.com/RamboboZ88/projet_php.git
+
+url : 
