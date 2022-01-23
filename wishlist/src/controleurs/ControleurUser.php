@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\controleurs;
 
@@ -12,6 +12,8 @@ use mywishlist\models\User;
 use mywishlist\vue\VueAccount;
 use mywishlist\vue\VueParticipant;
 use Slim\Container;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class ControleurUser
 {
@@ -22,7 +24,7 @@ class ControleurUser
         $this->container = $c;
     }
 
-    public function listerUsers($rq, $rs, $args ){
+    public function listerUsers(Request $rq, Response $rs, array $args):Response{
         $users = User::all();
         foreach ($users as $user){
             $rs->getBody()->write($user . $user->role);
@@ -30,7 +32,7 @@ class ControleurUser
         return $rs;
     }
 
-    public function listerRoles($rq, $rs, $args ){
+    public function listerRoles(Request $rq, Response $rs, array $args):Response{
         $roles = Role::all();
         foreach ($roles as $role){
             $rs->getBody()->write($role);
@@ -45,7 +47,7 @@ class ControleurUser
     /**
      * Créé un formulaire d'inscription pour un utilisateur
      */
-    public function formulaireInscription($rq, $rs, $args ){
+    public function formulaireInscription(Request $rq, Response $rs, array $args):Response{
         $vue = new VueAccount($this->container);
         $rs->write($vue->render(1));
         return $rs;
@@ -54,7 +56,7 @@ class ControleurUser
     /**
      * Inscrit un utilisateur
      */
-    public function inscription($rq, $rs, $args ){
+    public function inscription(Request $rq, Response $rs, array $args):Response{
         $data = $rq->getParsedBody();
         $username = $data['username'];
         $password = $data['password'];
@@ -69,14 +71,14 @@ class ControleurUser
         return $rs;
     }
 
-    public function formulaireConnexion($rq, $rs, $args ){
+    public function formulaireConnexion(Request $rq, Response $rs, array $args):Response{
         $vue = new VueAccount($this->container);
         $rs->write($vue->render(2));
         return $rs;
     }
 
 
-    public function connexion($rq, $rs, $args){
+    public function connexion(Request $rq, Response $rs, array $args):Response{
         $vue = new VueAccount($this->container);
         $data = $rq->getParsedBody();
         $username = $data['username'];
@@ -91,7 +93,7 @@ class ControleurUser
         return $rs;
     }
 
-    public function deconnexion($rq, $rs, $args){
+    public function deconnexion(Request $rq, Response $rs, array $args):Response{
         Authentification::deconnexion();
         $rs->write("Vous êtes déconnecté");
         $url = $this->container->router->pathFor('accueil');
@@ -136,7 +138,7 @@ class ControleurUser
     /**
      * Voir les infos de son compte
      */
-    public function voirCompte($rq, $rs, $args){
+    public function voirCompte(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $userid = $_SESSION['profile']['userid'];
@@ -154,7 +156,7 @@ class ControleurUser
     /**
      * Modifier les infos de son compte
      */
-    public function formModifCompte($rq, $rs, $args){
+    public function formModifCompte(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $userid = $_SESSION['profile']['userid'];
@@ -169,7 +171,7 @@ class ControleurUser
         return $rs;
     }
 
-    public function modifCompte($rq, $rs, $args){
+    public function modifCompte(Request $rq, Response $rs, array $args):Response{
         try {
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $data = $rq->getParsedBody();
@@ -196,7 +198,7 @@ class ControleurUser
         return $rs;
     }
 
-    public function supprimerCompte($rq, $rs, $args){
+    public function supprimerCompte(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $userid = $_SESSION['profile']['userid'];

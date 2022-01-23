@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\controleurs;
 
@@ -27,7 +27,7 @@ class ControleurListe extends Controleur
 	/**
 	* Permet de lister les listes publiques
 	*/
-	public function publicLists(Request $rq, Response $rs, array $args) {
+	public function publicLists(Request $rq, Response $rs, array $args) :Response{
 		$container = $this->container ;
 		
 		$v = new VueListe($this->container,Liste::orderBy('expiration')->get());
@@ -39,7 +39,7 @@ class ControleurListe extends Controleur
     /**
      * Voir une liste
      */
-    public function afficheListe(Request $rq, Response $rs, array $args){
+    public function afficheListe(Request $rq, Response $rs, array $args):Response{
         try{
             $no = $args['no'];
             $liste=Liste::firstWhere('no',$no);
@@ -67,7 +67,7 @@ class ControleurListe extends Controleur
     /**
 	* Affiche un formulaire pour ajouter une liste
 	*/
-	public function formAddList(Request $rq, Response $rs, array $args){
+	public function formAddList(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $v = new VueListe($this->container) ;
@@ -84,7 +84,7 @@ class ControleurListe extends Controleur
 	/**
 	* Ajoute une liste
 	*/
-	public function addList(Request $rq, Response $rs, array $args){
+	public function addList(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $liste=new Liste();
@@ -110,7 +110,7 @@ class ControleurListe extends Controleur
 	/**
 	* Formulaire modification d'une liste
 	*/
-	public function formModifyList(Request $rq, Response $rs, array $args){
+	public function formModifyList(Request $rq, Response $rs, array $args):Response{
         $no = intval($args['no']);
         $liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
@@ -135,7 +135,7 @@ class ControleurListe extends Controleur
 	/**
 	* Modification d'une liste
 	*/
-	public function modifyList(Request $rq, Response $rs, array $args){
+	public function modifyList(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
         $no = intval($args['no']);
 		$liste=Liste::where('no',$no)->first();
@@ -156,7 +156,7 @@ class ControleurListe extends Controleur
 	/**
 	* Formulaire suppression d'une liste
 	*/
-	public function formDeleteList(Request $rq, Response $rs, array $args){
+	public function formDeleteList(Request $rq, Response $rs, array $args):Response{
         $no = intval($args['no']);
 		$liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
@@ -175,7 +175,7 @@ class ControleurListe extends Controleur
 	/**
 	* Suppression d'une liste
 	*/
-	public function deleteList(Request $rq, Response $rs, array $args){
+	public function deleteList(Request $rq, Response $rs, array $args):Response{
         $no = $args['no'];
         $liste=Liste::where('no',intval($no))->first();
         $creator = $liste->user;
@@ -195,7 +195,7 @@ class ControleurListe extends Controleur
 	/**
 	* Partage d'une liste
 	*/
-	public function shareList(Request $rq, Response $rs, array $args){
+	public function shareList(Request $rq, Response $rs, array $args):Response{
         try{
             $no = intval($args['no']);
             $liste=Liste::where('no',$no)->first();
@@ -217,7 +217,7 @@ class ControleurListe extends Controleur
 	/**
 	* Formulaire accès liste partagée
 	*/
-	public function formCheckList(Request $rq, Response $rs, array $args){
+	public function formCheckList(Request $rq, Response $rs, array $args):Response{
         $v = new VueListe($this->container) ;
 		$rs->getBody()->write($v->render(10)) ;
 		return $rs ;
@@ -226,7 +226,7 @@ class ControleurListe extends Controleur
 	/**
 	* Rendre une liste publique
 	*/
-	public function putPublic(Request $rq, Response $rs, array $args){
+	public function putPublic(Request $rq, Response $rs, array $args):Response{
         $no = intval($args['no']);
 		$liste=Liste::where('no',$no)->first();
 		$liste->putPublic();
@@ -239,7 +239,7 @@ class ControleurListe extends Controleur
 	/**
 	* Listes persos
 	*/
-	public function myLists(Request $rq, Response $rs, array $args){
+	public function myLists(Request $rq, Response $rs, array $args):Response{
         try{
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $userid = $_SESSION['profile']['userid'];

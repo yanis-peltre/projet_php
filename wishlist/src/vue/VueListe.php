@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
 use Slim\Container;
@@ -13,7 +13,7 @@ class VueListe
 		$this->objet=$ob;
 	}
 	
-	private function render_listList() {
+	private function render_listList() :String{
 		if($this->objet!==null){
 			$res="<section><ol>Toutes les listes publiques :";
 			foreach($this->objet as $l){
@@ -35,7 +35,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_displayListePerso(){
+	private function render_displayListePerso():String{
         $no = $this->objet->no;
 		if($this->objet->expiration>=date('Y-m-d', time())){
 			$res ="<section><form action=\"".
@@ -81,7 +81,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_formAddList() {
+	private function render_formAddList():String {
 		$res="
 		<section><form action=\"".$this->container->router->pathFor("ajoutListe") ."\" method=\"POST\" name=\"formlist\" id=\"formlist\">
 			<p><label>Titre : </label><input type=\"text\" name=\"titre\" size=40 required=\"true\"></p>
@@ -94,7 +94,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_addList() {
+	private function render_addList() :String{
 		if($this->objet!==null){
 			$res="<section><p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
 			<a href=\"".
@@ -107,7 +107,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_formModifyList() {
+	private function render_formModifyList():String {
 		if($this->objet==null){
 			$res="<section><p>Pas de liste correspondante</p></section>";
 		}
@@ -208,7 +208,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_modifyList() {
+	private function render_modifyList():String {
 		if($this->objet!==null){
 			$res="<section><p>Liste modifiée en ".$this->objet->titre." .<a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
@@ -220,7 +220,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_formDeleteList() {
+	private function render_formDeleteList():String {
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
 		}
@@ -236,7 +236,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_deleteList() {
+	private function render_deleteList():String {
 		if($this->objet!==null){
 			$res="<section><p>Liste ".$this->objet->titre." supprimée. <a href=\"".
 			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p></section>
@@ -249,17 +249,17 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_displayPartageUrl(){
+	private function render_displayPartageUrl():String{
 
 		return "
 			<section><p>Votre token de partage pour la liste ".$this->objet->no." est ".$this->objet->token_partage.".
-			L'url de partage est : ".$this->container->router->pathFor('checkList',['tokenPartage' => $this->objet->token_partage]).
+			L'url de partage est : ".$this->container->router->pathFor('formCheckList').
             " <a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>
 		";
 	}
 	
-	private function render_formShareList(){
+	private function render_formShareList():String{
         $res = "<section><form action='". $this->container->router->pathFor('checkList')."' method='GET'>
             <input type='text' name='sharedToken' placeholder='Rentrez le token de partage' size='25px'>
             <input type='submit'>
@@ -267,7 +267,7 @@ class VueListe
         return $res;
     }
 	
-	public function render_putPublique(){
+	public function render_putPublique():String{
 		if($this->objet->publique=='x'){
 			$res="<section><p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.<a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
@@ -279,7 +279,7 @@ class VueListe
 		return $res;
 	}
 	
-	private function render_myLists(){
+	private function render_myLists():String{
         $res =  "<section><form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
                 </form>";
@@ -305,7 +305,7 @@ class VueListe
         return $res;
     }
 	
-	private function render_addMessage(){
+	private function render_addMessage():String{
 		if($this->objet->message!==null){
 			$res="<section><p>Message ajouté à la liste ".$this->objet->titre.".<a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a></p></section>";
@@ -316,7 +316,7 @@ class VueListe
 		return $res;
     }
 	
-	 private function render_displayListePartage(){
+	 private function render_displayListePartage():String{
 		if($this->objet!==null){
 			$liste = $this->objet;
 			$creator = $liste->user->username;
@@ -325,7 +325,13 @@ class VueListe
 			$res.="<ul>Les items de la liste :";
 			$items = $liste->items;
 			foreach($items as $i){
-				$res=$res."<li><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a></li>";
+				$res=$res."<li><p><a href=\"". $this->container->router->pathFor('item',['id'=>$i->id])."\">".$i->id . ' : '.$i->nom."</a>";
+				if($i->reserve!==null){
+					$res=$res." Reservé</p></li>";
+				}
+				else{
+					$res=$res."</p></li>";
+				}
 			}
 			$res=$res."</ul></section>";
 		}
@@ -336,14 +342,14 @@ class VueListe
         return $res;
     }
 	
-	private function render_valider(){
+	private function render_valider():String{
 		return "<section><p>Vous vener de valider la liste ".$this->objet->titre.". Elle pourra être visible
 		par les autres utilisateurs si vous la rendez publique.<a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a>
 			</p></section>";
     }
 	
-	private function render_listeExpiree() {
+	private function render_listeExpiree():String {
 		$res="<section><p>Liste expirée</p>";
 		
 		if(count($this->objet)==0){
@@ -355,12 +361,13 @@ class VueListe
 				if($ob->reserve!==null){
 					$res=$res."<li>".$ob->nom." : ".$ob->reserve." : ";
 					if($ob->message==""){
-						$res=$res."Pas de message</li>";
+						$res=$res."Pas de message";
 					}
 					else{
-						$res=$res."".$ob->message."</li>";
+						$res=$res."".$ob->message;
 					}
 				}
+				$res=$res."</li>";
 			}
 			$res=$res."</ul>";
 		}
@@ -371,7 +378,7 @@ class VueListe
 		return $res;
 	}
 	
-	public function render($selecteur) {
+	public function render($selecteur) :String{
 		switch ($selecteur) {
 			case 1 : {
 				$content = $this->render_listList();

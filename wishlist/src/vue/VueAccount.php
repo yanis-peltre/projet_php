@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
 
@@ -14,7 +14,7 @@ class VueAccount
         $this->container = $c;
     }
 
-    public function render($selecteur){
+    public function render($selecteur):String{
         switch ($selecteur){
             case 1:
                 $content = $this->render_formulaireInscription();
@@ -66,7 +66,7 @@ class VueAccount
     /**
      * @return string La chaine html correspondant à un formulaire d'inscription
      */
-    private function render_formulaireInscription(){
+    private function render_formulaireInscription():String{
         return "<section><h2>Inscription</h2>
             <form action=\"".$this->container->router->pathFor('inscription')."\" method=\"POST\" name=\"formInscr\" id=\"formInscr\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
@@ -79,7 +79,7 @@ class VueAccount
     /**
      * @return string La chaine html correspondant à un formulaire de connexion
      */
-    private function render_formulaireConnexion(){
+    private function render_formulaireConnexion():String{
         return "<section><h2>Connexion</h2>
             <form action=\"".$this->container->router->pathFor('connexion')."\" method=\"POST\" name=\"formConnex\" id=\"formConnex\">
 				<p><label>Pseudo : </label><input type=\"text\" name=\"username\" size=40 required=\"true\"></p>
@@ -88,15 +88,15 @@ class VueAccount
 			</form></section>";
     }
 
-    private function render_connexion(){
+    private function render_connexion():String{
         return "<a href =\"..\">Accueil</a> <script>window.alert(\"Vous êtes connecté\")</script>";
     }
 
-    private function render_deconnexion(){
+    private function render_deconnexion():String{
         return "<a href =\"..\">Accueil</a> <script>window.alert(\"Vous êtes déconnecté\")</script>";
     }
 
-    private function render_profile(){
+    private function render_profile():String{
         $html = "<section><h2>Mon compte</h2>
         <form action='".$this->container->router->pathFor('formModifCompte')."'>
             <input type='submit' name='enter' value='Modifier mon compte'>
@@ -112,11 +112,11 @@ class VueAccount
         return $html;
     }
 
-    private function render_accessDenied(){
+    private function render_accessDenied():String{
         return "Vous n'avez pas accès à cette page";
     }
 
-    private function render_formModifCompte(){
+    private function render_formModifCompte():String{
         $html = "<section><h2>Modifier mon compte</h2>
         <form action='".$this->container->router->pathFor('modifCompte')."' method='POST'>
         <ul>

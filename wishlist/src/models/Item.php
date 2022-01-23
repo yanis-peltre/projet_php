@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\models;
 
@@ -17,14 +17,8 @@ class Item extends Model{
 		return $this->belongsTo('mywishlist\models\Liste', 'liste_id');
     }
 
-	public function getItem(){
+	public function getItem():Item{
 		return Item::where('id','=',$this->id)->first();
-	}
-
-	public function getToken(){
-		$liste=$this->belongsTo('mywishlist\models\Liste', 'liste_id')->first();
-
-		return $liste->token;
 	}
 
 	public static function createItem($nom,$id_liste,$prix,$img=''){
@@ -88,7 +82,13 @@ class Item extends Model{
 	* Donner de l'argent pour une cagnotte
 	*/
 	public function giveCagnotte(int $v){
-		$this->cagnotte+=$v;
+		if($this->cagnotte+$v>$this->tarif){
+			$this->cagnotte=$this->tarif;
+		}
+		else{
+			$this->cagnotte+=$v;
+		}
+		
 		$this->save();
 	}
 	

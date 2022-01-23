@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types = 1);
+
 
 namespace mywishlist\vue;
 use Slim\Container;
@@ -13,7 +14,7 @@ class VueAccueil
 		$this->objet=$ob;
 	}
 	
-	private function render_displayAccueil() {
+	private function render_displayAccueil() :String{
 		$html = "<section><h2>Que voulez-vous faire ?</h2>
 			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>
 				<input type='submit' value='Consulter les listes publiques'>
@@ -50,7 +51,7 @@ class VueAccueil
         return $html;
 	}
 	
-	public function render($selecteur) {
+	public function render($selecteur) :String{
 		switch ($selecteur) {
 			case 1 : {
 				$content = $this->render_displayAccueil();
