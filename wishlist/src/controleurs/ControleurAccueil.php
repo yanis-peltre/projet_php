@@ -2,8 +2,6 @@
 
 namespace mywishlist\controleurs;
 
-require_once __DIR__ . '/Controleur.php';
-
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -19,6 +17,9 @@ class ControleurAccueil extends Controleur
         parent::__construct($c);
     }
 
+	/**
+	* Accès à l'accueil
+	*/
     function displayAccueil(Request $rq, Response $rs, array $args):Response{
         $v = new VueAccueil($this->container) ;
 		$rs->getBody()->write($v->render(1)) ;

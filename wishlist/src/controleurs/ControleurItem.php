@@ -2,8 +2,6 @@
 
 namespace mywishlist\controleurs;
 
-require_once __DIR__ . '/Controleur.php';
-
 use mywishlist\exceptions\AuthException;
 use mywishlist\models\Item;
 use mywishlist\vue\VueAccount;
@@ -19,14 +17,6 @@ class ControleurItem extends Controleur
 	public function __construct(Container $c)
     {
         parent::__construct($c);
-    }
-
-	function displayItemListe(Request $rq, Response $rs, array $args):Response{
-		$param=$rq->getParsedBody();
-        $v = new VueItem($this->container) ;
-		$rs->getBody()->write($v->render(1)) ;
-		
-		return $rs ;
     }
 
 	/**

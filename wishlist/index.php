@@ -1,8 +1,5 @@
 <?php
 
-//TODO Afficher la liste des créateurs au lieu des listes publiques
-
-
 require_once __DIR__ .'/vendor/autoload.php';
 $config = require_once __DIR__ . "/src/conf/settings.php";
 
@@ -15,7 +12,6 @@ use Illuminate\Database\Capsule\Manager as DB;
 session_start();
 
 $container = new Slim\Container($config);
-//$config = ['settings' => ['displayErrorDetails' => true]];
 $app =new \Slim\App($config);
 
 $db=new DB();
@@ -136,12 +132,6 @@ $app->post('/liste/formulaire_modif_liste/ajouterMessage/{no}[/]',
     ControleurListe::class.':ajouterMessage')->setName("ajouterMessageListe");
 
 /**
-* Ajouter un message à une liste
-*/
-$app->post('/liste/formulaire_modif_liste/commentaire/{token}[/]',
-    ControleurListe::class.':ajouterMessage')->setName('ajouterMessageItem');
-
-/**
  * Rendre une liste publique
  */
 $app->post('/liste/formulaire_modif_liste/{no}/publique/{token}[/]',
@@ -157,12 +147,6 @@ $app->post('/liste/formulaire_modif_liste/{no}/valide/{token}[/]',
 
 // ITEMS ----------------------------------------------
 
-/**
-* Formulaire des items d'une liste
-*/
-
-$app->get('/cadeaux[/]',
-    ControleurItem::class.":displayItemListe")->setName("cadeaux");
 
 /**
 * Voir un item en particulier
@@ -207,23 +191,12 @@ $app->get('/liste/formulaire_modif_liste/{no}/formulaire_modification_item/{id}[
 $app->post('/liste/formulaire_modif_liste/formulaire_modification_item/modifier_item/{id}[/]',
     ControleurItem::class.':modifyItem')->setName('modifItem');
 
-
-/**
-* Formulaire de suppression d'un item
-*/
-
-$app->get('/liste/formulaire_modif_liste/formulaire_suppression_item/{token}[/]',
-    ControleurItem::class.':formDeleteItem')->setName('formulaire_suppression_item');
-
-
 /**
 * Suppression d'un item
 */
 $app->post('/liste/formulaire_modif_liste/supprimer_item/{no}[/]',
     ControleurItem::class.':deleteItem')->setName('deleteItem');
-	
-
-	
+		
 /**
 * Ajouter une cagnotte
 */

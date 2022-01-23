@@ -2,18 +2,14 @@
 
 
 namespace mywishlist\vue;
+use mywishlist\vue\Vue;
 use Slim\Container;
 
-class VueAccueil
-{
-	protected $objet;
-    protected $container;
-
-	public function __construct(Container $c, $ob=null){
-        $this->container = $c;
-		$this->objet=$ob;
-	}
-	
+class VueAccueil extends Vue
+{	
+	/**
+	* Accueil
+	*/
 	private function render_displayAccueil() :String{
 		$html = "<section><h2>Que voulez-vous faire ?</h2>
 			<form action='".$this->container->router->pathFor('listesPubliques')."' method='GET'>

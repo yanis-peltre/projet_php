@@ -21,19 +21,6 @@ class Item extends Model{
 		return Item::where('id','=',$this->id)->first();
 	}
 
-	public static function createItem($nom,$id_liste,$prix,$img=''){
-		$item=new Item();
-
-		$item->nom=$nom;
-		$item->liste_id=$id_liste;
-		$item->tarif=$prix;
-
-		//rajout partie image
-		$item->img=$img;
-
-		$item->save();
-	}
-
 	/**
 	* Permet d'ajouter un item dans une liste
 	*/
