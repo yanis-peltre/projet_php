@@ -118,7 +118,7 @@ class ControleurItem extends Controleur
 	}
 	
 	/**
-	* Modification d'un item d'une liste
+	* formulaire de suppression d'un item d'une liste
 	*/
 	public function formDeleteItem(Request $rq, Response $rs, array $args):Response{
 		$item=[];
