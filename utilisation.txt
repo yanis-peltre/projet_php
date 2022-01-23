@@ -1,0 +1,10 @@
+Des données sont présentes dans base_wish.sql. Les identifiants des comptes sont
+identifiant : lambda     mot de passe : Azertyuiopqs
+identifiant : alpha      mot de passe : Azertyuiopqs
+
+Ne pas oublier la majuscule dans le mot de passe
+
+Des listes sont déjà créées, certaines avec des objets réservés.
+Une des listes est expirée.
+
+Pour installer le dossier en local, il faut placer le dossier projet_php dans le htdocs de xampp.
