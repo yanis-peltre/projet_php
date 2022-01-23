@@ -68,6 +68,11 @@ class Liste extends Model{
 	* Permet de supprimer une liste
 	*/
 	public function deleteList(){
+		$items=Item::where('liste_id','=',$this->no)->get();
+		foreach($items as $ob){
+			$ob->delete();
+		}
+		
 		$this->delete();
 	}
 	
@@ -98,7 +103,7 @@ class Liste extends Model{
      * Ajoute un message à une liste
      */
     public function ajouterMessage(String $message){
-		$this->message=$message;
+		$this->message=filter_var($message,FILTER_SANITIZE_STRING);
 		$this->save();
     }
 	
