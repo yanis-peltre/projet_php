@@ -57,9 +57,9 @@ class ControleurUser
      */
     public function inscription(Request $rq, Response $rs, array $args):Response{
         $data = $rq->getParsedBody();
-        $username = $data['username'];
-        $password = $data['password'];
-        $email = $data['email'];
+        $username = filter_var($data['username'], FILTER_SANITIZE_STRING);
+        $password = filter_var($data['password'],FILTER_SANITIZE_STRING);
+        $email = filter_var($data['email'],FILTER_SANITIZE_STRING);
         try{
             Authentification::createUser($username,$password,'Createur', $email);
             $rs->write("Utilisateur ". $username." inscrit");
@@ -80,8 +80,8 @@ class ControleurUser
     public function connexion(Request $rq, Response $rs, array $args):Response{
         $vue = new VueAccount($this->container);
         $data = $rq->getParsedBody();
-        $username = $data['username'];
-        $password = $data['password'];
+        $username = filter_var($data['username'],FILTER_SANITIZE_STRING);
+        $password = filter_var($data['password'],FILTER_SANITIZE_STRING);
         try{
             Authentification::authenticate($username,$password);
             $rs->write($vue->render(3));
@@ -174,9 +174,8 @@ class ControleurUser
         try {
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $data = $rq->getParsedBody();
-            //TODO sécuriser injection
-            $newMail = $data['email'];
-            $newPassword = $data['password'];
+            $newMail = filter_var($data['email'],FILTER_SANITIZE_STRING);
+            $newPassword = filter_var($data['password'],FILTER_SANITIZE_STRING);
             $user = User::firstWhere('userid', $_SESSION['profile']['userid']);
             $user->password = $newPassword;
             $user->email = $newMail;
