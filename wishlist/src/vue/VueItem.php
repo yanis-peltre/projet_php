@@ -114,7 +114,7 @@ class VueItem
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
 				<p>
 				<label>Image : 
-				<input list=\"images\" name=\"lImages\" /></label>
+				<input list=\"images\" name=\"img\" /></label>
 				<datalist id=\"images\">";
 				 
 
@@ -165,7 +165,7 @@ class VueItem
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
 				<p>
 				<label>Image : " .$this->objet->img . " 
-				<input list=\"images\" name=\"lImages\" /></label>
+				<input list=\"images\" name=\"img\" /></label>
 				<datalist id=\"images\">";
 				 
 
