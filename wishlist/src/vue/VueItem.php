@@ -163,7 +163,26 @@ class VueItem
 				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
-				<input type=\"submit\" value=\"Modifier l'item\">
+				<p>
+				<label>Image : " .$this->objet->img . " 
+				<input list=\"images\" name=\"lImages\" /></label>
+				<datalist id=\"images\">";
+				 
+
+				$path = getcwd();
+				$path = str_replace("\\", "/", $path);
+				$path = $path . "/web/img";
+				$array = scandir($path);
+
+				foreach ($array as $value) {
+
+					if (!in_array($value,array(".",".."))){
+						$res = $res . "
+						<option value=\"" . $value . "\">";
+					}
+				}
+				
+				$res = $res . "<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
 			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
