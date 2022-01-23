@@ -1,19 +1,15 @@
 <?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
+use mywishlist\vue\Vue;
 use Slim\Container;
 
-class VueListe
+class VueListe extends Vue
 {
-	protected $objet;
-    protected $container;
-
-	public function __construct(Container $c, $ob=null){
-        $this->container = $c;
-		$this->objet=$ob;
-	}
-	
-	private function render_listList() :String{
+	/**
+	* Liste des listes publiques
+	*/
+	private function render_listList():String{
 		if($this->objet!==null){
 			$res="<section><ol>Toutes les listes publiques :";
 			foreach($this->objet as $l){
@@ -35,6 +31,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Affichage d'une liste personnelle
+	*/
 	private function render_displayListePerso():String{
         $no = $this->objet->no;
 		if($this->objet->expiration>=date('Y-m-d', time())){
@@ -81,6 +80,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Formulaire d'ajout de liste
+	*/
 	private function render_formAddList():String {
 		$res="
 		<section><form action=\"".$this->container->router->pathFor("ajoutListe") ."\" method=\"POST\" name=\"formlist\" id=\"formlist\">
@@ -94,6 +96,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Liste ajoutée
+	*/
 	private function render_addList() :String{
 		if($this->objet!==null){
 			$res="<section><p>".$this->objet->no." : ".$this->objet->titre." token : ".$this->objet->token."
@@ -107,6 +112,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Formulaire modification de liste
+	*/
 	private function render_formModifyList():String {
 		if($this->objet==null){
 			$res="<section><p>Pas de liste correspondante</p></section>";
@@ -208,6 +216,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Liste modifiée
+	*/
 	private function render_modifyList():String {
 		if($this->objet!==null){
 			$res="<section><p>Liste modifiée en ".$this->objet->titre." .<a href=\"".
@@ -220,6 +231,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Formulaire de suppression d'une liste
+	*/
 	private function render_formDeleteList():String {
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
@@ -236,6 +250,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Liste supprimée
+	*/
 	private function render_deleteList():String {
 		if($this->objet!==null){
 			$res="<section><p>Liste ".$this->objet->titre." supprimée. <a href=\"".
@@ -249,6 +266,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* url et token de partage
+	*/
 	private function render_displayPartageUrl():String{
 
 		return "
@@ -259,6 +279,9 @@ class VueListe
 		";
 	}
 	
+	/**
+	* Formulaire d'accès à une liste partagée
+	*/
 	private function render_formShareList():String{
         $res = "<section><form action='". $this->container->router->pathFor('checkList')."' method='GET'>
             <input type='text' name='sharedToken' placeholder='Rentrez le token de partage' size='25px'>
@@ -267,6 +290,9 @@ class VueListe
         return $res;
     }
 	
+	/**
+	* Liste passée en publique ou privée
+	*/
 	public function render_putPublique():String{
 		if($this->objet->publique=='x'){
 			$res="<section><p>Votre liste est maintenant publique. Elle sera visible par tous les utilisateurs.<a href=\"".
@@ -279,6 +305,9 @@ class VueListe
 		return $res;
 	}
 	
+	/**
+	* Vue des listes personnelles
+	*/
 	private function render_myLists():String{
         $res =  "<section><form action = \"".$this->container->router->pathFor('formAjouterListe')." \"method='GET'>
                     <input type='submit' value=\"Creer une liste\">
@@ -305,6 +334,9 @@ class VueListe
         return $res;
     }
 	
+	/**
+	* Message ajouté à une liste
+	*/
 	private function render_addMessage():String{
 		if($this->objet->message!==null){
 			$res="<section><p>Message ajouté à la liste ".$this->objet->titre.".<a href=\"".
@@ -316,7 +348,10 @@ class VueListe
 		return $res;
     }
 	
-	 private function render_displayListePartage():String{
+	/**
+	* Vue d'une liste partagée
+	*/
+	private function render_displayListePartage():String{
 		if($this->objet!==null){
 			$liste = $this->objet;
 			$creator = $liste->user->username;
@@ -342,6 +377,9 @@ class VueListe
         return $res;
     }
 	
+	/**
+	* Liste validée
+	*/
 	private function render_valider():String{
 		return "<section><p>Vous vener de valider la liste ".$this->objet->titre.". Elle pourra être visible
 		par les autres utilisateurs si vous la rendez publique.<a href=\"".
@@ -349,6 +387,9 @@ class VueListe
 			</p></section>";
     }
 	
+	/**
+	* Vue d'une liste expirée
+	*/
 	private function render_listeExpiree():String {
 		$res="<section><p>Liste expirée</p>";
 		
@@ -457,7 +498,6 @@ class VueListe
 			<head>
 				<meta charset=\"utf-8\"/>
 				<link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"web/css/style.css\"/>
-				<script type=\"text/javascript\" src=\"./../../web/css/script.js\"></script>
 				<title>sometext</title>
 			</head>
 			<body>

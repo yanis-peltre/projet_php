@@ -1,19 +1,11 @@
 <?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
-
+use mywishlist\vue\Vue;
 use Slim\App;
 
-class VueAccount
+class VueAccount extends Vue
 {
-    protected $object;
-    protected $container;
-
-    public function __construct($c, $ob=null){
-        $this->object=$ob;
-        $this->container = $c;
-    }
-
     public function render($selecteur):String{
         switch ($selecteur){
             case 1:
@@ -105,8 +97,8 @@ class VueAccount
             <input type='submit' name='enter' value='Supprimer mon compte'>
         </form>
         <p><ul>
-            <li>Mon nom : ". $this->object->username."</li>    
-            <li>Mon email : ".$this->object->email ."</li>
+            <li>Mon nom : ". $this->objet->username."</li>    
+            <li>Mon email : ".$this->objet->email ."</li>
         </ul></p></section>
         ";
         return $html;

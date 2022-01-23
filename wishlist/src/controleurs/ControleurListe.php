@@ -2,8 +2,6 @@
 
 namespace mywishlist\controleurs;
 
-require_once __DIR__ . '/Controleur.php';
-
 use Illuminate\Support\Facades\Auth;
 use mywishlist\exceptions\AuthException;
 use mywishlist\models\User;
@@ -41,7 +39,7 @@ class ControleurListe extends Controleur
      */
     public function afficheListe(Request $rq, Response $rs, array $args):Response{
         try{
-            $no = $args['no'];
+            $no = intval($args['no']);
             $liste=Liste::firstWhere('no',$no);
             $creator = $liste->user;
             if($liste->publique != 'x') Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS, $creator);
@@ -253,8 +251,11 @@ class ControleurListe extends Controleur
 		return $rs ;
 	}
 
+	/**
+	* Permet d'ajouter un message à une liste
+	*/
     public function ajouterMessage(Request $rq, Response $rs, array $args) : Response{
-        $no = $args['no'];
+        $no = intval($args['no']);
         $message = $rq->getParsedBody();
         $liste = Liste::firstWhere('no',$no);
         $liste->ajouterMessage($message['Message']);
@@ -264,7 +265,9 @@ class ControleurListe extends Controleur
         return $rs;
     }
 
-
+	/**
+	* Permet d'accéder à une liste partagée
+	*/
     public function checkList(Request $rq, Response $rs, array $args) : Response{
         $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('sharedToken'));
         $v = new VueListe($this->container,$liste) ;
@@ -273,6 +276,9 @@ class ControleurListe extends Controleur
         return $rs;
     }
 
+	/**
+	* Permet de valider une liste
+	*/
 	public function valider(Request $rq, Response $rs, array $args) : Response{
         $liste=Liste::where('token','=',intval($args['token']))->first();
 		$liste->valider();

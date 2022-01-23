@@ -2,7 +2,6 @@
 
 namespace mywishlist\controleurs;
 
-
 use Illuminate\Support\Facades\Auth;
 use mywishlist\exceptions\AuthException;
 use mywishlist\exceptions\InscriptionException;

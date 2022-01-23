@@ -2,7 +2,6 @@
 
 namespace mywishlist\controleurs;
 
-
 use Slim\Container;
 
 abstract class Controleur{
