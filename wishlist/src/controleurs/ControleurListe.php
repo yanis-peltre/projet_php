@@ -280,7 +280,7 @@ class ControleurListe extends Controleur
 	* Permet de valider une liste
 	*/
 	public function valider(Request $rq, Response $rs, array $args) : Response{
-        $liste=Liste::where('token','=',intval($args['token']))->first();
+        $liste=Liste::where('no','=',intval($args['no']))->first();
 		$liste->valider();
         $v = new VueListe($this->container,$liste) ;
         $rs->getBody()->write($v->render(15));
