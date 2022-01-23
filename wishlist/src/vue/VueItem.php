@@ -230,7 +230,7 @@ class VueItem
 	
 	public function render_giveCagnotte():String{
 		return "<section><p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
-		.$this->objet[0]->nom.". Merci !</p></section>";
+		.$this->objet[0]->nom.". Merci !<a href=\"javascript:history.go(-2)\">Retourner aux objets</a></p></section>";
 	}
 	
 	public function render_reservItem():String{	
