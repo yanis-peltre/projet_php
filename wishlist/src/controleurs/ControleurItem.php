@@ -35,7 +35,7 @@ class ControleurItem extends Controleur
 	public function listItem(Request $rq, Response $rs, array $args) {
 		$liste = Liste::where('no','=',$rq->getQueryParam('id'))->first() ;
 		$v = new VueItem($this->container, $liste->items()) ;
-		$rs->write($v->render(2)) ;
+		$rs->getBody()->write($v->render(2)) ;
 
 		return $rs ;
 	}
@@ -65,7 +65,7 @@ class ControleurItem extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 
 
@@ -86,11 +86,11 @@ class ControleurItem extends Controleur
             if(!isset($args['img'])) $args['img'] = '';
             $item->addItem($param['des'],$param['prix'],$param['nom'],$args['no'],$args['img']);
             $v = new VueItem($this->container, $item) ;
-            $rs->write($v->render(5)) ;
+            $rs->getBody()->write($v->render(5)) ;
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -108,7 +108,7 @@ class ControleurItem extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}

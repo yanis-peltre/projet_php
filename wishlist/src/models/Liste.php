@@ -17,7 +17,7 @@ class Liste extends Model{
 	* Retourne les items de la liste
 	*/
     public function items() {
-        return $this->hasMany(Item::class, 'liste_id');
+        return $this->hasMany('mywishlist\models\Item', 'liste_id');
     }
 
     /**
@@ -55,7 +55,10 @@ class Liste extends Model{
 	*/
 	public function modifyList($des,$exp,$titre){
 		$this->description=filter_var($des,FILTER_SANITIZE_STRING);
-		$this->expiration=filter_var($exp,FILTER_SANITIZE_STRING); 
+		$e=filter_var($exp,FILTER_SANITIZE_STRING);
+		if($e>=date('Y-m-d', time())){
+			$this->expiration=$e; 
+		}
 		$this->titre=filter_var($titre,FILTER_SANITIZE_STRING);
 			
 		$this->save();

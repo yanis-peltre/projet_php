@@ -62,10 +62,6 @@ class VueAccueil
 			}
 		}
 
-		/*echo <<<END
-		code
-		END;*/
-
 		return 
 		"<!DOCTYPE html>
 

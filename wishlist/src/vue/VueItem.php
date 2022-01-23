@@ -150,7 +150,7 @@ class VueItem
 	}
 	
 	private function render_formDeleteItem() {
-		if(count($_GET)==0){
+		if(count($this->objet)==0){
 			$res="Aucun item sélectionné.";
 		}
 		else{
@@ -255,10 +255,6 @@ class VueItem
 				break;
 			}
 		}
-
-		/*echo <<<END
-		code
-		END;*/
 
 		return 
 		"<!DOCTYPE html>

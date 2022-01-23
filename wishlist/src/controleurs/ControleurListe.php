@@ -49,17 +49,17 @@ class ControleurListe extends Controleur
             // Si createur
             if(isset($_SESSION['profile']) && $creator->userid == $_SESSION['profile']['userid']){
 				$v = new VueListe($this->container,$liste) ;
-                $rs->write($v->render(2)) ;
+                $rs->getBody()->write($v->render(2)) ;
             }
             // Si visiteur
             else{
 				$v = new VueItem($this->container,$liste) ;
-                $rs->write($v->render(2));
+                $rs->getBody()->write($v->render(2));
             }
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
         return $rs ;
     }
@@ -75,7 +75,7 @@ class ControleurListe extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 
 		return $rs ;
@@ -102,7 +102,7 @@ class ControleurListe extends Controleur
         }
         catch(AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -116,12 +116,18 @@ class ControleurListe extends Controleur
         $creator = $liste->user;
         try{
             Authentification::checkAccessRights(Authentification::$ADMIN_RIGHTS,$creator);
-            $v = new VueListe($this->container,$liste) ;
-            $rs->write($v->render(5)) ;
+			if($liste->expiration>=date('Y-m-d', time())){
+				$v = new VueListe($this->container,$liste) ;
+				$rs->getBody()->write($v->render(5)) ;
+			}
+            else{
+				$v = new VueListe($this->container,Item::where('liste_id','=',$liste->no)->get()) ;
+				$rs->getBody()->write($v->render(16)) ;
+			}
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -142,7 +148,7 @@ class ControleurListe extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -161,7 +167,7 @@ class ControleurListe extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -181,7 +187,7 @@ class ControleurListe extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -203,7 +209,7 @@ class ControleurListe extends Controleur
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -213,7 +219,7 @@ class ControleurListe extends Controleur
 	*/
 	public function formCheckList(Request $rq, Response $rs, array $args){
         $v = new VueListe($this->container) ;
-		$rs->write($v->render(10)) ;
+		$rs->getBody()->write($v->render(10)) ;
 		return $rs ;
 	}
 	
@@ -238,11 +244,11 @@ class ControleurListe extends Controleur
             Authentification::checkAccessRights(Authentification::$CREATOR_RIGHTS);
             $userid = $_SESSION['profile']['userid'];
             $v = new VueListe($this->container,Liste::where('user_id',$userid)->get()) ;
-            $rs->write($v->render(12)) ;
+            $rs->getBody()->write($v->render(12)) ;
         }
         catch (AuthException $e1){
             $v = new VueAccount();
-            $rs->write($v->render(5));
+            $rs->getBody()->write($v->render(5));
         }
 		return $rs ;
 	}
@@ -254,7 +260,7 @@ class ControleurListe extends Controleur
         $liste->ajouterMessage($message['Message']);
 		
 		$v = new VueListe($this->container,$liste) ;
-		$rs->write($v->render(13));
+		$rs->getBody()->write($v->render(13));
         return $rs;
     }
 
@@ -262,7 +268,7 @@ class ControleurListe extends Controleur
     public function checkList(Request $rq, Response $rs, array $args) : Response{
         $liste=Liste::firstWhere('token_partage',$rq->getQueryParam('sharedToken'));
         $v = new VueListe($this->container,$liste) ;
-        $rs->write($v->render(14));
+        $rs->getBody()->write($v->render(14));
 
         return $rs;
     }
@@ -271,7 +277,7 @@ class ControleurListe extends Controleur
         $liste=Liste::where('token','=',intval($args['token']))->first();
 		$liste->valider();
         $v = new VueListe($this->container,$liste) ;
-        $rs->write($v->render(15));
+        $rs->getBody()->write($v->render(15));
 
         return $rs;
     }

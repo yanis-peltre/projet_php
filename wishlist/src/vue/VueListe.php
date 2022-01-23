@@ -37,14 +37,23 @@ class VueListe
 	
 	private function render_displayListePerso(){
         $no = $this->objet->no;
-        $res ="<section><form action=\"".
+		if($this->objet->expiration>=date('Y-m-d', time())){
+			$res ="<section><form action=\"".
             $this->container->router->pathFor('formModifyList',['no'=> $no])."
             \" method=\"GET\">
-           <input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\">
-        </form> 
-        <form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
-            <input type='submit' name='ajouterItem' value='Ajouter un item'>
-        </form>";
+			   <input type=\"submit\" name=\"modifListe\" value=\"Modifier la liste\">
+			</form> 
+			<form action='".$this->container->router->pathFor('formAddItemList',['no'=>$this->objet->no])."'>
+				<input type='submit' name='ajouterItem' value='Ajouter un item'>
+			</form>";
+		}
+        else{
+			$res="<section><p>Liste expirée</p><form action=\"".
+            $this->container->router->pathFor('formModifyList',['no'=> $no])."
+            \" method=\"GET\">
+			   <input type=\"submit\" name=\"reserve\" value=\"Consulter les réservations\">
+			</form>";
+		}
 
 		$items = $this->objet->items;
         
@@ -57,7 +66,7 @@ class VueListe
             foreach($items as $i){
                 $res=$res."<li> <p>$i->nom - $i->tarif euros <br>$i->descr</p>";
 				if($i->reserve!==null){
-					$res=$res."<br><label> Reservé</label></li>";
+					$res=$res."<label> Reservé</label></li>";
 				}
 				else{
 					$res=$res."</li>";
@@ -167,10 +176,12 @@ class VueListe
 			}
 			$res=$res."<form action=\"".$this->container->router->pathFor('formDeleteList',['no'=>$no])."\" method=\"GET\" name=\"formsuplist\" id=\"formsuplist\">
 				<input type=\"submit\" value=\"Supprimer la liste\">
-			</form>
-			<form action=\"".$this->container->router->pathFor('shareList',['no'=>$no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
-				<input type=\"submit\" value=\"Partager la liste\">
 			</form>";
+			if($this->objet->valide!==null){
+				$res=$res."<form action=\"".$this->container->router->pathFor('shareList',['no'=>$no])."\" method=\"GET\" name=\"formsendlist\" id=\"formsendlist\">
+				<input type=\"submit\" value=\"Partager la liste\">
+				</form>";
+			}
 			if($this->objet->publique==null){
 				$res=$res."<form action=\"publique/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
 					<p><label>La liste n'est pas publique </label></p>
@@ -333,6 +344,34 @@ class VueListe
 			</p></section>";
     }
 	
+	private function render_listeExpiree() {
+		$res="<section><p>Liste expirée</p>";
+		
+		if(count($this->objet)==0){
+			$res=$res."<p>Aucune réservation</p>";
+		}
+		else{
+			$res=$res."<ul>Liste des réservations : ";
+			foreach($this->objet as $ob){
+				if($ob->reserve!==null){
+					$res=$res."<li>".$ob->nom." : ".$ob->reserve." : ";
+					if($ob->message==""){
+						$res=$res."Pas de message</li>";
+					}
+					else{
+						$res=$res."".$ob->message."</li>";
+					}
+				}
+			}
+			$res=$res."</ul>";
+		}
+		
+		$res=$res."<p><a href=\"".
+		$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
+
+		return $res;
+	}
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -395,15 +434,15 @@ class VueListe
 				$content = $this->render_valider();
 				break;
 			}
+			case 16 : {
+				$content = $this->render_listeExpiree();
+				break;
+			}
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
 			}
 		}
-
-		/*echo <<<END
-		code
-		END;*/
 
 		return 
 		"<!DOCTYPE html>
