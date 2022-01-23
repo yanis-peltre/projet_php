@@ -396,8 +396,7 @@ class VueListe extends Vue
 	*/
 	private function render_valider():String{
 		return "<section><p>Vous vener de valider la liste ".$this->objet->titre.". Elle pourra être visible
-		par les autres utilisateurs si vous la rendez publique.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a>
+		par les autres utilisateurs si vous la rendez publique.<a href=\"javascript:history.go(-1)\">Retourner à ma liste</a>
 			</p></section>";
     }
 	
