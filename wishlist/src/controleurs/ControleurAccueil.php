@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\controleurs;
 
@@ -19,7 +19,7 @@ class ControleurAccueil extends Controleur
         parent::__construct($c);
     }
 
-    function displayAccueil(Request $rq, Response $rs, array $args){
+    function displayAccueil(Request $rq, Response $rs, array $args):Response{
         $v = new VueAccueil($this->container) ;
 		$rs->getBody()->write($v->render(1)) ;
 		return $rs ;

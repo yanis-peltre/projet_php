@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\controleurs;
 
@@ -21,7 +21,7 @@ class ControleurItem extends Controleur
         parent::__construct($c);
     }
 
-	function displayItemListe(Request $rq, Response $rs, array $args){
+	function displayItemListe(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
         $v = new VueItem($this->container) ;
 		$rs->getBody()->write($v->render(1)) ;
@@ -32,7 +32,7 @@ class ControleurItem extends Controleur
 	/**
 	* Permet de lister les items d'une liste
 	*/
-	public function listItem(Request $rq, Response $rs, array $args) {
+	public function listItem(Request $rq, Response $rs, array $args):Response {
 		$liste = Liste::where('no','=',$rq->getQueryParam('id'))->first() ;
 		$v = new VueItem($this->container, $liste->items()) ;
 		$rs->getBody()->write($v->render(2)) ;
@@ -43,7 +43,7 @@ class ControleurItem extends Controleur
 	/**
 	* Permet d'afficher un item
 	*/
-	public function getItem(Request $rq, Response $rs, array $args) {
+	public function getItem(Request $rq, Response $rs, array $args):Response {
             $item = Item::where('id','=',intval($args['id']))->first() ;
             $creator = $item->liste->user;
             $v = new VueItem($this->container, $item->getItem('id')) ;
@@ -54,7 +54,7 @@ class ControleurItem extends Controleur
 	/**
 	* Affiche un formulaire pour ajouter un item a une liste
 	*/
-	public function formAddItem(Request $rq, Response $rs, array $args){
+	public function formAddItem(Request $rq, Response $rs, array $args):Response{
         $no = $args['no'];
 		$liste=Liste::where('no',$no)->first();
         $creator = $liste->user;
@@ -75,7 +75,7 @@ class ControleurItem extends Controleur
 	/**
 	* Ajoute un item a une liste
 	*/
-	public function addItem(Request $rq, Response $rs, array $args){
+	public function addItem(Request $rq, Response $rs, array $args):Response{
 		$item=new Item();
         $param=$rq->getParsedBody();
         $liste = Liste::firstWhere('no',$args['no']);
@@ -98,7 +98,7 @@ class ControleurItem extends Controleur
 	/**
 	* Modification d'un item d'une liste
 	*/
-	public function formModifyItem(Request $rq, Response $rs, array $args){
+	public function formModifyItem(Request $rq, Response $rs, array $args):Response{
         try{
             $item=Item::where('id','=',intval($args['id']))->first();
             $creator = $item->liste->user;
@@ -116,7 +116,7 @@ class ControleurItem extends Controleur
 	/**
 	* Modification d'un item
 	*/
-	public function modifyItem(Request $rq, Response $rs, array $args){
+	public function modifyItem(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$item->modifyItem($param['des'],$param['tarif'],$param['nom']);
@@ -129,7 +129,7 @@ class ControleurItem extends Controleur
 	/**
 	* Modification d'un item d'une liste
 	*/
-	public function formDeleteItem(Request $rq, Response $rs, array $args){
+	public function formDeleteItem(Request $rq, Response $rs, array $args):Response{
 		$item=[];
 		$param=$rq->getParsedBody();
 		
@@ -146,8 +146,9 @@ class ControleurItem extends Controleur
 	/**
 	* Suppression d'items
 	*/
-	public function deleteItem(Request $rq, Response $rs, array $args){
+	public function deleteItem(Request $rq, Response $rs, array $args):Response{
 		$param=$rq->getParsedBody();
+		$id=null;
 		
 		foreach($param as $cle=>$value){
 			$item=Item::where('id','=',$cle)->first();
@@ -178,10 +179,10 @@ class ControleurItem extends Controleur
 	public function giveCagnotte(Request $rq, Response $rs, array $args):Response{
 		$item=Item::where('id','=',intval($args['id']))->first();
 		$param=$rq->getParsedBody();
-		$item->giveCagnotte($param['cag']);
+		$item->giveCagnotte(intval($param['cag']));
 		$obj=[];
 		$obj[]=$item;
-		$obj[]=$param['cag'];
+		$obj[]=intval($param['cag']);
 		$v=new VueItem($this->container,$obj);
 		$rs->getBody()->write($v->render(11));
 		return $rs;
@@ -198,16 +199,6 @@ class ControleurItem extends Controleur
 		$rs->getBody()->write($v->render(12));
 		return $rs;
 	}
-
-    /**
-     * Ajoute un message
-     */
-    public function ajouterMessage(Request $rq, Response $rs, array $args) : Response{
-        $token = $args['token'];
-        $item = Item::firstWhere('token',$token);
-
-        return $rs;
-    }
 }
 
 

@@ -14,8 +14,6 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 session_start();
 
-
-
 $container = new Slim\Container($config);
 //$config = ['settings' => ['displayErrorDetails' => true]];
 $app =new \Slim\App($config);

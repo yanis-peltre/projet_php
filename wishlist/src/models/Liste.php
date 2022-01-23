@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\models;
 
@@ -42,7 +42,7 @@ class Liste extends Model{
         $this->description=filter_var($des,FILTER_SANITIZE_STRING);
         $this->expiration=filter_var($exp,FILTER_SANITIZE_STRING);
         $this->titre=$title;
-        $this->token=random_int(1,100000000);
+        $this->token=bin2hex(openssl_random_pseudo_bytes(32));
         $this->user_id = $userid;
         if($publique){
             $this->publique = 'x';
@@ -75,7 +75,7 @@ class Liste extends Model{
 	* Permet de générer un token de partage de liste
 	*/
 	public function shareList(){
-		$this->token_partage=random_int(1,100000000);
+		$this->token_partage=bin2hex(openssl_random_pseudo_bytes(32));
 		
 		$this->save();
 	}

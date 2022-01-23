@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace mywishlist\vue;
 use Slim\Container;
@@ -13,7 +13,7 @@ class VueItem
 		$this->objet=$ob;
 	}
 	
-	private function render_displayItemListe() {
+	private function render_displayItemListe():String {
 		return "
 			<section><form action=\"acces_partage/voir_liste_partagee/\" method=\"GET\">
 				<p><label>Consulter les items d'une liste</label><input type=\"text\" name=\"id\" size=3 required=\"true\"></p>
@@ -22,7 +22,7 @@ class VueItem
 		";
 	}
 	
-	private function render_listItem() {
+	private function render_listItem():String {
         $titre = $this->objet->titre;
         $desc = $this->objet->description;
         $creator = $this->objet->user->username;
@@ -60,7 +60,7 @@ class VueItem
 		return $res;
 	}
 	
-	private function render_getItem() {
+	private function render_getItem() :String{
 		if($this->objet!=null){
             $item = $this->objet;
 			$res="<section><h2> Item : $item->nom </h2><p>Prix : $item->tarif</p>    
@@ -81,13 +81,17 @@ class VueItem
 					<input type=\"submit\" value=\"Réserver\">
 				</form>";
 			}
+			else{
+				$res=$res."<p>Objet reservé</p>";
+			}
 
-			if($this->objet->cagnotte!==null){
+			if($this->objet->cagnotte!==null && $this->objet->cagnotte<$this->objet->tarif){
 				$res=$res."<form action=\"".$this->container->router->pathFor('donner_cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formcag\" id=\"formcag\">
 					<p><label>Entrer un montant pour la cagnotte : </label>
 					<input type=\"text\" name=\"cag\" size=40 required=\"true\"></p>
 					<input type=\"submit\" value=\"Participer\">
-				</form>";
+				</form>
+				<br><p>Montant actuel : ".$this->objet->cagnotte." euros</p>";
 			}
 			$res=$res."</section>";
 		}
@@ -98,7 +102,7 @@ class VueItem
 		return $res;
 	}
 	
-	private function render_formAddItem() {
+	private function render_formAddItem() :String{
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
 		}
@@ -136,7 +140,7 @@ class VueItem
 		return $res;
 	}
 	
-	private function render_addItem() {
+	private function render_addItem():String {
 		if($this->objet!==null){
 			$res="<section><p>".$this->objet->nom." ajouté à la liste ".$this->objet->liste_id."
 			<a href=\"".
@@ -149,7 +153,7 @@ class VueItem
 		return $res;
 	}
 	
-	private function render_formModifyItem() {
+	private function render_formModifyItem():String {
 		if($this->objet==null){
 			$res="Pas d'item correspondant";
 		}
@@ -163,16 +167,21 @@ class VueItem
 			</form>
 			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
-			</form>
-			<form action=\"".$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
-				<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
-			</form></section>";
+			</form>";
+			if($this->objet->cagnotte==null && $this->objet->cagnotte!==0){
+				$res=$res."<form action=\"".$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
+					<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
+				</form></section>";
+			}
+			else{
+				$res=$res."<p>Montant dans la cagnotte : ".$this->objet->cagnotte." euros</p></section>";
+			}
 		}
 
 		return $res;
 	}
 	
-	private function render_modifyItem() {
+	private function render_modifyItem():String {
 		if($this->objet!==null){
 			$res="<section><p>Item ".$this->objet->nom." modifiée.<a href=\"".
 			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste_id])."\">Retourner à ma liste</a></p></section>";
@@ -184,58 +193,33 @@ class VueItem
 		return $res;
 	}
 	
-	private function render_formDeleteItem() {
-		if(count($this->objet)==0){
-			$res="Aucun item sélectionné.";
+	private function render_deleteItem():String {
+		if($this->objet!==null){
+			return "<section><p>Les items ont été supprimés.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet])."\">Retourner à ma liste</a></p></section>";
 		}
 		else{
-			$res="<section><ul>Vous êtes sur le point de supprimer les items suivant(s) :";
-			$token=0;
-			foreach($_GET as $cle=>$val){
-				$ob=Item::where('id','=',$cle)->first();
-				if($token==0){
-					$token=$ob->getToken();
-				}
-				$res=$res."
-				<li>
-					<p> ".$ob->nom." de la liste ".$ob->liste_id."</p>
-				</li>";
-			}
-			$res=$res."</ul>";
-
-			$res=$res."
-			<form action=\"".$this->container->router->pathFor('supprimer_item',['token'=>$token])."\" method=\"POST\" name=\"supitem\" id=\"supitem\">
-				<input type=\"submit\" value=\"Confirmer la suppression\">
-			</form>
-			<form action=\"../".$token."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
-				<input type=\"submit\" value=\"Annuler et revenir à la liste\">
-			</form></section>";
+			return "<section><p>Aucun item selectionnés.<a href=\"javascript:history.go(-1)\">Retourner à ma liste</a></p></section>";
 		}
-
-		return $res;
 	}
 	
-	private function render_deleteItem() {
-		return "<section><p>Les items ont été supprimés.<a href=\"".
-			$this->container->router->pathFor('formModifyList',['no'=>$this->objet])."\">Retourner à ma liste</a></p></section>";
+	public function render_displayAjoutCagnotte():String{
+		return "<section><p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p><a href=\"javascript:history.go(-1)\">Retourner à l'objet</a></section>";
 	}
 	
-	public function render_displayAjoutCagnotte(){
-		return "<section><p>Cagnotte ouverte pour l'item ".$this->objet->id." .</p></section>";
-	}
-	
-	public function render_giveCagnotte(){
+	public function render_giveCagnotte():String{
 		return "<section><p>Vous venez de donner ".$this->objet[1]." euros pour la cagnotte de l'item "
 		.$this->objet[0]->nom.". Merci !</p></section>";
 	}
 	
-	public function render_reservItem(){	
-		$res="<section><p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .</p></section>";
+	public function render_reservItem():String{	
+		$res="<section><p>Vous venez de réserver l'item ".$this->objet->nom." sous le nom ".$this->objet->reserve." .<a href=\"javascript:history.go(-2)\">
+		Retourner aux objets</a></p></section>";
 		
 		return $res;
 	}
 	
-	public function render($selecteur) {
+	public function render($selecteur) :String{
 		switch ($selecteur) {
 			case 1 : {
 				$content = $this->render_displayItemListe();
@@ -263,10 +247,6 @@ class VueItem
 			}
 			case 7 : {
 				$content = $this->render_modifyItem();
-				break;
-			}
-			case 8 : {
-				$content = $this->render_formDeleteItem();
 				break;
 			}
 			case 9 : {
