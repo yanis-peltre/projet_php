@@ -99,12 +99,33 @@ class VueItem extends Vue
 		if($this->objet==null){
 			$res="Pas de liste correspondante";
 		}
-		else{
+		else{ 
 			$res="
 			<section><form action=\"".$this->container->router->pathFor('AddItemList',['no'=>$this->objet->no])."\" method=\"POST\" name=\"formitem\" id=\"formitem\">
 				<p><label>Nom : </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
 				<p><label>Description : </label><input type=\"text\" name=\"des\" size=60></p>
 				<p><label>Prix : </label><input type=\"text\" name=\"prix\" size=11 required=\"true\"></p>
+				<p>
+				<label>Image : 
+				<input list=\"images\" name=\"lImages\" /></label>
+				<datalist id=\"images\">";
+				 
+
+				$path = getcwd();
+				$path = str_replace("\\", "/", $path);
+				$path = $path . "/web/img";
+				$array = scandir($path);
+
+				foreach ($array as $value) {
+
+					if (!in_array($value,array(".",".."))){
+						$res = $res . "
+						<option value=\"" . $value . "\">";
+					}
+				}
+
+				$res = $res . "
+			</datalist> </p>
 				<input type=\"submit\" value=\"Ajouter l'item\">
 			</form></section>";
 		}
