@@ -24,7 +24,7 @@ class Item extends Model{
 	/**
 	* Permet d'ajouter un item dans une liste
 	*/
-	public function addItem($des,$tarif,$nom,$no,$img){
+	public function addItem($des,$tarif,$nom,$no,$img="X"){
 		$l=Liste::where('no',filter_var($no,FILTER_SANITIZE_NUMBER_INT))->first();
 
 		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
@@ -40,7 +40,7 @@ class Item extends Model{
 	/**
 	* Permet de modifier un item
 	*/
-	public function modifyItem($des,$tarif,$nom,$img){
+	public function modifyItem($des,$tarif,$nom,$img="X"){
 		$this->descr=filter_var($des,FILTER_SANITIZE_STRING);
 		$this->tarif=filter_var($tarif,FILTER_SANITIZE_NUMBER_FLOAT); 
 		$this->nom=filter_var($nom,FILTER_SANITIZE_STRING);

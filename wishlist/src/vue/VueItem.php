@@ -159,12 +159,12 @@ class VueItem
 		}
 		else{
 			$res="
-			<section><form action=\"".$this->container->router->pathFor('modifItem',['id'=>$this->objet->id])."\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
-				<p><label>Nom : ".$this->objet->nom." </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
-				<p><label>Description : ".$this->objet->descr." </label><input type=\"text\" name=\"des\" size=60></p>
-				<p><label>Tarif : ".$this->objet->tarif." </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
+			<section><form action=\"{$this->container->router->pathFor('modifItem',['id'=>$this->objet->id])}\" method=\"POST\" name=\"formmitem\" id=\"formmitem\">
+				<p><label>Nom : {$this->objet->nom} </label><input type=\"text\" name=\"nom\" size=40 required=\"true\"></p>
+				<p><label>Description : {$this->objet->descr} </label><input type=\"text\" name=\"des\" size=60></p>
+				<p><label>Tarif : {$this->objet->tarif} </label><input type=\"text\" name=\"tarif\" size=11 required=\"true\"></p>
 				<p>
-				<label>Image : " .$this->objet->img . " 
+				<label>Image : {$this->objet->img} 
 				<input list=\"img\" name=\"img\" /></label>
 				<datalist id=\"img\">";
 				 
@@ -178,7 +178,7 @@ class VueItem
 
 					if (!in_array($value,array(".",".."))){
 						$res = $res . "
-						<option value=\"" . $value . "\">";
+						<option value=\"{$value}\">";
 					}
 				}
 				
@@ -186,16 +186,16 @@ class VueItem
 				</datalist> </p>
 				<input type=\"submit\" value=\"Modifier l'item\">
 			</form>
-			<form action=\"".$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])."\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
+			<form action=\"{$this->container->router->pathFor('formModifyList',['no'=>$this->objet->liste->no])}\" method=\"GET\" name=\"formmlist\" id=\"formmlist\">
 				<input type=\"submit\" value=\"Retour à la liste\">
 			</form>";
 			if($this->objet->cagnotte==null && $this->objet->cagnotte!==0){
-				$res=$res."<form action=\"".$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])."\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
+				$res=$res."<form action=\"{$this->container->router->pathFor('cagnotte',['id'=>$this->objet->id])}\" method=\"POST\" name=\"ajcag\" id=\"ajcag\">
 					<input type=\"submit\" value=\"Ouvrir une cagnotte pour cet item\">
 				</form></section>";
 			}
 			else{
-				$res=$res."<p>Montant dans la cagnotte : ".$this->objet->cagnotte." euros</p></section>";
+				$res=$res."<p>Montant dans la cagnotte : {$this->objet->cagnotte} euros</p></section>";
 			}
 		}
 
