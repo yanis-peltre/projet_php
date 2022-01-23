@@ -267,6 +267,14 @@ class ControleurListe extends Controleur
         return $rs;
     }
 
+	public function valider(Request $rq, Response $rs, array $args) : Response{
+        $liste=Liste::where('token','=',intval($args['token']))->first();
+		$liste->valider();
+        $v = new VueListe($this->container,$liste) ;
+        $rs->write($v->render(15));
+
+        return $rs;
+    }
 }
 
 

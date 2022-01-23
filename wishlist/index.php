@@ -149,6 +149,14 @@ $app->post('/liste/formulaire_modif_liste/commentaire/{token}[/]',
 $app->post('/liste/formulaire_modif_liste/{no}/publique/{token}[/]',
     ControleurListe::class.':putPublic')->setName('publique');
 
+/**
+ * Valide une liste
+ */
+$app->post('/liste/formulaire_modif_liste/{no}/valide/{token}[/]',
+    ControleurListe::class.':valider')->setName('valide');
+
+
+
 // ITEMS ----------------------------------------------
 
 /**

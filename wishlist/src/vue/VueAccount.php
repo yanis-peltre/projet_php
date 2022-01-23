@@ -58,9 +58,7 @@ class VueAccount
 					$content
 				</div>
 				<footer>
-					<ul>
-						<li><a href=\"#\">Retourner en haut</a></li>
-					</ul>
+					
 				</footer>
 			</body>
 		<html>";

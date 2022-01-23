@@ -22,7 +22,7 @@ class VueListe
                 }else{
                     $creator = "";
                 }
-				if($l->publique=='x'){
+				if($l->publique=='x' && $l->valide=='x' && $l->expiration>=date('Y-m-d', time())){
 					$res.="<li>$creator - <a href=". $this->container->router->pathFor('liste',['no'=>$l->no]).">".$l->titre."</a></li>";
 				}
 			}
@@ -183,6 +183,15 @@ class VueListe
 					<input type=\"submit\" value=\"Rendre la liste privée\">
 				</form>";
 			}
+			if($this->objet->valide==null){
+				$res=$res."<form action=\"valide/".$this->objet->token."\" method=\"POST\" name=\"pub\" id=\"pub\">
+					<p>
+						<input type=\"submit\" value=\"Valider la liste\">
+					</p>
+				</form>";
+			}
+			$res=$res."<p><a href=\"".
+			$this->container->router->pathFor('listesPersos')."\">Retourner à mes listes</a></p>";
 
 			$res=$res."</aside>";
 		}
@@ -317,6 +326,13 @@ class VueListe
         return $res;
     }
 	
+	private function render_valider(){
+		return "<section><p>Vous vener de valider la liste ".$this->objet->titre.". Elle pourra être visible
+		par les autres utilisateurs si vous la rendez publique.<a href=\"".
+			$this->container->router->pathFor('formModifyList',['no'=>$this->objet->no])."\">Retourner à ma liste</a>
+			</p></section>";
+    }
+	
 	public function render($selecteur) {
 		switch ($selecteur) {
 			case 1 : {
@@ -375,6 +391,10 @@ class VueListe
 				$content = $this->render_displayListePartage();
 				break;
 			}
+			case 15 : {
+				$content = $this->render_valider();
+				break;
+			}
 			default : {
 				$content = "Pas de contenu<br>";
 				break;
@@ -406,9 +426,7 @@ class VueListe
 					$content
 				</div>
 				<footer>
-					<ul>
-						<li><a href=\"#\">Retourner en haut</a></li>
-					</ul>
+
 				</footer>
 			</body>
 		<html>";

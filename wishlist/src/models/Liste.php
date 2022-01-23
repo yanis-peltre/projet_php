@@ -98,6 +98,14 @@ class Liste extends Model{
 		$this->message=$message;
 		$this->save();
     }
+	
+	/**
+     * Permet de valider une liste
+     */
+    public function valider(){
+		$this->valide='x';
+		$this->save();
+    }
 }
 
 
